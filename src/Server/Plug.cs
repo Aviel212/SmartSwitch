@@ -31,7 +31,7 @@ public class Plug
         //turn off the device
     }
 
-    public void addSample(PowerUsageSample pus)
+    public void AddSample(PowerUsageSample pus)
     {
         //add a new sample to the list of samples
     }
