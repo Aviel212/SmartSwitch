@@ -12,6 +12,7 @@ public class Plug
     public bool IsOn;
     public bool Approved;
     public Priorities Priority;
+    public List<Task> Tasks;
 
     public Plug(string mac)
 	{
