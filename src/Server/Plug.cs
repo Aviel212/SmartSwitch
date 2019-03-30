@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// this class representing a smart device which you can turn on and off and use simple tasks on it
 /// </summary>
 public class Plug
 {
-    enum Priorities {ESSENTIAL, NONESSENTIAL, IRRELEVANT};
+    public enum Priorities {ESSENTIAL, NONESSENTIAL, IRRELEVANT};
 
     public readonly string Mac;
-    public string NickName;
+    public string Nickname;
     public bool IsOn;
     public bool Approved;
     public Priorities Priority;

@@ -5,7 +5,7 @@
 /// </summary>
 public class Task
 {
-    enum Operations { TURNON, TURNOFF };
+    public enum Operations { TURNON, TURNOFF };
 
     public Operations Operation;
     public Plug Device;
