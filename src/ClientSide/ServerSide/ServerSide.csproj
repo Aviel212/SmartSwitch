@@ -190,10 +190,33 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SmartSwitchDbModel.Context.tt</DependentUpon>
     </Compile>
+    <Compile Include="SmartSwitchDbModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SmartSwitchDbModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="SmartSwitchDbModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SmartSwitchDbModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="sysdiagram.cs">
+      <DependentUpon>SmartSwitchDbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblOneTimeTask.cs">
+      <DependentUpon>SmartSwitchDbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPlug.cs">
+      <DependentUpon>SmartSwitchDbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPowerUsageSample.cs">
+      <DependentUpon>SmartSwitchDbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRepeatedTask.cs">
+      <DependentUpon>SmartSwitchDbModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUser.cs">
+      <DependentUpon>SmartSwitchDbModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +258,12 @@
     <Content Include="SmartSwitchDbModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SmartSwitchDbModel.Context.cs</LastGenOutput>
+      <DependentUpon>SmartSwitchDbModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="SmartSwitchDbModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SmartSwitchDbModel.edmx</DependentUpon>
+      <LastGenOutput>SmartSwitchDbModel.cs</LastGenOutput>
     </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -254,9 +283,9 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>SmartSwitchDbModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="SmartSwitchDbModel.edmx.diagram">
+    <Content Include="SmartSwitchDbModel.edmx.diagram">
       <DependentUpon>SmartSwitchDbModel.edmx</DependentUpon>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
