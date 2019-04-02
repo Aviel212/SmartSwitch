@@ -1,0 +1,371 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SmartSwitchModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="tblOneTimeTask">
+          <Key>
+            <PropertyRef Name="taskId" />
+          </Key>
+          <Property Name="taskId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="operatin" Type="nvarchar" MaxLength="20" />
+          <Property Name="deviceMac" Type="varchar" MaxLength="20" />
+          <Property Name="dateToBeExecuted" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblPlug">
+          <Key>
+            <PropertyRef Name="mac" />
+          </Key>
+          <Property Name="mac" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="nickNmae" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="userName" Type="nvarchar" MaxLength="20" />
+          <Property Name="isOn" Type="bit" Nullable="false" />
+          <Property Name="priority" Type="nvarchar" MaxLength="20" />
+          <Property Name="approved" Type="bit" Nullable="false" />
+          <Property Name="sampleId" Type="int" />
+        </EntityType>
+        <EntityType Name="tblPowerUsageSample">
+          <Key>
+            <PropertyRef Name="sampleId" />
+          </Key>
+          <Property Name="sampleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="current" Type="float" Nullable="false" />
+          <Property Name="voltage" Type="float" Nullable="false" />
+          <Property Name="sampleDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblRepeatedTask">
+          <Key>
+            <PropertyRef Name="taskId" />
+          </Key>
+          <Property Name="taskId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="operatin" Type="nvarchar" MaxLength="20" />
+          <Property Name="deviceMac" Type="varchar" MaxLength="20" />
+          <Property Name="startDate" Type="date" Nullable="false" />
+          <Property Name="repeatEvery" Type="int" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="userName" />
+          </Key>
+          <Property Name="userName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__tblOneTim__devic__2C3393D0">
+          <End Role="tblPlug" Type="Self.tblPlug" Multiplicity="0..1" />
+          <End Role="tblOneTimeTask" Type="Self.tblOneTimeTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPlug">
+              <PropertyRef Name="mac" />
+            </Principal>
+            <Dependent Role="tblOneTimeTask">
+              <PropertyRef Name="deviceMac" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblPlug__sampleI__29572725">
+          <End Role="tblPowerUsageSample" Type="Self.tblPowerUsageSample" Multiplicity="0..1" />
+          <End Role="tblPlug" Type="Self.tblPlug" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPowerUsageSample">
+              <PropertyRef Name="sampleId" />
+            </Principal>
+            <Dependent Role="tblPlug">
+              <PropertyRef Name="sampleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblPlug__userNam__286302EC">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+          <End Role="tblPlug" Type="Self.tblPlug" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="userName" />
+            </Principal>
+            <Dependent Role="tblPlug">
+              <PropertyRef Name="userName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblRepeat__devic__2F10007B">
+          <End Role="tblPlug" Type="Self.tblPlug" Multiplicity="0..1" />
+          <End Role="tblRepeatedTask" Type="Self.tblRepeatedTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPlug">
+              <PropertyRef Name="mac" />
+            </Principal>
+            <Dependent Role="tblRepeatedTask">
+              <PropertyRef Name="deviceMac" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SmartSwitchModelStoreContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblOneTimeTask" EntityType="Self.tblOneTimeTask" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblPlug" EntityType="Self.tblPlug" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblPowerUsageSample" EntityType="Self.tblPowerUsageSample" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblRepeatedTask" EntityType="Self.tblRepeatedTask" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tblOneTim__devic__2C3393D0" Association="Self.FK__tblOneTim__devic__2C3393D0">
+            <End Role="tblPlug" EntitySet="tblPlug" />
+            <End Role="tblOneTimeTask" EntitySet="tblOneTimeTask" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblPlug__sampleI__29572725" Association="Self.FK__tblPlug__sampleI__29572725">
+            <End Role="tblPowerUsageSample" EntitySet="tblPowerUsageSample" />
+            <End Role="tblPlug" EntitySet="tblPlug" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblPlug__userNam__286302EC" Association="Self.FK__tblPlug__userNam__286302EC">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblPlug" EntitySet="tblPlug" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblRepeat__devic__2F10007B" Association="Self.FK__tblRepeat__devic__2F10007B">
+            <End Role="tblPlug" EntitySet="tblPlug" />
+            <End Role="tblRepeatedTask" EntitySet="tblRepeatedTask" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SmartSwitchModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="tblOneTimeTask">
+          <Key>
+            <PropertyRef Name="taskId" />
+          </Key>
+          <Property Name="taskId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="operatin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="deviceMac" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="dateToBeExecuted" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="tblPlug" Relationship="Self.FK__tblOneTim__devic__2C3393D0" FromRole="tblOneTimeTask" ToRole="tblPlug" />
+        </EntityType>
+        <EntityType Name="tblPlug">
+          <Key>
+            <PropertyRef Name="mac" />
+          </Key>
+          <Property Name="mac" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nickNmae" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="userName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="isOn" Type="Boolean" Nullable="false" />
+          <Property Name="priority" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="approved" Type="Boolean" Nullable="false" />
+          <Property Name="sampleId" Type="Int32" />
+          <NavigationProperty Name="tblOneTimeTasks" Relationship="Self.FK__tblOneTim__devic__2C3393D0" FromRole="tblPlug" ToRole="tblOneTimeTask" />
+          <NavigationProperty Name="tblPowerUsageSample" Relationship="Self.FK__tblPlug__sampleI__29572725" FromRole="tblPlug" ToRole="tblPowerUsageSample" />
+          <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPlug__userNam__286302EC" FromRole="tblPlug" ToRole="tblUser" />
+          <NavigationProperty Name="tblRepeatedTasks" Relationship="Self.FK__tblRepeat__devic__2F10007B" FromRole="tblPlug" ToRole="tblRepeatedTask" />
+        </EntityType>
+        <EntityType Name="tblPowerUsageSample">
+          <Key>
+            <PropertyRef Name="sampleId" />
+          </Key>
+          <Property Name="sampleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="current" Type="Double" Nullable="false" />
+          <Property Name="voltage" Type="Double" Nullable="false" />
+          <Property Name="sampleDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="tblPlugs" Relationship="Self.FK__tblPlug__sampleI__29572725" FromRole="tblPowerUsageSample" ToRole="tblPlug" />
+        </EntityType>
+        <EntityType Name="tblRepeatedTask">
+          <Key>
+            <PropertyRef Name="taskId" />
+          </Key>
+          <Property Name="taskId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="operatin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="deviceMac" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="startDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="repeatEvery" Type="Int32" />
+          <NavigationProperty Name="tblPlug" Relationship="Self.FK__tblRepeat__devic__2F10007B" FromRole="tblRepeatedTask" ToRole="tblPlug" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="userName" />
+          </Key>
+          <Property Name="userName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="tblPlugs" Relationship="Self.FK__tblPlug__userNam__286302EC" FromRole="tblUser" ToRole="tblPlug" />
+        </EntityType>
+        <Association Name="FK__tblOneTim__devic__2C3393D0">
+          <End Role="tblPlug" Type="Self.tblPlug" Multiplicity="0..1" />
+          <End Role="tblOneTimeTask" Type="Self.tblOneTimeTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPlug">
+              <PropertyRef Name="mac" />
+            </Principal>
+            <Dependent Role="tblOneTimeTask">
+              <PropertyRef Name="deviceMac" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblPlug__sampleI__29572725">
+          <End Role="tblPowerUsageSample" Type="Self.tblPowerUsageSample" Multiplicity="0..1" />
+          <End Role="tblPlug" Type="Self.tblPlug" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPowerUsageSample">
+              <PropertyRef Name="sampleId" />
+            </Principal>
+            <Dependent Role="tblPlug">
+              <PropertyRef Name="sampleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblPlug__userNam__286302EC">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+          <End Role="tblPlug" Type="Self.tblPlug" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="userName" />
+            </Principal>
+            <Dependent Role="tblPlug">
+              <PropertyRef Name="userName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblRepeat__devic__2F10007B">
+          <End Role="tblPlug" Type="Self.tblPlug" Multiplicity="0..1" />
+          <End Role="tblRepeatedTask" Type="Self.tblRepeatedTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPlug">
+              <PropertyRef Name="mac" />
+            </Principal>
+            <Dependent Role="tblRepeatedTask">
+              <PropertyRef Name="deviceMac" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SmartSwitchDbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="tblOneTimeTasks" EntityType="Self.tblOneTimeTask" />
+          <EntitySet Name="tblPlugs" EntityType="Self.tblPlug" />
+          <EntitySet Name="tblPowerUsageSamples" EntityType="Self.tblPowerUsageSample" />
+          <EntitySet Name="tblRepeatedTasks" EntityType="Self.tblRepeatedTask" />
+          <EntitySet Name="tblUsers" EntityType="Self.tblUser" />
+          <AssociationSet Name="FK__tblOneTim__devic__2C3393D0" Association="Self.FK__tblOneTim__devic__2C3393D0">
+            <End Role="tblPlug" EntitySet="tblPlugs" />
+            <End Role="tblOneTimeTask" EntitySet="tblOneTimeTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblPlug__sampleI__29572725" Association="Self.FK__tblPlug__sampleI__29572725">
+            <End Role="tblPowerUsageSample" EntitySet="tblPowerUsageSamples" />
+            <End Role="tblPlug" EntitySet="tblPlugs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblPlug__userNam__286302EC" Association="Self.FK__tblPlug__userNam__286302EC">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblPlug" EntitySet="tblPlugs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblRepeat__devic__2F10007B" Association="Self.FK__tblRepeat__devic__2F10007B">
+            <End Role="tblPlug" EntitySet="tblPlugs" />
+            <End Role="tblRepeatedTask" EntitySet="tblRepeatedTasks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SmartSwitchModelStoreContainer" CdmEntityContainer="SmartSwitchDbContext">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="SmartSwitchModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblOneTimeTasks">
+            <EntityTypeMapping TypeName="SmartSwitchModel.tblOneTimeTask">
+              <MappingFragment StoreEntitySet="tblOneTimeTask">
+                <ScalarProperty Name="taskId" ColumnName="taskId" />
+                <ScalarProperty Name="operatin" ColumnName="operatin" />
+                <ScalarProperty Name="deviceMac" ColumnName="deviceMac" />
+                <ScalarProperty Name="dateToBeExecuted" ColumnName="dateToBeExecuted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblPlugs">
+            <EntityTypeMapping TypeName="SmartSwitchModel.tblPlug">
+              <MappingFragment StoreEntitySet="tblPlug">
+                <ScalarProperty Name="mac" ColumnName="mac" />
+                <ScalarProperty Name="nickNmae" ColumnName="nickNmae" />
+                <ScalarProperty Name="userName" ColumnName="userName" />
+                <ScalarProperty Name="isOn" ColumnName="isOn" />
+                <ScalarProperty Name="priority" ColumnName="priority" />
+                <ScalarProperty Name="approved" ColumnName="approved" />
+                <ScalarProperty Name="sampleId" ColumnName="sampleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblPowerUsageSamples">
+            <EntityTypeMapping TypeName="SmartSwitchModel.tblPowerUsageSample">
+              <MappingFragment StoreEntitySet="tblPowerUsageSample">
+                <ScalarProperty Name="sampleId" ColumnName="sampleId" />
+                <ScalarProperty Name="current" ColumnName="current" />
+                <ScalarProperty Name="voltage" ColumnName="voltage" />
+                <ScalarProperty Name="sampleDate" ColumnName="sampleDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblRepeatedTasks">
+            <EntityTypeMapping TypeName="SmartSwitchModel.tblRepeatedTask">
+              <MappingFragment StoreEntitySet="tblRepeatedTask">
+                <ScalarProperty Name="taskId" ColumnName="taskId" />
+                <ScalarProperty Name="operatin" ColumnName="operatin" />
+                <ScalarProperty Name="deviceMac" ColumnName="deviceMac" />
+                <ScalarProperty Name="startDate" ColumnName="startDate" />
+                <ScalarProperty Name="repeatEvery" ColumnName="repeatEvery" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblUsers">
+            <EntityTypeMapping TypeName="SmartSwitchModel.tblUser">
+              <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="userName" ColumnName="userName" />
+                <ScalarProperty Name="password" ColumnName="password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
