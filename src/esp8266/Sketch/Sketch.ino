@@ -7,15 +7,16 @@
 
 ESP8266WebServer server(80);    // Create a webserver object that listens for HTTP request on port 80
 
-String getContentType(String filename); // convert the file extension to the MIME type
-bool handleFileRead(String path);       // send the right file to the client (if it exists)
+bool shouldBlink = true;
+const int statusLed = D1;
 
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
   delay(10);
+  pinMode(statusLed, OUTPUT);
   Serial.println('\n');
 
-  WiFi.softAP("SmartSwitch:" + WiFi.macAddress());
+  WiFi.softAP("SmartSwitch " + WiFi.macAddress());
   /*WiFi.mode(WIFI_STA);
   WiFi.begin("Jordan's Place", "a098995242");
   Serial.println("");
@@ -30,11 +31,11 @@ void setup() {
   Serial.print("Connected to ");
   Serial.println("Jordan's Place");
   Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());*/
+  Serial.println(WiFi.localIP());
 
   if (MDNS.begin("esp8266")) {
     Serial.println("MDNS responder started");
-  }
+  }*/
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
   
@@ -51,6 +52,10 @@ void setup() {
 
 void loop(void) {
   server.handleClient();
+  if (shouldBlink) {
+    digitalWrite(statusLed, !digitalRead(statusLed));
+    delay(750);
+  }
 }
 
 String getContentType(String filename) { // convert the file extension to the MIME type
@@ -113,22 +118,21 @@ void handlePost() {
     } else {
       WiFi.begin(server.arg("ssid"));
     }
-    Serial.println("");
-  
-    int waiting = 0;
-    while (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Connecting");
+
+    for (int waiting = 0; WiFi.status() != WL_CONNECTED; ++waiting) {
       delay(500);
       Serial.print(".");
-      if (++waiting == 25) {
-        server.send(200, "text/plain", "failed");
-        return;
-      }
+      if (waiting > 20) return;
     }
     
     Serial.println("");
     Serial.println("Connected");
-    server.send(200, "text/plain", "succeeded");
+    shouldBlink = false;
+    digitalWrite(statusLed, LOW);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
   }
+
+  if (server.hasArg("are-you-connected")) server.send(200, "text/plain", (WiFi.status() == WL_CONNECTED) ? "yes" : "no");
 }

@@ -19,15 +19,22 @@
     <script>
         let target = "http://192.168.4.1";
         let wifiNetworks = [];
+        let triedToConnect = 0;
+        let connectionIntervalKillCode;
 
         $(document).ready(function () {
             getWiFi();
+            setTimeout(function () {
+                if ($(".available-wifi-list").length == 0) getWiFi();
+            }, 4000);
         })
 
         function getWiFi() {
+            $("#refresh-button").prop("disabled", true);
             $.post(target, { "give-wifi-networks": "*" }).done(function (data) {
                 for (let i = 0; i < data.length; i++) wifiNetworks[i] = JSON.parse(data[i]);
                 updateWiFiList();
+                $("#refresh-button").prop("disabled", false);
             })
         }
 
@@ -61,7 +68,7 @@
         function getSterngthString(strengthNum) {
             if (strengthNum < -90) return "Unusable";
             else if (strengthNum >= -90 && strengthNum < -80) return "Not Good";
-            else if (strengthNum >= 80 && strengthNum < -70) return "Okay";
+            else if (strengthNum >= -80 && strengthNum < -70) return "Okay";
             else if (strengthNum >= -70 && strengthNum < -50) return "Very Good";
             else if (strengthNum >= -50 && strengthNum < -30) return "Amazing";
             else return "Perfect";
@@ -79,20 +86,15 @@
                     .prop({ "type": "button", "value": "Connect" })
                     .click(function () {
                         setStatus("Connecting");
-                        $.post(target, { "connect-to-network": "*", "ssid": wifiNetworks[wifiIndex].name, "pass": $(".password-input").prop("value") })
-                            .done(function (data) {
-                                console.log(data);
-                                connectAnswer(data);
-                            });
+                        $.post(target, { "connect-to-network": "*", "ssid": wifiNetworks[wifiIndex].name, "pass": $(".password-input").prop("value") });
+                        connectionIntervalKillCode = setInterval(connectAnswer, 2000);
                     });
                 $enterPasswordDiv.append($connectButton);
                 $("body").append($enterPasswordDiv);
             } else {
                 setStatus("Connecting");
-                $.post(target, { "connect-to-network": "*", "ssid": wifiNetworks[wifiIndex].name })
-                    .done(function (data) {
-                        connectAnswer(data);
-                    });
+                $.post(target, { "connect-to-network": "*", "ssid": wifiNetworks[wifiIndex].name });
+                connectionIntervalKillCode = setInterval(connectAnswer, 2000);
             }
         }
 
@@ -101,13 +103,24 @@
             $(".status").html(status);
         }
 
-        function connectAnswer(data) {
-            data == "succeeded" ? setStatus("Connected") : setStatus("Failed to connect");
+        function connectAnswer() {
+            $.post(target, { "are-you-connected": "*" }).done(function (data) {
+                if (data == "yes") {
+                    setStatus("Connected");
+                    clearInterval(connectionIntervalKillCode);
+                }
+                else if (++triedToConnect > 7) {
+                    clearInterval(connectionIntervalKillCode);
+                    triedToConnect = 0;
+                    setStatus("Connection Failed");
+                }
+            })
         }
     </script>
 </head>
 <body>
     <h1 class="w3-center">SmartSwitch</h1>
-    <p class="w3-center">Please choose a WiFi network</p>
+    <p class="w3-center">Please choose a WiFi network                </p>
+    <div class="w3-center"><input id="refresh-button" type="button" onclick="getWiFi()" value="Refresh WiFi" /></div>
 </body>
 </html>
