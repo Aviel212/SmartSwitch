@@ -20,7 +20,8 @@
         let target = "http://192.168.4.1";
         let wifiNetworks = [];
         let triedToConnect = 0;
-        let connectionIntervalKillCode;
+        let periodIndex = 1;
+        let connectionIntervalKillCode, connectingAnimationKillCode;
 
         $(document).ready(function () {
             getWiFi();
@@ -85,17 +86,27 @@
                 let $connectButton = $("<input>")
                     .prop({ "type": "button", "value": "Connect" })
                     .click(function () {
-                        setStatus("Connecting");
+                        showConnectingMessage();
                         $.post(target, { "connect-to-network": "*", "ssid": wifiNetworks[wifiIndex].name, "pass": $(".password-input").prop("value") });
                         connectionIntervalKillCode = setInterval(connectAnswer, 2000);
                     });
                 $enterPasswordDiv.append($connectButton);
                 $("body").append($enterPasswordDiv);
             } else {
-                setStatus("Connecting");
+                showConnectingMessage();
                 $.post(target, { "connect-to-network": "*", "ssid": wifiNetworks[wifiIndex].name });
                 connectionIntervalKillCode = setInterval(connectAnswer, 2000);
             }
+        }
+
+        function showConnectingMessage() {
+            setStatus("Connecting");
+            connectingAnimationKillCode = setInterval(function () {
+                let str = "Connecting";
+                for (let i = 0; i < periodIndex; i++) str += ".";
+                setStatus(str);
+                periodIndex = ++periodIndex % 4;
+            }, 400);
         }
 
         function setStatus(status) {
@@ -108,19 +119,43 @@
                 if (data == "yes") {
                     setStatus("Connected");
                     clearInterval(connectionIntervalKillCode);
+                    clearInterval(connectingAnimationKillCode);
+                    setTimeout(changePageToUsernameInput, 1500)
                 }
                 else if (++triedToConnect > 7) {
                     clearInterval(connectionIntervalKillCode);
+                    clearInterval(connectingAnimationKillCode);
                     triedToConnect = 0;
                     setStatus("Connection Failed");
                 }
             })
         }
+
+        function changePageToUsernameInput() {
+            $("body")
+                .empty()
+                .append($("<h1>")
+                    .text("SmartSwitch")
+                    .addClass("w3-center"))
+                .append($("<p>")
+                    .text("Please enter your SmartSwitch username")
+                    .addClass("w3-center"))
+                .append($("<div>")
+                    .append($("<input>")
+                        .addClass("usernameInput"))
+                    .addClass("w3-center"));
+            let $sendUsernameBtn = $("<input>").prop("type", "button").val("Done").click(function () {
+                $.post(target, { "username-given": "*", "username": $(".usernameInput").val() });
+            })
+
+            $("body").append($("<div>").addClass("w3-center").append($sendUsernameBtn));
+
+        }
     </script>
 </head>
 <body>
     <h1 class="w3-center">SmartSwitch</h1>
-    <p class="w3-center">Please choose a WiFi network                </p>
+    <p class="w3-center">Please choose a WiFi network</p>
     <div class="w3-center"><input id="refresh-button" type="button" onclick="getWiFi()" value="Refresh WiFi" /></div>
 </body>
 </html>

@@ -1,6 +1,5 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
-#include <ESP8266WiFiMulti.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
 #include <FS.h>   // Include the SPIFFS library
@@ -16,26 +15,7 @@ void setup() {
   pinMode(statusLed, OUTPUT);
   Serial.println('\n');
 
-  WiFi.softAP("SmartSwitch " + WiFi.macAddress());
-  /*WiFi.mode(WIFI_STA);
-  WiFi.begin("Jordan's Place", "a098995242");
-  Serial.println("");
-
-  // Wait for connection
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.print("Connected to ");
-  Serial.println("Jordan's Place");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  if (MDNS.begin("esp8266")) {
-    Serial.println("MDNS responder started");
-  }*/
+  if (WiFi.status() != WL_CONNECTED) WiFi.softAP("SmartSwitch " + WiFi.macAddress());
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
   
@@ -135,4 +115,10 @@ void handlePost() {
   }
 
   if (server.hasArg("are-you-connected")) server.send(200, "text/plain", (WiFi.status() == WL_CONNECTED) ? "yes" : "no");
+
+  if (server.hasArg("username-given")) {
+    // userneme is server.arg("username")
+    // TODO
+    return;
+  }
 }
