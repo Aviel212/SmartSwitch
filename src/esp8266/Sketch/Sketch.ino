@@ -15,8 +15,8 @@ void setup() {
   delay(10);
   Serial.println('\n');
 
-  //WiFi.softAP("SmartSwitch:" + WiFi.macAddress());
-  WiFi.mode(WIFI_STA);
+  WiFi.softAP("SmartSwitch:" + WiFi.macAddress());
+  /*WiFi.mode(WIFI_STA);
   WiFi.begin("Jordan's Place", "a098995242");
   Serial.println("");
 
@@ -30,7 +30,7 @@ void setup() {
   Serial.print("Connected to ");
   Serial.println("Jordan's Place");
   Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP());*/
 
   if (MDNS.begin("esp8266")) {
     Serial.println("MDNS responder started");
@@ -76,15 +76,59 @@ bool handleFileRead(String path) { // send the right file to the client (if it e
 }
 
 void handlePost() {
-  if (server.hasArg("give-wifi-networks") || true) {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  if (server.hasArg("give-wifi-networks")) {
     int networksAmount = WiFi.scanNetworks();
-    String str = "";
+    String str = "[\"";
     for (int i = 0; i < networksAmount; ++i) {
-      str += "{ name: \"" + WiFi.SSID(i) + "\" }";
-      if (i != networksAmount - 1) str += ", ";
+      str += "{\\\"name\\\":\\\"" + WiFi.SSID(i) + "\\\"";
+      str += ",";
+      str += "\\\"strength\\\":";
+      str += WiFi.RSSI(i);
+      str += ",";
+      str += "\\\"hasEncryption\\\":";
+      str += (WiFi.encryptionType(i) != ENC_TYPE_NONE);
+      str += "}\"";
+      if (i != networksAmount - 1) str += ",\"";
     }
-    server.sendHeader("Access-Control-Allow-Origin", "*");
+    str += "]";
     server.send(200, "application/json", str);
+    Serial.print("Sending to ");
+    Serial.println(server.client().remoteIP());
+  }
+
+  if (server.hasArg("connect-to-network")) {
+    WiFi.disconnect(); 
+    Serial.println("Disconnected");
+    delay(1000);
+    WiFi.mode(WIFI_AP_STA);
+    Serial.print("received ssid: ");
+    Serial.println(server.arg("ssid"));
+
+
+    if (server.hasArg("pass")) {
+      Serial.print("received pass: ");
+      Serial.println(server.arg("pass"));
+      WiFi.begin(server.arg("ssid"), server.arg("pass"));
+    } else {
+      WiFi.begin(server.arg("ssid"));
+    }
+    Serial.println("");
+  
+    int waiting = 0;
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+      if (++waiting == 25) {
+        server.send(200, "text/plain", "failed");
+        return;
+      }
+    }
+    
+    Serial.println("");
+    Serial.println("Connected");
+    server.send(200, "text/plain", "succeeded");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
   }
 }
-
