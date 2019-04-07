@@ -6,16 +6,37 @@
 
 ESP8266WebServer server(80);    // Create a webserver object that listens for HTTP request on port 80
 
-bool shouldBlink = true;
+bool shouldBlink = false; // indicates whether the status led should blink
+unsigned long blinked = 0; // the time from the last blink of the status led [ms]
 const int statusLed = D1;
+
+const int touchSensor = D7;
+bool touched = false; // for loop logic
+unsigned long touchedAt; // the time (from the moment the program started running) the sensor was touched [ms]
+const int pressDuration = 5000; // time from the moment a user touches the touch sensor until its action is activated [ms]
+
+const int muxControl = D0; // multiplexer control line
+const bool voltageFromMux = LOW;
+const bool currentFromMux = HIGH;
 
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
   delay(10);
+
   pinMode(statusLed, OUTPUT);
+  
+  pinMode(D5, OUTPUT);
+  pinMode(D6, OUTPUT);
+  pinMode(touchSensor, INPUT);
+
+  pinMode(muxControl, OUTPUT);
+
+  digitalWrite(D5, LOW); // GND for the touch sensor
+  digitalWrite(D6, HIGH); // VCC for the touch sensor
+  
   Serial.println('\n');
 
-  if (WiFi.status() != WL_CONNECTED) WiFi.softAP("SmartSwitch " + WiFi.macAddress());
+  startConnecting();
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
   
@@ -30,12 +51,34 @@ void setup() {
   Serial.println("HTTP server started");
 }
 
-void loop(void) {
+void loop() {
   server.handleClient();
-  if (shouldBlink) {
+  if (shouldBlink && (millis() - blinked) >= 750) {
+    blinked = millis();
     digitalWrite(statusLed, !digitalRead(statusLed));
-    delay(750);
   }
+  
+  if (digitalRead(touchSensor)) {
+    if (touched && (millis() - touchedAt) >= pressDuration) {
+      startConnecting();
+      touched = false;
+    }
+    else {
+      touched = true;
+      touchedAt = millis();
+    }
+  }
+  
+}
+
+double getVoltage() {
+  digitalWrite(muxControl, voltageFromMux);
+  // TODO
+}
+
+void startConnecting() {
+  WiFi.softAP("SmartSwitch " + WiFi.macAddress());
+  shouldBlink = true;
 }
 
 String getContentType(String filename) { // convert the file extension to the MIME type
@@ -62,6 +105,8 @@ bool handleFileRead(String path) { // send the right file to the client (if it e
 
 void handlePost() {
   server.sendHeader("Access-Control-Allow-Origin", "*");
+
+  // query server for available wifi
   if (server.hasArg("give-wifi-networks")) {
     int networksAmount = WiFi.scanNetworks();
     String str = "[\"";
@@ -82,6 +127,7 @@ void handlePost() {
     Serial.println(server.client().remoteIP());
   }
 
+  // tell the device to connect to a given wifi
   if (server.hasArg("connect-to-network")) {
     WiFi.disconnect(); 
     Serial.println("Disconnected");
@@ -114,6 +160,7 @@ void handlePost() {
     Serial.println(WiFi.localIP());
   }
 
+  // checking if the server is connected to wifi
   if (server.hasArg("are-you-connected")) server.send(200, "text/plain", (WiFi.status() == WL_CONNECTED) ? "yes" : "no");
 
   if (server.hasArg("username-given")) {
