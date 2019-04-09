@@ -19,24 +19,27 @@ const int muxControl = D0; // multiplexer control line
 const bool voltageFromMux = LOW;
 const bool currentFromMux = HIGH;
 
+const int load = D2; // the electrical device switch
+
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
-  delay(10);
 
   pinMode(statusLed, OUTPUT);
   
-  pinMode(D5, OUTPUT);
-  pinMode(D6, OUTPUT);
+  pinMode(D5, OUTPUT); // GND for the touch sensor
+  pinMode(D6, OUTPUT); // VCC for the touch sensor
   pinMode(touchSensor, INPUT);
 
   pinMode(muxControl, OUTPUT);
+
+  pinMode(load, OUTPUT);
 
   digitalWrite(D5, LOW); // GND for the touch sensor
   digitalWrite(D6, HIGH); // VCC for the touch sensor
   
   Serial.println('\n');
 
-  startConnecting();
+  WiFi.mode(WIFI_OFF);
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
   
@@ -59,16 +62,22 @@ void loop() {
   }
   
   if (digitalRead(touchSensor)) {
+    Serial.println(millis());
     if (touched && (millis() - touchedAt) >= pressDuration) {
       startConnecting();
       touched = false;
     }
-    else {
+    else if(!touched) {
       touched = true;
       touchedAt = millis();
     }
-  }
+  } else touched = false;
   
+}
+
+void turnLoad(String state) {
+  if (state == "on") digitalWrite(load, HIGH);
+  else if (state == "off") digitalWrite(load, LOW);
 }
 
 double getVoltage() {
@@ -77,7 +86,8 @@ double getVoltage() {
 }
 
 void startConnecting() {
-  WiFi.softAP("SmartSwitch " + WiFi.macAddress());
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP("SmartSwitch Yarden" + WiFi.macAddress());
   shouldBlink = true;
 }
 
