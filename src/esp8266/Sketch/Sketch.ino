@@ -56,7 +56,7 @@ void setup() {
 
 void loop() {
   server.handleClient();
-  if (shouldBlink && (millis() - blinked) >= 750) {
+  if (shouldBlink && (millis() - blinked) >= 1000) {
     blinked = millis();
     digitalWrite(statusLed, !digitalRead(statusLed));
   }
@@ -70,8 +70,12 @@ void loop() {
     else if(!touched) {
       touched = true;
       touchedAt = millis();
+      digitalWrite(statusLed, HIGH);
     }
-  } else touched = false;
+  } else {
+    touched = false;
+    if (!shouldBlink) digitalWrite(statusLed, LOW);
+  }
   
 }
 
@@ -141,12 +145,12 @@ void handlePost() {
   if (server.hasArg("connect-to-network")) {
     WiFi.disconnect(); 
     Serial.println("Disconnected");
-    delay(1000);
     WiFi.mode(WIFI_AP_STA);
     Serial.print("received ssid: ");
     Serial.println(server.arg("ssid"));
 
-
+    digitalWrite(statusLed, HIGH);
+    
     if (server.hasArg("pass")) {
       Serial.print("received pass: ");
       Serial.println(server.arg("pass"));
@@ -161,11 +165,12 @@ void handlePost() {
       Serial.print(".");
       if (waiting > 20) return;
     }
+
+    shouldBlink = false;
+    digitalWrite(statusLed, LOW);
     
     Serial.println("");
     Serial.println("Connected");
-    shouldBlink = false;
-    digitalWrite(statusLed, LOW);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
   }
