@@ -23,21 +23,19 @@
         <a href="#" class="w3-bar-item w3-button">Link 2</a>
         <a href="#" class="w3-bar-item w3-button">Link 3</a>
     </div>
+    <div id="mainDiv" style="border:1px solid black; width:100%; height:400px;">
+
+    </div>
     <script>        //script to handle sideBar
 
         function w3_open() {
-            $("#menuPanel").css("maring-left", "20%");
-            //document.getElementById("menuPanel").style.marginLeft = "20%";
-            document.getElementById("mySidebar").style.width = "20%";
-            document.getElementById("mySidebar").style.display = "block";
-            //$("#mySideBar").css({ "position": "relative", "top": "20px" });
-            //document.getElementById("openNav").style.display = 'none';
-            $("#Account").html("<i class='far fa-user'></i>").attr("onclick","w3_close()");
+            $("#mainDiv").css({ "margin-left": "20%", "width": "80%" });
+            $("#mySidebar").css({ "width": "20%", "display": "block" });
+            $("#Account").html("<i class='far fa-user'></i>").attr("onclick", "w3_close()");
         }
         function w3_close() {
-            document.getElementById("menuPanel").style.marginLeft = "0%";
-            document.getElementById("mySidebar").style.display = "none";
-            //document.getElementById("openNav").style.display = "inline-block";
+            $("#mainDiv").css({ "margin-left": "0%", "width": "100%" });
+            $("#mySidebar").css("display", "none");
             $("#Account").html("<i class='fas fa-user'></i>").attr("onclick", "w3_open()");
         }
     </script>
