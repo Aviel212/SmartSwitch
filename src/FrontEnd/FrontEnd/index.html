@@ -25,6 +25,16 @@
     </div>
     <div id="mainDiv" style="border:1px solid black; width:100%; height:400px;">
 
+        <div id="loginForm" class="w3-border">
+            <form action="/login.cs" class="w3-margin-left"> <!-- need to edit the form page to submit-->
+                <p>Nickname: <input type="text" name="Nickname" /></p>
+                <p>Password: <input type="password" name="password" /></p>
+                <input type="submit" value="Sign in" />
+                <!--can be made with dynamic changes, to change the entire form in the current page without reloading-->
+                <p class="w3-small" >If this is your first time, please <a href="/register.html">register</a></p>
+            </form>
+
+        </div>
     </div>
     <script>        //script to handle sideBar
 
