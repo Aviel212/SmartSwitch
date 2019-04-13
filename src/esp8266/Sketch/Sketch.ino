@@ -19,24 +19,27 @@ const int muxControl = D0; // multiplexer control line
 const bool voltageFromMux = LOW;
 const bool currentFromMux = HIGH;
 
+const int load = D2; // the electrical device switch
+
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
-  delay(10);
 
   pinMode(statusLed, OUTPUT);
   
-  pinMode(D5, OUTPUT);
-  pinMode(D6, OUTPUT);
+  pinMode(D5, OUTPUT); // GND for the touch sensor
+  pinMode(D6, OUTPUT); // VCC for the touch sensor
   pinMode(touchSensor, INPUT);
 
   pinMode(muxControl, OUTPUT);
+
+  pinMode(load, OUTPUT);
 
   digitalWrite(D5, LOW); // GND for the touch sensor
   digitalWrite(D6, HIGH); // VCC for the touch sensor
   
   Serial.println('\n');
 
-  startConnecting();
+  WiFi.mode(WIFI_OFF);
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
   
@@ -53,22 +56,32 @@ void setup() {
 
 void loop() {
   server.handleClient();
-  if (shouldBlink && (millis() - blinked) >= 750) {
+  if (shouldBlink && (millis() - blinked) >= 1000) {
     blinked = millis();
     digitalWrite(statusLed, !digitalRead(statusLed));
   }
   
   if (digitalRead(touchSensor)) {
+    Serial.println(millis());
     if (touched && (millis() - touchedAt) >= pressDuration) {
       startConnecting();
       touched = false;
     }
-    else {
+    else if(!touched) {
       touched = true;
       touchedAt = millis();
+      digitalWrite(statusLed, HIGH);
     }
+  } else {
+    touched = false;
+    if (!shouldBlink) digitalWrite(statusLed, LOW);
   }
   
+}
+
+void turnLoad(String state) {
+  if (state == "on") digitalWrite(load, HIGH);
+  else if (state == "off") digitalWrite(load, LOW);
 }
 
 double getVoltage() {
@@ -77,7 +90,8 @@ double getVoltage() {
 }
 
 void startConnecting() {
-  WiFi.softAP("SmartSwitch " + WiFi.macAddress());
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP("SmartSwitch Yarden" + WiFi.macAddress());
   shouldBlink = true;
 }
 
@@ -131,12 +145,12 @@ void handlePost() {
   if (server.hasArg("connect-to-network")) {
     WiFi.disconnect(); 
     Serial.println("Disconnected");
-    delay(1000);
     WiFi.mode(WIFI_AP_STA);
     Serial.print("received ssid: ");
     Serial.println(server.arg("ssid"));
 
-
+    digitalWrite(statusLed, HIGH);
+    
     if (server.hasArg("pass")) {
       Serial.print("received pass: ");
       Serial.println(server.arg("pass"));
@@ -151,11 +165,12 @@ void handlePost() {
       Serial.print(".");
       if (waiting > 20) return;
     }
+
+    shouldBlink = false;
+    digitalWrite(statusLed, LOW);
     
     Serial.println("");
     Serial.println("Connected");
-    shouldBlink = false;
-    digitalWrite(statusLed, LOW);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
   }
