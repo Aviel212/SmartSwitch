@@ -16,8 +16,8 @@ unsigned long touchedAt; // the time (from the moment the program started runnin
 const int pressDuration = 5000; // time from the moment a user touches the touch sensor until its action is activated [ms]
 
 const int muxControl = D0; // multiplexer control line
-const bool voltageFromMux = LOW;
-const bool currentFromMux = HIGH;
+const int voltageFromMux = LOW;
+const int currentFromMux = HIGH;
 
 const int load = D2; // the electrical device switch
 
@@ -34,12 +34,26 @@ void setup() {
 
   pinMode(load, OUTPUT);
 
+  pinMode(A0, INPUT);
+
   digitalWrite(D5, LOW); // GND for the touch sensor
   digitalWrite(D6, HIGH); // VCC for the touch sensor
-  
+
   Serial.println('\n');
 
-  WiFi.mode(WIFI_OFF);
+  int waiting;
+  for (waiting = 0; WiFi.status() != WL_CONNECTED; ++waiting) {
+    delay(500);
+    Serial.print(".");
+    if (waiting > 20) WiFi.mode(WIFI_OFF);
+  }
+
+  if (waiting > 20) Serial.println("not connected");
+  else {
+    Serial.println("Connected");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+  }
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
   
@@ -52,6 +66,8 @@ void setup() {
 
   server.begin();                           // Actually start the server
   Serial.println("HTTP server started");
+
+  turnLoad("on");
 }
 
 void loop() {
@@ -76,7 +92,6 @@ void loop() {
     touched = false;
     if (!shouldBlink) digitalWrite(statusLed, LOW);
   }
-  
 }
 
 void turnLoad(String state) {
@@ -86,7 +101,14 @@ void turnLoad(String state) {
 
 double getVoltage() {
   digitalWrite(muxControl, voltageFromMux);
-  // TODO
+  delay(10);
+  return 3.3 * (analogRead(A0) / 1024.0) * 5.0; // [V]
+}
+
+double getCurrent() {
+  digitalWrite(muxControl, currentFromMux);
+  delay(10);
+  return 3.3 * (analogRead(A0) / 1024.0) / 10.0 /*Ohm*/; // [A]
 }
 
 void startConnecting() {
@@ -119,6 +141,14 @@ bool handleFileRead(String path) { // send the right file to the client (if it e
 
 void handlePost() {
   server.sendHeader("Access-Control-Allow-Origin", "*");
+
+  // change load state
+  if (server.hasArg("turn-load")) {
+    turnLoad(server.arg("turn-load"));
+    Serial.print("recieved: ");
+    Serial.println(server.arg("turn-load"));
+    server.send(200, "text/plain", "ok");
+  }
 
   // query server for available wifi
   if (server.hasArg("give-wifi-networks")) {
@@ -181,6 +211,9 @@ void handlePost() {
   if (server.hasArg("username-given")) {
     // userneme is server.arg("username")
     // TODO
-    return;
+  }
+
+  if (server.hasArg("give-load-state")) {
+    server.send(200, "text/plain", digitalRead(load) ? "on" : "off");
   }
 }
