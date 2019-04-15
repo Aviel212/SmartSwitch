@@ -2,6 +2,7 @@
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
+#include <WebSocketClient.h>
 #include <FS.h>   // Include the SPIFFS library
 
 ESP8266WebServer server(80);    // Create a webserver object that listens for HTTP request on port 80
@@ -18,6 +19,11 @@ const int pressDuration = 5000; // time from the moment a user touches the touch
 const int muxControl = D0; // multiplexer control line
 const int voltageFromMux = LOW;
 const int currentFromMux = HIGH;
+
+char serverIP[] = "10.100.102.13";
+const int webSocketsPort = 8181;
+WebSocketClient webSocketClient;
+WiFiClient client; // Use WiFiClient class to create TCP connections
 
 const int load = D2; // the electrical device switch
 
@@ -53,6 +59,7 @@ void setup() {
     Serial.println("Connected");
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
+    //connectToWebSocketsServer();
   }
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
@@ -66,12 +73,11 @@ void setup() {
 
   server.begin();                           // Actually start the server
   Serial.println("HTTP server started");
-
-  turnLoad("on");
 }
 
 void loop() {
   server.handleClient();
+  //handleWebSocketsLoop();
   if (shouldBlink && (millis() - blinked) >= 1000) {
     blinked = millis();
     digitalWrite(statusLed, !digitalRead(statusLed));
@@ -80,7 +86,7 @@ void loop() {
   if (digitalRead(touchSensor)) {
     Serial.println(millis());
     if (touched && (millis() - touchedAt) >= pressDuration) {
-      startConnecting();
+      startAP();
       touched = false;
     }
     else if(!touched) {
@@ -111,10 +117,52 @@ double getCurrent() {
   return 3.3 * (analogRead(A0) / 1024.0) / 10.0 /*Ohm*/; // [A]
 }
 
-void startConnecting() {
+void startAP() {
   WiFi.mode(WIFI_AP);
-  WiFi.softAP("SmartSwitch Yarden" + WiFi.macAddress());
+  WiFi.softAP("SmartSwitch " + WiFi.macAddress());
   shouldBlink = true;
+}
+
+bool connectToWebSocketsServer() {
+  if (client.connect(serverIP, webSocketsPort)) {
+    Serial.println("Connected websockets client");
+  } else {
+    Serial.println("Connection failed. (websockets)");
+    return false;
+  }
+
+  // Handshake with the server
+  webSocketClient.path = "/";
+  webSocketClient.host = serverIP;
+  if (webSocketClient.handshake(client)) {
+    Serial.println("Handshake successful (websockets)");
+  } else {
+    Serial.println("Handshake failed. (websockets)");
+    return false;
+  }
+
+  return true;
+}
+
+bool handleWebSocketsLoop() {
+  
+  if (client.connected()) {
+    String data;
+    webSocketClient.getData(data);
+    if (data.length() > 0) {
+       if (data == "turn-load-on") turnLoad("on");
+       else if (data == "turn-load-off") turnLoad("off");
+      
+      Serial.print("Received data: ");
+      Serial.println(data);
+    }
+    
+  } else {
+    Serial.println("Websockets client not connected.");
+    return false;
+  }
+
+  return true;
 }
 
 String getContentType(String filename) { // convert the file extension to the MIME type
