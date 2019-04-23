@@ -2,7 +2,7 @@
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
-#include <WebSocketClient.h>
+#include <WebSocketClient.h> // from https://github.com/morrissinger/ESP8266-Websocket
 #include <FS.h>   // Include the SPIFFS library
 
 ESP8266WebServer server(80);    // Create a webserver object that listens for HTTP request on port 80
@@ -30,6 +30,8 @@ const int load = D2; // the electrical device switch
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
 
+  pinMode(D4, OUTPUT); // unnecessary led
+  
   pinMode(statusLed, OUTPUT);
   
   pinMode(D5, OUTPUT); // GND for the touch sensor
@@ -45,6 +47,8 @@ void setup() {
   digitalWrite(D5, LOW); // GND for the touch sensor
   digitalWrite(D6, HIGH); // VCC for the touch sensor
 
+  digitalWrite(D4, HIGH); // turn off unnecessary led
+
   Serial.println('\n');
 
   int waiting;
@@ -59,7 +63,7 @@ void setup() {
     Serial.println("Connected");
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
-    //connectToWebSocketsServer();
+    connectToWebSocketsServer();
   }
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
@@ -77,7 +81,7 @@ void setup() {
 
 void loop() {
   server.handleClient();
-  //handleWebSocketsLoop();
+  handleWebSocketsLoop();
   if (shouldBlink && (millis() - blinked) >= 1000) {
     blinked = millis();
     digitalWrite(statusLed, !digitalRead(statusLed));
@@ -145,21 +149,19 @@ bool connectToWebSocketsServer() {
 }
 
 bool handleWebSocketsLoop() {
-  
   if (client.connected()) {
     String data;
     webSocketClient.getData(data);
     if (data.length() > 0) {
        if (data == "turn-load-on") turnLoad("on");
        else if (data == "turn-load-off") turnLoad("off");
-      
+       else if (data == "who-are-you") webSocketClient.sendData("i-am-" + WiFi.macAddress());
       Serial.print("Received data: ");
       Serial.println(data);
     }
     
   } else {
-    Serial.println("Websockets client not connected.");
-    return false;
+    return connectToWebSocketsServer();
   }
 
   return true;
