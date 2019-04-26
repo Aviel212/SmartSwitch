@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using BackEnd.Models;
 
 namespace BackEnd
 {
@@ -15,6 +16,7 @@ namespace BackEnd
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
+            WebsocketsServer.GetInstance().Start();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

@@ -31,14 +31,16 @@ namespace BackEnd.Models
             Priority = Priorities.IRRELEVANT;
         }
 
+        // turn the device on
         public void TurnOn()
         {
-            //turn on the device
+            WebsocketsServer.GetInstance().TurnOn(Mac);
         }
 
+        // turn the device off
         public void TurnOff()
         {
-            //turn off the device
+            WebsocketsServer.GetInstance().TurnOff(Mac);
         }
 
         public void AddSample(PowerUsageSample pus)

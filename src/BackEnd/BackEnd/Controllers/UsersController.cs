@@ -19,7 +19,7 @@ namespace BackEnd.Controllers
         public UsersController(SmartSwitchDbContext context)
         {
             _context = context;
-            UserManager.GetInstance().DbContext = context;
+            DatabaseManager.GetInstance().Context = context;
         }
 
         // GET: api/Users
@@ -56,7 +56,7 @@ namespace BackEnd.Controllers
                     _context.SaveChangesAsync();
                     return "added " + username;
                 }
-                catch (UsernameAlreadyInUseException e)
+                catch (UsernameAlreadyInUseException)
                 {
                     return "username exists";
                 }

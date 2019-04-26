@@ -7,7 +7,7 @@ namespace BackEnd.Models
 {
     public class UsernameAlreadyInUseException : Exception
     {
-        public UsernameAlreadyInUseException() : base()
+        public UsernameAlreadyInUseException()
         {
         }
 

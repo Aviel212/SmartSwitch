@@ -27,6 +27,8 @@ WiFiClient client; // Use WiFiClient class to create TCP connections
 
 const int load = D2; // the electrical device switch
 
+String owner = null; // SmartSwitch username of the device owner
+
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
 
@@ -156,6 +158,7 @@ bool handleWebSocketsLoop() {
        if (data == "turn-load-on") turnLoad("on");
        else if (data == "turn-load-off") turnLoad("off");
        else if (data == "who-are-you") webSocketClient.sendData("i-am-" + WiFi.macAddress());
+       else if (data == "who-is-your-owner") webSocketClient.sendData(owner);
       Serial.print("Received data: ");
       Serial.println(data);
     }
@@ -260,7 +263,7 @@ void handlePost() {
 
   if (server.hasArg("username-given")) {
     // userneme is server.arg("username")
-    // TODO
+    owner = server.arg("username");
   }
 
   if (server.hasArg("give-load-state")) {
