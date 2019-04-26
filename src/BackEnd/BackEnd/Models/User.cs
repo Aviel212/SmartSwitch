@@ -33,7 +33,7 @@ namespace BackEnd.Models
             //add new plug 
         }
 
-        public Lazy<Plug> GetUnapprovedPlugs()
+        public List<Plug> GetUnapprovedPlugs()
         {
             //need to return all unapproved Plugs
             return null;

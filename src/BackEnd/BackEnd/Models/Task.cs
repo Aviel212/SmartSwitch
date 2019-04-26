@@ -20,12 +20,25 @@ namespace BackEnd.Models
 
         public Task(Operations op, Plug dev)
         {
-            //need to set properties 
+            Operation = op;
+            Device = dev;
         }
 
         public void Execute()
         {
             //when entering this function we need to execute the task
+
+            switch (Operation)
+            {
+                case Operations.TURNON:
+                    Device.TurnOn();
+                    break;
+                case Operations.TURNOFF:
+                    Device.TurnOff();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

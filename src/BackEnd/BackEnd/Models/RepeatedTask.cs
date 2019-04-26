@@ -12,7 +12,7 @@ namespace BackEnd.Models
     public class RepeatedTask
     {
         public DateTime StartDate;
-        public int RepeatEvery;
+        public int RepeatEvery; // minutes
 
         public RepeatedTask()
         {
