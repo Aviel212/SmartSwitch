@@ -36,11 +36,19 @@ namespace BackEnd.Controllers
             return usernames;
         }
 
-        // GET: api/Users/5
-        [HttpGet("{inputStr}", Name = "Get")]
-        public string Get(string inputStr)
+        // GET: api/Users/yarden
+        [HttpGet("{username}", Name = "Get")]
+        public string Get(string username)
         {
-            return inputStr;
+            try
+            {
+                return "password: " + _context.Users.FirstOrDefault(u => u.UserName.ToLower() == username.ToLower()).Password;
+            }
+            catch (NullReferenceException)
+            {
+                return "no such user";
+            }
+            
         }
 
         // POST: api/Users

@@ -22,7 +22,7 @@ namespace BackEnd.Models
         {
             foreach (User user in DatabaseManager.GetInstance().Context.Users)
             {
-                if (user.UserName.Equals(name)) throw new UsernameAlreadyInUseException();
+                if (user.UserName.ToLower().Equals(name.ToLower())) throw new UsernameAlreadyInUseException();
             }
             UserName = name;
             Password = pass;
