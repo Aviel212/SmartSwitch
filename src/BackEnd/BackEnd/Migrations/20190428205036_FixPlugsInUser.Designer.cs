@@ -4,14 +4,16 @@ using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(SmartSwitchDbContext))]
-    partial class SmartSwitchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190428205036_FixPlugsInUser")]
+    partial class FixPlugsInUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +40,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserName");
 
-                    b.ToTable("Plugs");
+                    b.ToTable("Plug");
                 });
 
             modelBuilder.Entity("BackEnd.Models.PowerUsageSample", b =>

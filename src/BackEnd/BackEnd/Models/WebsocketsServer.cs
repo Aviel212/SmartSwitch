@@ -67,9 +67,10 @@ namespace BackEnd.Models
                 };
                 socket.OnMessage = message =>
                 {
+                    string[] messageWords = message.Split(" ");
+
                     if (message.StartsWith("i-am")) // answer to who-are-you: i-am macAddress ownerUsername
                     {
-                        string[] messageWords = message.Split(" ");
                         _macConnections[socket] = messageWords[1];
 
                         User owner = DatabaseManager.GetInstance().Context.Users.FirstOrDefault(u => u.UserName.ToLower().Equals(messageWords[2].ToLower()));
@@ -88,13 +89,28 @@ namespace BackEnd.Models
                                 DatabaseManager.GetInstance().Context.SaveChangesAsync();
                             }
                         }
+
+                        socket.Send("are-you-on");
+                    }
+                    else if (message.StartsWith("on")) // answer to are-you-on: on yes/no
+                    {
+                        foreach (User u in DatabaseManager.GetInstance().Context.Users)
+                        {
+                            Plug plug = u.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]);
+                            if (plug != null) plug.IsOn = messageWords[1].Equals("yes");
+                        }
+                        DatabaseManager.GetInstance().Context.SaveChangesAsync();
                     }
                     else if (message.StartsWith("sample")) // message: sample voltage current
                     {
-                        string[] messageWords = message.Split(" ");
                         foreach (User u in DatabaseManager.GetInstance().Context.Users)
-                            u.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]).Samples.Add(new PowerUsageSample(Convert.ToDouble(messageWords[1]), Convert.ToDouble(messageWords[2])));
+                        {
+                            Plug plug = u.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]);
+                            if (plug != null) plug.Samples.Add(new PowerUsageSample(Convert.ToDouble(messageWords[1]), Convert.ToDouble(messageWords[2])));
+                        }
+                        DatabaseManager.GetInstance().Context.SaveChangesAsync();
                     }
+                    
                 };
             });
         }

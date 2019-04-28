@@ -27,7 +27,7 @@ WiFiClient client; // Use WiFiClient class to create TCP connections
 bool readyToConnectToWebsocketsServer = false;
 
 bool readyToSendSamples = false;
-long timeSinceLastSample = 0;
+long lastSample = 0;
 const int sampleEvery = 60000; // ms
 
 const int load = D2; // the electrical device switch
@@ -145,6 +145,7 @@ void startAP() {
 bool connectToWebSocketsServer() {
   if (!readyToConnectToWebsocketsServer) {
     Serial.println("Not ready (websockets).");
+    delay(1000);
     return false;
   }
   
@@ -175,16 +176,17 @@ bool handleWebSocketsLoop() {
     if (data.length() > 0) {
        if (data == "turn-load-on") turnLoad("on");
        else if (data == "turn-load-off") turnLoad("off");
-       else if (data == "who-are-you") {
-        webSocketClient.sendData("i-am " + WiFi.macAddress() + " " + owner);
-        readyToSendSamples = true; // after the server knows who the owner is we can send samples
+       else if (data == "who-are-you") webSocketClient.sendData("i-am " + WiFi.macAddress() + " " + owner);
+       else if (data == "are-you-on") {
+        webSocketClient.sendData(digitalRead(load) ? "on yes" : "on no");
+        readyToSendSamples = true; // after the server knows who the owner is and if the device is on we can send samples
        }
       Serial.print("Received data: ");
       Serial.println(data);
     }
 
-    if (readyToSendSamples && millis() - timeSinceLastSample > sampleEvery) {
-      timeSinceLastSample = 0;
+    if (readyToSendSamples && millis() - lastSample > sampleEvery) {
+      lastSample = millis();
       webSocketClient.sendData("sample " + String(getVoltage(), 2) + " " + String(getCurrent(), 3));
     }
     

@@ -14,9 +14,12 @@ namespace BackEnd.Models
         [Key]
         public string UserName { get; set;  }
         public string Password { get; set; }
-        public List<Plug> Plugs { get; set; }
+        public virtual List<Plug> Plugs { get; set; }
 
-        public User() { }
+        public User()
+        {
+            Plugs = new List<Plug>();
+        }
 
         public User(string name, string pass)
         {
@@ -26,6 +29,7 @@ namespace BackEnd.Models
             }
             UserName = name;
             Password = pass;
+            Plugs = new List<Plug>();
         }
 
         public List<Plug> GetUnapprovedPlugs() => Plugs.Where(p => p.Approved == false).ToList();

@@ -13,6 +13,6 @@ namespace BackEnd.Models
         { }
 
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Plug> Plugs { get; set; }
     }
 }
