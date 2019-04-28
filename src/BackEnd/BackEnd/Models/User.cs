@@ -28,26 +28,9 @@ namespace BackEnd.Models
             Password = pass;
         }
 
-        public void AddPlug(Plug p)
-        {
-            //add new plug 
-        }
+        public List<Plug> GetUnapprovedPlugs() => Plugs.Where(p => p.Approved == false).ToList();
 
-        public List<Plug> GetUnapprovedPlugs()
-        {
-            //need to return all unapproved Plugs
-            return null;
-        }
-
-        public void RemovePlug(Plug p)
-        {
-            //need to remove certain device
-        }
-
-        public Plug GetPlug(string mac)
-        {
-            //need to return certain plug
-            return null;
-        }
+        // return a certain plug
+        public Plug GetPlug(string mac) => Plugs.FirstOrDefault(p => p.Mac == mac);
     }
 }

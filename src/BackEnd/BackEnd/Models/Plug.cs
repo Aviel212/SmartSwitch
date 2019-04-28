@@ -20,6 +20,7 @@ namespace BackEnd.Models
         public bool Approved { get; set; }
         public Priorities Priority { get; set; }
         public List<Task> Tasks { get; set; }
+        public List<PowerUsageSample> Samples { get; set; }
 
         public Plug() { }
 
@@ -29,6 +30,8 @@ namespace BackEnd.Models
             IsOn = false;
             Approved = false;
             Priority = Priorities.IRRELEVANT;
+            Tasks = new List<Task>();
+            Samples = new List<PowerUsageSample>();
         }
 
         // turn the device on
@@ -41,11 +44,6 @@ namespace BackEnd.Models
         public void TurnOff()
         {
             WebsocketsServer.GetInstance().TurnOff(Mac);
-        }
-
-        public void AddSample(PowerUsageSample pus)
-        {
-            //add a new sample to the list of samples
         }
     }
 }

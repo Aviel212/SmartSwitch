@@ -9,9 +9,9 @@ namespace BackEnd.Models
     /// <summary>
     /// A task that is un-repeatable (one-time-task)
     /// </summary>
-    public class OneTimeTask
+    public class OneTimeTask : Task
     {
-        public DateTime DateToBeExecuted;
+        public DateTime DateToBeExecuted { get; set; }
 
         public OneTimeTask()
         {

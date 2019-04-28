@@ -67,7 +67,34 @@ namespace BackEnd.Models
                 };
                 socket.OnMessage = message =>
                 {
-                    if (message.StartsWith("i-am-")) _macConnections[socket] = message.Substring(5);
+                    if (message.StartsWith("i-am")) // answer to who-are-you: i-am macAddress ownerUsername
+                    {
+                        string[] messageWords = message.Split(" ");
+                        _macConnections[socket] = messageWords[1];
+
+                        User owner = DatabaseManager.GetInstance().Context.Users.FirstOrDefault(u => u.UserName.ToLower().Equals(messageWords[2].ToLower()));
+                        if (owner != null)
+                        {
+                            if (owner.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]) == null)
+                            {
+                                owner.Plugs.Add(new Plug(_macConnections[socket])); // owner exists so we'll add the plug
+                                foreach (User u in DatabaseManager.GetInstance().Context.Users)
+                                { 
+                                    if (!u.UserName.ToLower().Equals(owner.UserName.ToLower()))
+                                    {
+                                        foreach (Plug p in u.Plugs) if (p.Mac == _macConnections[socket]) u.Plugs.Remove(p);
+                                    }
+                                }
+                                DatabaseManager.GetInstance().Context.SaveChangesAsync();
+                            }
+                        }
+                    }
+                    else if (message.StartsWith("sample")) // message: sample voltage current
+                    {
+                        string[] messageWords = message.Split(" ");
+                        foreach (User u in DatabaseManager.GetInstance().Context.Users)
+                            u.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]).Samples.Add(new PowerUsageSample(Convert.ToDouble(messageWords[1]), Convert.ToDouble(messageWords[2])));
+                    }
                 };
             });
         }
