@@ -15,6 +15,7 @@ namespace BackEnd.Controllers
     public class UsersController : ControllerBase
     {
         private readonly SmartSwitchDbContext _context;
+        private readonly string noSuchUser = "no such user";
 
         public UsersController(SmartSwitchDbContext context)
         {
@@ -59,13 +60,24 @@ namespace BackEnd.Controllers
             else if (op.Equals("remove"))
             {
                 User toRemove = DatabaseManager.GetInstance().GetUser(username);
-                if (toRemove == null) return "no such user";
+                if (toRemove == null) return noSuchUser;
                 else
                 {
                     if (!toRemove.Password.Equals(password)) return "wrong password";
                     _context.Users.Remove(toRemove);
                     _context.SaveChanges();
                     return "removed " + username;
+                }
+            }
+            else if (op.Equals("change-password"))
+            {
+                User user = DatabaseManager.GetInstance().GetUser(username);
+                if (user == null) return noSuchUser;
+                else
+                {
+                    user.Password = password;
+                    _context.SaveChanges();
+                    return "password changed";
                 }
             }
             return "op not recognized";
