@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(SmartSwitchDbContext))]
-    [Migration("20190428183144_AddSamples")]
-    partial class AddSamples
+    [Migration("20190429114743_InitialCreate4")]
+    partial class InitialCreate4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,7 +40,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserName");
 
-                    b.ToTable("Plug");
+                    b.ToTable("Plugs");
                 });
 
             modelBuilder.Entity("BackEnd.Models.PowerUsageSample", b =>

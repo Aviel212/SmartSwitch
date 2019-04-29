@@ -2,7 +2,7 @@
 
 namespace BackEnd.Migrations
 {
-    public partial class FixPlugsInUser : Migration
+    public partial class Migration1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

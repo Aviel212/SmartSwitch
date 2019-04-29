@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(SmartSwitchDbContext))]
-    [Migration("20190428205036_FixPlugsInUser")]
-    partial class FixPlugsInUser
+    [Migration("20190429124046_Migration0")]
+    partial class Migration0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,7 +40,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserName");
 
-                    b.ToTable("Plug");
+                    b.ToTable("Plugs");
                 });
 
             modelBuilder.Entity("BackEnd.Models.PowerUsageSample", b =>
@@ -57,7 +57,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("PlugMac");
 
-                    b.ToTable("PowerUsageSample");
+                    b.ToTable("PowerUsageSamples");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Task", b =>
@@ -68,13 +68,18 @@ namespace BackEnd.Migrations
 
                     b.Property<string>("DeviceMac");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.Property<int>("Operation");
 
                     b.HasKey("TaskId");
 
                     b.HasIndex("DeviceMac");
 
-                    b.ToTable("Task");
+                    b.ToTable("Tasks");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Task");
                 });
 
             modelBuilder.Entity("BackEnd.Models.User", b =>
@@ -87,6 +92,27 @@ namespace BackEnd.Migrations
                     b.HasKey("UserName");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.OneTimeTask", b =>
+                {
+                    b.HasBaseType("BackEnd.Models.Task");
+
+                    b.Property<DateTime>("DateToBeExecuted");
+
+                    b.ToTable("OneTimeTask");
+
+                    b.HasDiscriminator().HasValue("OneTimeTask");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.RepeatedTask", b =>
+                {
+                    b.HasBaseType("BackEnd.Models.Task");
+
+
+                    b.ToTable("RepeatedTask");
+
+                    b.HasDiscriminator().HasValue("RepeatedTask");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Plug", b =>

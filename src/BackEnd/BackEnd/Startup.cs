@@ -32,7 +32,7 @@ namespace BackEnd
 
             var connection = @"Server=.\SQLEXPRESS;Database=SmartSwitchSQLDb;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<SmartSwitchDbContext>
-                (options => options.UseSqlServer(connection));
+                (options => options.UseLazyLoadingProxies().UseSqlServer(connection));
 
             services.AddCors(c =>
             {

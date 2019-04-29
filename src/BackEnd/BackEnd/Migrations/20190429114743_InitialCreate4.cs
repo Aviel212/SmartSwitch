@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BackEnd.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate4 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,7 +21,7 @@ namespace BackEnd.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Plug",
+                name: "Plugs",
                 columns: table => new
                 {
                     Mac = table.Column<string>(nullable: false),
@@ -32,12 +33,32 @@ namespace BackEnd.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Plug", x => x.Mac);
+                    table.PrimaryKey("PK_Plugs", x => x.Mac);
                     table.ForeignKey(
-                        name: "FK_Plug_Users_UserName",
+                        name: "FK_Plugs_Users_UserName",
                         column: x => x.UserName,
                         principalTable: "Users",
                         principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PowerUsageSample",
+                columns: table => new
+                {
+                    SampleDate = table.Column<DateTime>(nullable: false),
+                    Current = table.Column<double>(nullable: false),
+                    Voltage = table.Column<double>(nullable: false),
+                    PlugMac = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PowerUsageSample", x => x.SampleDate);
+                    table.ForeignKey(
+                        name: "FK_PowerUsageSample_Plugs_PlugMac",
+                        column: x => x.PlugMac,
+                        principalTable: "Plugs",
+                        principalColumn: "Mac",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -54,17 +75,22 @@ namespace BackEnd.Migrations
                 {
                     table.PrimaryKey("PK_Task", x => x.TaskId);
                     table.ForeignKey(
-                        name: "FK_Task_Plug_DeviceMac",
+                        name: "FK_Task_Plugs_DeviceMac",
                         column: x => x.DeviceMac,
-                        principalTable: "Plug",
+                        principalTable: "Plugs",
                         principalColumn: "Mac",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Plug_UserName",
-                table: "Plug",
+                name: "IX_Plugs_UserName",
+                table: "Plugs",
                 column: "UserName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PowerUsageSample_PlugMac",
+                table: "PowerUsageSample",
+                column: "PlugMac");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Task_DeviceMac",
@@ -75,10 +101,13 @@ namespace BackEnd.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "PowerUsageSample");
+
+            migrationBuilder.DropTable(
                 name: "Task");
 
             migrationBuilder.DropTable(
-                name: "Plug");
+                name: "Plugs");
 
             migrationBuilder.DropTable(
                 name: "Users");

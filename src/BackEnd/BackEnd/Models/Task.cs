@@ -8,13 +8,13 @@ namespace BackEnd.Models
     /// <summary>
     /// Task class for execute some action in certain time
     /// </summary>
-    public class Task
+    public abstract class Task
     {
         public enum Operations { TURNON, TURNOFF };
 
         public int TaskId { get; set; }
         public Operations Operation { get; set; }
-        public Plug Device { get; set; }
+        public virtual Plug Device { get; set; }
 
         public Task() { }
 

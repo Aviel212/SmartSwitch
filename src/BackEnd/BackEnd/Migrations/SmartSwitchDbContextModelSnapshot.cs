@@ -55,7 +55,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("PlugMac");
 
-                    b.ToTable("PowerUsageSample");
+                    b.ToTable("PowerUsageSamples");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Task", b =>
@@ -66,13 +66,18 @@ namespace BackEnd.Migrations
 
                     b.Property<string>("DeviceMac");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.Property<int>("Operation");
 
                     b.HasKey("TaskId");
 
                     b.HasIndex("DeviceMac");
 
-                    b.ToTable("Task");
+                    b.ToTable("Tasks");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Task");
                 });
 
             modelBuilder.Entity("BackEnd.Models.User", b =>
@@ -85,6 +90,27 @@ namespace BackEnd.Migrations
                     b.HasKey("UserName");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.OneTimeTask", b =>
+                {
+                    b.HasBaseType("BackEnd.Models.Task");
+
+                    b.Property<DateTime>("DateToBeExecuted");
+
+                    b.ToTable("OneTimeTask");
+
+                    b.HasDiscriminator().HasValue("OneTimeTask");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.RepeatedTask", b =>
+                {
+                    b.HasBaseType("BackEnd.Models.Task");
+
+
+                    b.ToTable("RepeatedTask");
+
+                    b.HasDiscriminator().HasValue("RepeatedTask");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Plug", b =>

@@ -34,23 +34,11 @@ namespace BackEnd.Controllers
                 usernames.Add(u.UserName);
             }
             return usernames;
-
-            //List<Plug> allPlugs = await _context.Plugs.ToListAsync();
-            //List<string> nicknames = new List<string>();
-            //nicknames.Add(Convert.ToString(_context.Entry(_context.Plugs.First()).CurrentValues["UserName"]));
-            //foreach (Plug p in allPlugs)
-            //{
-            //    nicknames.Add(Convert.ToString(p.Nickname));
-            //}
-            //return nicknames;
         }
 
         // GET: api/Users/yarden
         [HttpGet("{username}", Name = "Get")]
-        public string Get(string username)
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(_context.Users.FirstOrDefault(u => u.UserName.ToLower().Equals(username.ToLower())));
-        }
+        public string Get(string username) => Newtonsoft.Json.JsonConvert.SerializeObject(_context.Users.FirstOrDefault(u => u.UserName.ToLower().Equals(username.ToLower())));
 
         // POST: api/Users
         // example: api/Users/op/yarden/12345

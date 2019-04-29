@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -19,8 +20,8 @@ namespace BackEnd.Models
         public bool IsOn { get; set; }
         public bool Approved { get; set; }
         public Priorities Priority { get; set; }
-        public List<Task> Tasks { get; set; }
-        public List<PowerUsageSample> Samples { get; set; }
+        public virtual List<Task> Tasks { get; set; }
+        public virtual List<PowerUsageSample> Samples { get; set; }
 
         public Plug() { }
 
@@ -44,6 +45,12 @@ namespace BackEnd.Models
         public void TurnOff()
         {
             WebsocketsServer.GetInstance().TurnOff(Mac);
+        }
+
+        public void AddTask(Task task)
+        {
+            task.Device = this;
+            Tasks.Add(task);
         }
     }
 }

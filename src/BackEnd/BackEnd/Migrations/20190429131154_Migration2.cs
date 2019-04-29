@@ -2,7 +2,7 @@
 
 namespace BackEnd.Migrations
 {
-    public partial class TaskInheritance : Migration
+    public partial class Migration2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

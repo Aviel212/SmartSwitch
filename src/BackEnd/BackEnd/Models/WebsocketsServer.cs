@@ -80,7 +80,7 @@ namespace BackEnd.Models
                             {
                                 owner.Plugs.Add(new Plug(_macConnections[socket])); // owner exists so we'll add the plug
                                 foreach (User u in DatabaseManager.GetInstance().Context.Users)
-                                { 
+                                {
                                     if (!u.UserName.ToLower().Equals(owner.UserName.ToLower()))
                                     {
                                         foreach (Plug p in u.Plugs) if (p.Mac == _macConnections[socket]) u.Plugs.Remove(p);
