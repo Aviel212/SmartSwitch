@@ -11,7 +11,7 @@ bool shouldBlink = false; // indicates whether the status led should blink
 unsigned long blinked = 0; // the time from the last blink of the status led [ms]
 const int statusLed = D1;
  
-const int touchSensor = D7;
+const int touchSensor = D6;
 bool touched = false; // for loop logic
 unsigned long touchedAt; // the time (from the moment the program started running) the sensor was touched [ms]
 const int pressDuration = 5000; // time from the moment a user touches the touch sensor until its action is activated [ms]
@@ -38,12 +38,11 @@ const String ownerFilePath = "/owner.txt";
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
 
-  pinMode(D4, OUTPUT); // unnecessary led
+  //pinMode(D4, OUTPUT); // unnecessary led
   
   pinMode(statusLed, OUTPUT);
   
-  pinMode(D5, OUTPUT); // GND for the touch sensor
-  pinMode(D6, OUTPUT); // VCC for the touch sensor
+  pinMode(D5, OUTPUT); // VCC for the touch sensor
   pinMode(touchSensor, INPUT);
 
   pinMode(muxControl, OUTPUT);
@@ -51,13 +50,11 @@ void setup() {
   pinMode(load, OUTPUT);
 
   pinMode(A0, INPUT);
+  digitalWrite(D5, HIGH); // VCC for the touch sensor
 
-  digitalWrite(D5, LOW); // GND for the touch sensor
-  digitalWrite(D6, HIGH); // VCC for the touch sensor
+  //digitalWrite(D4, HIGH); // turn off unnecessary led
 
-  digitalWrite(D4, HIGH); // turn off unnecessary led
-
-  Serial.println('\n');
+  Serial.println('\nBegin');
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
 
@@ -65,7 +62,10 @@ void setup() {
   for (waiting = 0; WiFi.status() != WL_CONNECTED; ++waiting) {
     delay(500);
     Serial.print(".");
-    if (waiting > 20) WiFi.mode(WIFI_OFF);
+    if (waiting > 20) {
+      WiFi.mode(WIFI_OFF);
+      break;
+    }
   }
 
   if (waiting > 20) Serial.println("not connected");
@@ -117,6 +117,10 @@ void loop() {
     touched = false;
     if (!shouldBlink) digitalWrite(statusLed, LOW);
   }
+
+  Serial.println("sample " + String(getVoltage(), 2) + " " + String(getCurrent(), 3));
+  delay(800);
+  digitalWrite(load, !digitalRead(load));
 }
 
 void turnLoad(String state) {
@@ -127,13 +131,13 @@ void turnLoad(String state) {
 double getVoltage() {
   digitalWrite(muxControl, voltageFromMux);
   delay(10);
-  return 3.3 * (analogRead(A0) / 1024.0) * 5.0; // [V]
+  return 3.3 * (analogRead(A0) / 1024.0) * 11.0; // [V]
 }
 
 double getCurrent() {
   digitalWrite(muxControl, currentFromMux);
   delay(10);
-  return 3.3 * (analogRead(A0) / 1024.0) / 10.0 /*Ohm*/; // [A]
+  return (3.3 * (analogRead(A0) / 1024.0) * 11.0) / 16.0 /*Ohm*/; // [A]
 }
 
 void startAP() {
