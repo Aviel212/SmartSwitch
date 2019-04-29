@@ -26,5 +26,9 @@ namespace BackEnd.Models
             }
             return _instance;
         }
+
+        public User GetUser(string username) => Context.Users.FirstOrDefault(u => u.UserName.ToLower().Equals(username.ToLower()));
+
+        public Plug GetPlug(string mac) => Context.Plugs.FirstOrDefault(x => x.Mac == mac);
     }
 }

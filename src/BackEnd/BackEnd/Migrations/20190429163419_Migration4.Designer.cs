@@ -4,14 +4,16 @@ using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(SmartSwitchDbContext))]
-    partial class SmartSwitchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190429163419_Migration4")]
+    partial class Migration4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,24 +114,21 @@ namespace BackEnd.Migrations
                 {
                     b.HasOne("BackEnd.Models.User")
                         .WithMany("Plugs")
-                        .HasForeignKey("UserName")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserName");
                 });
 
             modelBuilder.Entity("BackEnd.Models.PowerUsageSample", b =>
                 {
                     b.HasOne("BackEnd.Models.Plug")
                         .WithMany("Samples")
-                        .HasForeignKey("PlugMac")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PlugMac");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Task", b =>
                 {
                     b.HasOne("BackEnd.Models.Plug", "Device")
                         .WithMany("Tasks")
-                        .HasForeignKey("DeviceMac")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("DeviceMac");
                 });
 #pragma warning restore 612, 618
         }

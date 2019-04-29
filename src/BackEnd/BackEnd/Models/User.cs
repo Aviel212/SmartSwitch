@@ -23,10 +23,7 @@ namespace BackEnd.Models
 
         public User(string name, string pass)
         {
-            foreach (User user in DatabaseManager.GetInstance().Context.Users)
-            {
-                if (user.UserName.ToLower().Equals(name.ToLower())) throw new UsernameAlreadyInUseException();
-            }
+            if (DatabaseManager.GetInstance().GetUser(name) != null) throw new UsernameAlreadyInUseException();
             UserName = name;
             Password = pass;
             Plugs = new List<Plug>();

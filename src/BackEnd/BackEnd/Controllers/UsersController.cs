@@ -24,12 +24,10 @@ namespace BackEnd.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<IEnumerable<string>> Get()
+        public IEnumerable<string> Get()
         {
-            List<User> allUsers = await _context.Users.ToListAsync();
             List<string> usernames = new List<string>();
-
-            foreach (User u in allUsers)
+            foreach (User u in _context.Users)
             {
                 usernames.Add(u.UserName);
             }
@@ -38,19 +36,19 @@ namespace BackEnd.Controllers
 
         // GET: api/Users/yarden
         [HttpGet("{username}", Name = "Get")]
-        public string Get(string username) => Newtonsoft.Json.JsonConvert.SerializeObject(_context.Users.FirstOrDefault(u => u.UserName.ToLower().Equals(username.ToLower())));
+        public string Get(string username) => Newtonsoft.Json.JsonConvert.SerializeObject(DatabaseManager.GetInstance().GetUser(username));
 
         // POST: api/Users
         // example: api/Users/op/yarden/12345
         [HttpPost("{op}/{username}/{password}", Name = "Post")]
         public string Post(string op, string username, string password)
         {
-            if (op.Equals("create"))
+            if (op.Equals("add"))
             {
                 try
                 {
                     _context.Users.Add(new User(username, password));
-                    _context.SaveChangesAsync();
+                    _context.SaveChanges();
                     return "added " + username;
                 }
                 catch (UsernameAlreadyInUseException)
@@ -58,19 +56,19 @@ namespace BackEnd.Controllers
                     return "username exists";
                 }
             }
+            else if (op.Equals("remove"))
+            {
+                User toRemove = DatabaseManager.GetInstance().GetUser(username);
+                if (toRemove == null) return "no such user";
+                else
+                {
+                    if (!toRemove.Password.Equals(password)) return "wrong password";
+                    _context.Users.Remove(toRemove);
+                    _context.SaveChanges();
+                    return "removed " + username;
+                }
+            }
             return "op not recognized";
-        }
-
-        // PUT: api/Users/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
