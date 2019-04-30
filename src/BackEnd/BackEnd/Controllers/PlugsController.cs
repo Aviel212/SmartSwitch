@@ -16,11 +16,11 @@ namespace BackEnd.Controllers
         private readonly string valueNotRecognized = "value not recognized";
 
         // GET: api/Plugs/5
-        [HttpGet("{mac}", Name = "Get")]
+        [HttpGet("{mac}", Name = "GetPlug")]
         public string Get(string mac) => Newtonsoft.Json.JsonConvert.SerializeObject(DatabaseManager.GetInstance().GetPlug(mac));
 
         // POST: api/Plugs
-        [HttpPost("{mac}/{property}/{value}", Name = "Post")]
+        [HttpPost("{mac}/{property}/{value}", Name = "PostPlug")]
         public string Post(string mac, string property, string value)
         {
             Plug plug = DatabaseManager.GetInstance().GetPlug(mac);
@@ -72,6 +72,8 @@ namespace BackEnd.Controllers
                 else if (value.ToLower().Equals("nonessential")) plug.Priority = Plug.Priorities.NONESSENTIAL;
                 else if (value.ToLower().Equals("irrelevant")) plug.Priority = Plug.Priorities.IRRELEVANT;
                 else return valueNotRecognized;
+
+                return "ok";
             }
             return "property not recognized";
         }
