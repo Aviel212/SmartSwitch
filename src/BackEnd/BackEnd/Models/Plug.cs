@@ -38,13 +38,22 @@ namespace BackEnd.Models
         // turn the device on
         public void TurnOn()
         {
-            WebsocketsServer.GetInstance().TurnOn(Mac);
+            if (WebsocketsServer.GetInstance().TurnOn(Mac))
+            {
+                IsOn = true;
+                DatabaseManager.GetInstance().Context.SaveChanges();
+            }
+            
         }
 
         // turn the device off
         public void TurnOff()
         {
-            WebsocketsServer.GetInstance().TurnOff(Mac);
+            if (WebsocketsServer.GetInstance().TurnOff(Mac))
+            {
+                IsOn = false;
+                DatabaseManager.GetInstance().Context.SaveChanges();
+            }
         }
 
         public void AddTask(Task task)

@@ -40,7 +40,7 @@ namespace BackEnd.Controllers
         public string Get(string username) => Newtonsoft.Json.JsonConvert.SerializeObject(DatabaseManager.GetInstance().GetUser(username));
 
         // POST: api/Users
-        // example: api/Users/op/yarden/12345
+        // example: api/Users/create/yarden/12345
         [HttpPost("{op}/{username}/{password}", Name = "Post")]
         public string Post(string op, string username, string password)
         {
