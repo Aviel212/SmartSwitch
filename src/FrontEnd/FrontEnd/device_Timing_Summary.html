@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="scripts/jquery.js"></script>
+    <link href="styles/w3css.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <style>
+
+        #main_div {
+            border: 1px solid black;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main_div" class="w3-grey">
+        <table>
+            <tr>
+                <td><p>one time ON:</p></td>
+                <td>  <input type="date" name="dateON" disabled></td>
+                <td><time>10:00</time></td>
+            </tr>
+            <tr>
+                <td><p>one time OFF:</p></td>
+                <td>  <input type="date" name="dateOFF" disabled></td>
+                <td><time>10:00</time></td>
+            </tr>
+            <tr>
+                <td><p>periodic ON:</p></td>
+                <td><time>10:00</time></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><p>periodic OFF:</p></td>
+                <td><time>10:00</time></td>
+                <td></td>
+            </tr>
+
+        </table>
+        <br />
+        <br />
+        <input type="button" value="Return" class="w3-button w3-blue w3-round" />
+
+
+        <script>
+            //this script is for comments
+            //add return function to last page and link it to return button
+            //add check if the user defined a one time on/off or periodic on/off and disables if they do not exist( disable will be discussed )
+            //add get date function that on load page gets the users already chosen date (assuming line is not disabled) 
+            //add get time function that on page gets the users already chosen time (assuming line is not disabled)
+            //get function result is a display of useres chosen timings (if not disabled)
+        </script>
+    </div>
+</body>
+</html>
