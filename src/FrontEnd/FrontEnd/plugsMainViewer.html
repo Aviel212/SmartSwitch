@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../styles/w3css.css" rel="stylesheet" />
+
+    <style>
+        h3 {
+        }
+
+        #mainTable {
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+            #mainTable td {
+                border: 1px solid black;
+                padding: 5px;
+                
+            }
+
+        img {
+            width: 30px;
+            height: 30px;
+        }
+
+        #circle{
+            width:20px;
+            height:20px;
+        }
+    </style>
+</head>
+<body>
+    <h3>
+        Plugs Manager
+    </h3>
+
+    <br />
+
+    <div class="w3-bar">
+        <button class="w3-bar-item w3-button w3-green w3-ripple" style="width:33.3%">Add</button>
+        <button class="w3-bar-item w3-button w3-teal w3-ripple" style="width:33.3%">Modify</button>
+        <button class="w3-bar-item w3-button w3-red w3-ripple" style="width:33.3%">Remove</button>
+    </div>
+
+    <br />
+
+    <div>
+        <table class="w3-table-all w3-hoverable" >
+            <thead>
+                <tr class="w3-gray">
+                    <th>N.</th>
+                    <th>icon</th>
+                    <th>name</th>
+                    <th>priority</th>
+                    <th>approval</th>
+                    <th>isWork</th>
+                    <th>properties</th>
+                </tr>
+            </thead>
+            <tr>
+                <td>1</td>
+                <td><img src="./resources/toaster.png" /></td>
+                <td>toaster</td>
+                <td>non-essential</td>
+                <td>
+                    <input class="w3-check" type="checkbox" checked="checked" disabled>
+                </td>
+                <td><div id="circle" class="w3-circle w3-red"></div></td>
+                <td><a href="#">...</a></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <!--<script>
+
+        document.onpageReload
+
+        function reloadPlugsIntoTable()
+        {
+
+        }
+
+    </script>-->
+
+</body>
+</html>
