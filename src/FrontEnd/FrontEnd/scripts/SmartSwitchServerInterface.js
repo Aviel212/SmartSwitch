@@ -111,7 +111,7 @@ function removePlug(mac) {
 
 // sets a plug's Approved property as false (effectively delets the plug)
 // returns "no such plug" if the plug doesn't exist and "ok" if the plug was denied successfully
-function deniePlug(mac) {
+function denyPlug(mac) {
     return removePlug(mac);
 }
 
