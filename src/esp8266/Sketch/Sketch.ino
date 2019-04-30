@@ -54,7 +54,7 @@ void setup() {
 
   //digitalWrite(D4, HIGH); // turn off unnecessary led
 
-  Serial.println('\nBegin');
+  Serial.println("\nBegin");
   
   SPIFFS.begin();                           // Start the SPI Flash Files System
 
@@ -118,9 +118,9 @@ void loop() {
     if (!shouldBlink) digitalWrite(statusLed, LOW);
   }
 
-  Serial.println("sample " + String(getVoltage(), 2) + " " + String(getCurrent(), 3));
+  /*Serial.println("sample " + String(getVoltage(), 2) + " " + String(getCurrent(), 3));
   delay(800);
-  digitalWrite(load, !digitalRead(load));
+  digitalWrite(load, !digitalRead(load));*/
 }
 
 void turnLoad(String state) {
@@ -148,8 +148,8 @@ void startAP() {
 
 bool connectToWebSocketsServer() {
   if (!readyToConnectToWebsocketsServer) {
-    Serial.println("Not ready (websockets).");
-    delay(1000);
+    /*Serial.println("Not ready (websockets).");
+    delay(1000);*/
     return false;
   }
   
