@@ -34,7 +34,7 @@ namespace BackEnd.Controllers
                     {
                         try
                         {
-                            DatabaseManager.GetInstance().GetPlug(mac).TurnOn();
+                            plug.TurnOn();
                             return "turned on";
                         }
                         catch (PlugNotConnectedException)
@@ -46,7 +46,7 @@ namespace BackEnd.Controllers
                     {
                         try
                         {
-                            DatabaseManager.GetInstance().GetPlug(mac).TurnOff();
+                            plug.TurnOff();
                             return "turned off";
                         }
                         catch (PlugNotConnectedException)
