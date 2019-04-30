@@ -117,12 +117,22 @@ function denyPlug(mac) {
 
 // sets a plug's Priority property
 // returns "no such plug" if the plug doesn't exist, "no such priority" if priority
-// is not "essential", "nonessential" nor "irrelevant" and "ok"
+// is not "essential", "nonessential" nor "irrelevant" and "ok" if Priority set successfully
 function setPlugPriority(mac, priority) {
     let returnString;
     $.post(server + plugsApi + "/" + mac + "/priority/" + priority, function (data) {
         if (data === "value not recognized") returnString = "no such priority";
         else returnString = data;
+    });
+    return returnString;
+}
+
+// sets a plug's Nickname property
+// returns "no such plug" if the plug doesn't exist and "ok" if Nickname set successfully
+function setPlugNickname(mac, nickname) {
+    let returnString;
+    $.post(server + plugsApi + "/" + mac + "/nickname/" + nickname, function (data) {
+        returnString = data;
     });
     return returnString;
 }
