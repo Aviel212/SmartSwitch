@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
+using Microsoft.AspNetCore.Cors;
 
 namespace BackEnd.Controllers
 {

@@ -28,16 +28,26 @@ namespace BackEnd
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             var connection = @"Server=.\SQLEXPRESS;Database=SmartSwitchSQLDb;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<SmartSwitchDbContext>
                 (options => options.UseLazyLoadingProxies().UseSqlServer(connection));
 
-            services.AddCors(c =>
-            {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
-            });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,10 +61,9 @@ namespace BackEnd
             {
                 app.UseHsts();
             }
-
-            app.UseCors(options => options.AllowAnyOrigin());
-
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowAll");
             app.UseMvc();
         }
     }
