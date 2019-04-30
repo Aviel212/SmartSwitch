@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <div id="main" style="border:1px solid black">
+        <h2>
+            Device's Name
+        </h2>
+        <input id="TurnOnBtn" type="button" value="Turn On" onclick="TurnOn()" />
+        <br />
+        <input id="TurnOffBtn" type="button" value="Turn Off" onclick="TurnOff()" />
+        <br />
+        <input id="TurnOnAtBtn" type="button" value="Turn On At" onclick="TurnOnAt()" />
+        <input id="TurnOnTime" type="datetime-local" />
+        <br />
+        <input id="TurnOffAtBtn" type="button" value="Turn Off At" onclick="TurnOffAt()" />
+        <input id="TurnOffTime" type="datetime-local" />
+        <br />
+        <input id="ShowPCBtn" type="button" value="Show Power Consumption" onclick="ShowPC()" />
+        <br />
+        <input id="ShowDTBtn" type="button" value="Show Device Timings" onclick="ShowDT()" />
+        <!--write Functions:
+            1.TurnOn() - Turn on the device at click
+            2.TurnOff() - Turn off device at click
+            3.TurnOnAt() - set time to turn on the device
+            4.TurnOffAt() - set time to turn off the device
+            5.ShowPC() - will go to Power Consumtion page for the current device
+            6.ShowDT() - will go to Device Timings page for the current device
+            -->
+    </div>
+</body>
+</html>
