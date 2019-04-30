@@ -1,7 +1,9 @@
 ﻿/// <reference path="jquery.js" />
-let server = "http://localhost:54740/api";
+let server = "https://localhost:44315/api";
 let usersApi = "/users";
 let plugsApi = "/plugs";
+
+$.ajaxSetup({ async: false});
 
 // adds a user to the system.
 // returns "ok" if added successfully or "username exists" if the username is taken.
