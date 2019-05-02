@@ -18,10 +18,9 @@ namespace BackEnd.Models
 
         public Task() { }
 
-        public Task(Operations op, Plug dev)
+        public Task(Operations op)
         {
             Operation = op;
-            Device = dev;
         }
 
         public void Execute()

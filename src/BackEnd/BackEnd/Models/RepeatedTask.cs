@@ -20,7 +20,7 @@ namespace BackEnd.Models
 
         }
 
-        public RepeatedTask(DateTime startDate, int repeatEvery)
+        public RepeatedTask(Operations op, DateTime startDate, int repeatEvery) : base(op)
         {
             StartDate = startDate;
             RepeatEvery = repeatEvery;

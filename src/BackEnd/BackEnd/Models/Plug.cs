@@ -60,6 +60,7 @@ namespace BackEnd.Models
         {
             task.Device = this;
             Tasks.Add(task);
+            DatabaseManager.GetInstance().Context.SaveChanges();
         }
     }
 }

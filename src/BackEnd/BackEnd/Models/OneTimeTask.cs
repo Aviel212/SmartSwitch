@@ -19,7 +19,7 @@ namespace BackEnd.Models
 
         }
 
-        public OneTimeTask(DateTime dateToBeExecuted)
+        public OneTimeTask(Operations op, DateTime dateToBeExecuted) : base(op)
         {
             DateToBeExecuted = dateToBeExecuted;
             BackgroundJob.Schedule(() => Execute(), DateToBeExecuted - DateTime.Now);
