@@ -2,6 +2,7 @@
 let server = "https://localhost:44315/api";
 let usersApi = "/users";
 let plugsApi = "/plugs";
+let tasksApi = "/tasks";
 
 $.ajaxSetup({ async: false});
 
@@ -137,4 +138,29 @@ function setPlugNickname(mac, nickname) {
         returnString = data;
     });
     return returnString;
+}
+
+let Operations = { TURNON: "TURNON", TURNOFF: "TURNOFF" };
+
+// adds a OneTimeTask to the plug mac, executing operation op (either Operations.TURNON or Operations.TURNOFF) at date dateToBeExecuted (a JavaScript Date object)
+// example: AddOneTimeTask("61:0d:83:b1:c0:8e", Operations.TURNOFF, new Date(2019, 4, 31, 17, 20, 30));
+function AddOneTimeTask(mac, op, dateToBeExecuted) {
+    $.ajax({
+        url: server + tasksApi,
+        type: "POST",
+        data: { "Mac": mac, "Operation": op, "DateToBeExecuted": dateToBeExecuted.toJSON() },
+        async: true
+    });
+}
+
+// adds a RepeatedTask to the plug mac, executing operation op (either Operations.TURNON or Operations.TURNOFF) starting at date startDate (a JavaScript Date object)
+// and repeating every repeatEvery minutes
+// example: AddRepeatedTask("61:0d:83:b1:c0:8e", Operations.TURNON, new Date(2019, 4, 31, 17, 20, 30), 240);
+function AddRepeatedTask(mac, op, startDate, repeatEvery) {
+    $.ajax({
+        url: server + tasksApi,
+        type: "POST",
+        data: { "Mac": mac, "Operation": op, "StartDate": startDate.toJSON(), "RepeatEvery": repeatEvery },
+        async: true
+    });
 }
