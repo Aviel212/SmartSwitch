@@ -20,7 +20,7 @@ const int muxControl = D0; // multiplexer control line
 const int voltageFromMux = LOW;
 const int currentFromMux = HIGH;
 
-char serverIP[] = "10.100.102.13";
+char serverIP[] = "192.168.1.26";
 const int webSocketsPort = 8181;
 WebSocketClient webSocketClient;
 WiFiClient client; // Use WiFiClient class to create TCP connections
@@ -68,6 +68,8 @@ void setup() {
     }
   }
 
+  Serial.println();
+  
   if (waiting > 20) Serial.println("not connected");
   else {
     Serial.println("Connected");
@@ -79,8 +81,9 @@ void setup() {
       File ownerTxt = SPIFFS.open(ownerFilePath, "w+");
       owner = ownerTxt.readStringUntil('\n');
       ownerTxt.close();
+
+      connectToWebSocketsServer();
     }
-    connectToWebSocketsServer();
   }
   
   server.onNotFound([]() {                              // If the client requests any URI
@@ -131,13 +134,13 @@ void turnLoad(String state) {
 double getVoltage() {
   digitalWrite(muxControl, voltageFromMux);
   delay(10);
-  return 3.3 * (analogRead(A0) / 1024.0) * 11.0; // [V]
+  return 3.3 * (analogRead(A0) / 1024.0) * 5.0; // [V]
 }
 
 double getCurrent() {
   digitalWrite(muxControl, currentFromMux);
   delay(10);
-  return (3.3 * (analogRead(A0) / 1024.0) * 11.0) / 16.0 /*Ohm*/; // [A]
+  return 3.3 * (analogRead(A0) / 1024.0) / 16.0 /*Ohm*/; // [A]
 }
 
 void startAP() {
