@@ -72,25 +72,30 @@ namespace BackEnd.Models
                     if (message.StartsWith("i-am")) // answer to who-are-you: i-am macAddress ownerUsername
                     {
                         _macConnections[socket] = messageWords[1];
-                        Console.WriteLine(message);
+                        Console.WriteLine(messageWords[2]);
                         User owner = DatabaseManager.GetInstance().GetUser(messageWords[2]);
-                        Console.WriteLine("yoyo: owner is " + owner.UserName);
-                        if (owner != null)
-                        {
-                            if (owner.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]) == null)
-                            {
-                                owner.Plugs.Add(new Plug(_macConnections[socket])); // owner exists so we'll add the plug
-                                foreach (User u in DatabaseManager.GetInstance().Context.Users)
-                                {
-                                    if (!u.UserName.ToLower().Equals(owner.UserName.ToLower()))
-                                    {
-                                        foreach (Plug p in u.Plugs) if (p.Mac == _macConnections[socket]) u.Plugs.Remove(p);
-                                    }
-                                }
-                                DatabaseManager.GetInstance().Context.SaveChanges();
-                            }
-                        }
+                        owner.Plugs.Add(new Plug(_macConnections[socket]));
+                        DatabaseManager.GetInstance().Context.SaveChanges();
+                        Console.WriteLine("yoyo: owner is ");
+                        //if (owner != null)
+                        //{
+                        //    if (owner.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]) == null)
+                        //    {
+                        //        Console.WriteLine("yoyo: 82");
+                        //        owner.Plugs.Add(new Plug(_macConnections[socket])); // owner exists so we'll add the plug
+                        //        Console.WriteLine("yoyo: 83");
+                        //        //foreach (User u in DatabaseManager.GetInstance().Context.Users)
+                        //        //{
+                        //        //    if (!u.UserName.ToLower().Equals(owner.UserName.ToLower()))
+                        //        //    {
+                        //        //        foreach (Plug p in u.Plugs) if (p.Mac == _macConnections[socket]) u.Plugs.Remove(p);
+                        //        //    }
+                        //        //}
+                        //        DatabaseManager.GetInstance().Context.SaveChanges();
+                        //    }
+                        //}
 
+                        Console.WriteLine("yoyo: are-you-on");
                         socket.Send("are-you-on");
                     }
                     else if (message.StartsWith("on")) // answer to are-you-on: on yes/no

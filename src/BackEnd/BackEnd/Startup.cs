@@ -48,10 +48,10 @@ namespace BackEnd
             services.AddDbContext<SmartSwitchDbContext>
                 (options => options.UseLazyLoadingProxies().UseSqlServer(connection));
 
-            services.AddHangfire(configuration =>
-            {
-                configuration.UseSqlServerStorage(@"Server=.\SQLEXPRESS;Trusted_Connection=True;ConnectRetryCount=0");
-            });
+            //services.AddHangfire(configuration =>
+            //{
+            //    configuration.UseSqlServerStorage(@"Server=.\SQLEXPRESS;Trusted_Connection=True;ConnectRetryCount=0");
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,8 +70,8 @@ namespace BackEnd
             app.UseCors("AllowAll");
             app.UseMvc();
 
-            app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            //app.UseHangfireServer();
+            //app.UseHangfireDashboard();
         }
     }
 }

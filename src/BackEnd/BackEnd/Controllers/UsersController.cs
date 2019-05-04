@@ -22,6 +22,7 @@ namespace BackEnd.Controllers
         {
             _context = context;
             DatabaseManager.GetInstance().Context = context;
+            WebsocketsServer.GetInstance().Start();
             Console.WriteLine("------------+++++++++init");
         }
 
@@ -29,12 +30,13 @@ namespace BackEnd.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            List<string> usernames = new List<string>();
-            foreach (User u in _context.Users)
-            {
-                usernames.Add(u.UserName);
-            }
-            return usernames;
+            //List<string> usernames = new List<string>();
+            //foreach (User u in _context.Users)
+            //{
+            //    usernames.Add(u.UserName);
+            //}
+            //return usernames;
+            return null;
         }
 
         // GET: api/Users/yarden
