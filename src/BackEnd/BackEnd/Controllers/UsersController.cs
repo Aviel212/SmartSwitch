@@ -22,6 +22,7 @@ namespace BackEnd.Controllers
         {
             _context = context;
             DatabaseManager.GetInstance().Context = context;
+            Console.WriteLine("------------+++++++++init");
         }
 
         // GET: api/Users

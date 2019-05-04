@@ -15,7 +15,8 @@ namespace BackEnd
     {
         public static void Main(string[] args)
         {
-            WebsocketsServer.GetInstance().Start();
+
+            System.Threading.Tasks.Task.Delay(5000).ContinueWith(t => WebsocketsServer.GetInstance().Start());
             CreateWebHostBuilder(args).Build().Run();
         }
 

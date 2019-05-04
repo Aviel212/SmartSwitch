@@ -72,8 +72,9 @@ namespace BackEnd.Models
                     if (message.StartsWith("i-am")) // answer to who-are-you: i-am macAddress ownerUsername
                     {
                         _macConnections[socket] = messageWords[1];
-
-                        User owner = DatabaseManager.GetInstance().Context.Users.FirstOrDefault(u => u.UserName.ToLower().Equals(messageWords[2].ToLower()));
+                        Console.WriteLine(message);
+                        User owner = DatabaseManager.GetInstance().GetUser(messageWords[2]);
+                        Console.WriteLine("yoyo: owner is " + owner.UserName);
                         if (owner != null)
                         {
                             if (owner.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]) == null)
@@ -86,7 +87,7 @@ namespace BackEnd.Models
                                         foreach (Plug p in u.Plugs) if (p.Mac == _macConnections[socket]) u.Plugs.Remove(p);
                                     }
                                 }
-                                DatabaseManager.GetInstance().Context.SaveChangesAsync();
+                                DatabaseManager.GetInstance().Context.SaveChanges();
                             }
                         }
 
@@ -94,12 +95,12 @@ namespace BackEnd.Models
                     }
                     else if (message.StartsWith("on")) // answer to are-you-on: on yes/no
                     {
-                        foreach (User u in DatabaseManager.GetInstance().Context.Users)
-                        {
-                            Plug plug = u.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]);
-                            if (plug != null) plug.IsOn = messageWords[1].Equals("yes");
-                        }
-                        DatabaseManager.GetInstance().Context.SaveChangesAsync();
+                        //foreach (User u in DatabaseManager.GetInstance().Context.Users)
+                        //{
+                        //    Plug plug = u.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]);
+                        //    if (plug != null) plug.IsOn = messageWords[1].Equals("yes");
+                        //}
+                        //DatabaseManager.GetInstance().Context.SaveChangesAsync();
                     }
                     else if (message.StartsWith("sample")) // message: sample voltage current
                     {

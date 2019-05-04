@@ -1,3 +1,5 @@
+#define BUFFER_SIZE 256
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
@@ -10,7 +12,7 @@ ESP8266WebServer server(80);    // Create a webserver object that listens for HT
 bool shouldBlink = false; // indicates whether the status led should blink
 unsigned long blinked = 0; // the time from the last blink of the status led [ms]
 const int statusLed = D1;
- 
+
 const int touchSensor = D6;
 bool touched = false; // for loop logic
 unsigned long touchedAt; // the time (from the moment the program started running) the sensor was touched [ms]
@@ -32,16 +34,17 @@ const int sampleEvery = 60000; // ms
 
 const int load = D2; // the electrical device switch
 
-String owner; // SmartSwitch username of the device owner
+char owner[BUFFER_SIZE]; // SmartSwitch username of the device owner
+String ownerString;
 const String ownerFilePath = "/owner.txt";
 
 void setup() {
   Serial.begin(115200);         // Start the Serial communication to send messages to the computer
 
   //pinMode(D4, OUTPUT); // unnecessary led
-  
+
   pinMode(statusLed, OUTPUT);
-  
+
   pinMode(D5, OUTPUT); // VCC for the touch sensor
   pinMode(touchSensor, INPUT);
 
@@ -55,7 +58,7 @@ void setup() {
   //digitalWrite(D4, HIGH); // turn off unnecessary led
 
   Serial.println("\nBegin");
-  
+
   SPIFFS.begin();                           // Start the SPI Flash Files System
 
   int waiting;
@@ -68,8 +71,10 @@ void setup() {
     }
   }
 
+  //SPIFFS.remove(ownerFilePath);
+
   Serial.println();
-  
+
   if (waiting > 20) Serial.println("not connected");
   else {
     Serial.println("Connected");
@@ -78,14 +83,16 @@ void setup() {
     readyToConnectToWebsocketsServer = SPIFFS.exists(ownerFilePath);
     if (readyToConnectToWebsocketsServer) {
       // read owner username
-      File ownerTxt = SPIFFS.open(ownerFilePath, "w+");
-      owner = ownerTxt.readStringUntil('\n');
+      File ownerTxt = SPIFFS.open(ownerFilePath, "r");
+      ownerString = ownerTxt.readStringUntil('\n');
+      ownerString.trim();
       ownerTxt.close();
-
+      Serial.print("read: ");
+      Serial.println(ownerString);
       connectToWebSocketsServer();
     }
   }
-  
+
   server.onNotFound([]() {                              // If the client requests any URI
     if (!handleFileRead(server.uri()))                  // send it if it exists
       server.send(404, "text/plain", "404: Not Found"); // otherwise, respond with a 404 (Not Found) error
@@ -104,14 +111,14 @@ void loop() {
     blinked = millis();
     digitalWrite(statusLed, !digitalRead(statusLed));
   }
-  
+
   if (digitalRead(touchSensor)) {
     Serial.println(millis());
     if (touched && (millis() - touchedAt) >= pressDuration) {
       startAP();
       touched = false;
     }
-    else if(!touched) {
+    else if (!touched) {
       touched = true;
       touchedAt = millis();
       digitalWrite(statusLed, HIGH);
@@ -122,8 +129,8 @@ void loop() {
   }
 
   /*Serial.println("sample " + String(getVoltage(), 2) + " " + String(getCurrent(), 3));
-  delay(800);
-  digitalWrite(load, !digitalRead(load));*/
+    delay(800);
+    digitalWrite(load, !digitalRead(load));*/
 }
 
 void turnLoad(String state) {
@@ -152,10 +159,10 @@ void startAP() {
 bool connectToWebSocketsServer() {
   if (!readyToConnectToWebsocketsServer) {
     /*Serial.println("Not ready (websockets).");
-    delay(1000);*/
+      delay(1000);*/
     return false;
   }
-  
+
   if (client.connect(serverIP, webSocketsPort)) {
     Serial.println("Connected websockets client");
   } else {
@@ -180,23 +187,29 @@ bool handleWebSocketsLoop() {
   if (client.connected()) {
     String data;
     webSocketClient.getData(data);
+    
     if (data.length() > 0) {
-       if (data == "turn-load-on") turnLoad("on");
-       else if (data == "turn-load-off") turnLoad("off");
-       else if (data == "who-are-you") webSocketClient.sendData("i-am " + WiFi.macAddress() + " " + owner);
-       else if (data == "are-you-on") {
-        webSocketClient.sendData(digitalRead(load) ? "on yes" : "on no");
-        readyToSendSamples = true; // after the server knows who the owner is and if the device is on we can send samples
-       }
       Serial.print("Received data: ");
       Serial.println(data);
+      if (data == "turn-load-on") turnLoad("on");
+      else if (data == "turn-load-off") turnLoad("off");
+      else if (data == "who-are-you") {
+        webSocketClient.sendData("i-am " + WiFi.macAddress() + " " + ownerString);
+        Serial.println("Sending data: i-am " + WiFi.macAddress() + " " + ownerString);
+      }
+      else if (data == "are-you-on") {
+        webSocketClient.sendData(digitalRead(load) ? "on yes" : "on no");
+        Serial.print("Sending data: ");
+        Serial.println(digitalRead(load) ? "on yes" : "on no");
+        readyToSendSamples = true; // after the server knows who the owner is and if the device is on we can send samples
+      }
     }
 
     if (readyToSendSamples && millis() - lastSample > sampleEvery) {
       lastSample = millis();
       webSocketClient.sendData("sample " + String(getVoltage(), 2) + " " + String(getCurrent(), 3));
     }
-    
+
   } else {
     return connectToWebSocketsServer();
   }
@@ -239,6 +252,7 @@ void handlePost() {
 
   // query server for available wifi
   if (server.hasArg("give-wifi-networks")) {
+    Serial.println("giving wifi networks (scanning)");
     int networksAmount = WiFi.scanNetworks();
     String str = "[\"";
     for (int i = 0; i < networksAmount; ++i) {
@@ -260,14 +274,14 @@ void handlePost() {
 
   // tell the device to connect to a given wifi
   if (server.hasArg("connect-to-network")) {
-    WiFi.disconnect(); 
+    WiFi.disconnect();
     Serial.println("Disconnected");
     WiFi.mode(WIFI_AP_STA);
     Serial.print("received ssid: ");
     Serial.println(server.arg("ssid"));
 
     digitalWrite(statusLed, HIGH);
-    
+
     if (server.hasArg("pass")) {
       Serial.print("received pass: ");
       Serial.println(server.arg("pass"));
@@ -285,7 +299,7 @@ void handlePost() {
 
     shouldBlink = false;
     digitalWrite(statusLed, LOW);
-    
+
     Serial.println("");
     Serial.println("Connected");
     Serial.print("IP address: ");
@@ -296,11 +310,12 @@ void handlePost() {
   if (server.hasArg("are-you-connected")) server.send(200, "text/plain", (WiFi.status() == WL_CONNECTED) ? "yes" : "no");
 
   if (server.hasArg("username-given")) {
-    // userneme is server.arg("username")
-    owner = server.arg("username");
+    // username is server.arg("username")
+    Serial.println("received username: " + server.arg("username"));
+    ownerString = server.arg("username");
     readyToConnectToWebsocketsServer = true;
     File ownerTxt = SPIFFS.open(ownerFilePath, "w+");
-    ownerTxt.println(owner);
+    ownerTxt.println(ownerString);
     ownerTxt.close();
   }
 

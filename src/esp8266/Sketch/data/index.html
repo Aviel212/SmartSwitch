@@ -129,7 +129,6 @@
                     clearInterval(connectionIntervalKillCode);
                     clearInterval(connectingAnimationKillCode);
                     setTimeout(changePageToUsernameInput, 500);
-                    setTimeout(debugAddTestBtn, 700);
                 }
                 else if (++triedToConnect > 7) {
                     clearInterval(connectionIntervalKillCode);
@@ -159,26 +158,6 @@
 
             $("body").append($("<div>").addClass("w3-center").append($sendUsernameBtn));
 
-        }
-
-        function debugAddTestBtn() {
-            $("body").append($("<div>").addClass("debug-test-btn").click(function () {
-                if ($(".debug-test-btn").css("background-color") == "rgba(0, 0, 0, 0)") {
-                    debugTurnLoad("on");
-                    $(".debug-test-btn").css("background-color", "rgba(0, 0, 255, 0.4)");
-                } else {
-                    debugTurnLoad("off");
-                    $(".debug-test-btn").css("background-color", "rgba(0, 0, 0, 0)");
-                }
-            }))
-            $.post(target, { "give-load-state": "*" }).done(function (data) {
-                $(".debug-test-btn").css("background-color", data == "on" ? "rgba(0, 0, 255, 0.4)" : "rgba(0, 0, 0, 0)");
-                console.log(data);
-            });
-        }
-
-        function debugTurnLoad(state) {
-            $.post(target, { "turn-load": state });
         }
     </script>
 </head>
