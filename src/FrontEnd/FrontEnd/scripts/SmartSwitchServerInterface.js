@@ -143,24 +143,40 @@ function setPlugNickname(mac, nickname) {
 let Operations = { TURNON: "TURNON", TURNOFF: "TURNOFF" };
 
 // adds a OneTimeTask to the plug mac, executing operation op (either Operations.TURNON or Operations.TURNOFF) at date dateToBeExecuted (a JavaScript Date object)
-// example: AddOneTimeTask("61:0d:83:b1:c0:8e", Operations.TURNOFF, new Date(2019, 4, 31, 17, 20, 30));
-function AddOneTimeTask(mac, op, dateToBeExecuted) {
+// example: addOneTimeTask("61:0d:83:b1:c0:8e", Operations.TURNOFF, new Date(2019, 4, 31, 17, 20, 30));
+function addOneTimeTask(mac, op, dateToBeExecuted) {
     $.ajax({
-        url: server + tasksApi,
+        url: server + tasksApi + "/" + JSON.stringify({ "Mac": mac, "Operation": op, "DateToBeExecuted": correctToJSON(dateToBeExecuted) }),
         type: "POST",
-        data: { "Mac": mac, "Operation": op, "DateToBeExecuted": dateToBeExecuted.toJSON() },
         async: true
     });
+    console.log(server + tasksApi + "/" + JSON.stringify({ "Mac": mac, "Operation": op, "DateToBeExecuted": correctToJSON(dateToBeExecuted) }));
 }
 
 // adds a RepeatedTask to the plug mac, executing operation op (either Operations.TURNON or Operations.TURNOFF) starting at date startDate (a JavaScript Date object)
 // and repeating every repeatEvery minutes
-// example: AddRepeatedTask("61:0d:83:b1:c0:8e", Operations.TURNON, new Date(2019, 4, 31, 17, 20, 30), 240);
-function AddRepeatedTask(mac, op, startDate, repeatEvery) {
+// example: addRepeatedTask("61:0d:83:b1:c0:8e", Operations.TURNON, new Date(2019, 4, 31, 17, 20, 30), 240);
+function addRepeatedTask(mac, op, startDate, repeatEvery) {
     $.ajax({
-        url: server + tasksApi,
+        url: server + tasksApi + "/" + JSON.stringify({ "Mac": mac, "Operation": op, "StartDate": correctToJSON(startDate), "RepeatEvery": repeatEvery }),
         type: "POST",
-        data: { "Mac": mac, "Operation": op, "StartDate": startDate.toJSON(), "RepeatEvery": repeatEvery },
         async: true
     });
+}
+
+// private function for date calculation, taken from: https://stackoverflow.com/a/36643588/7414734
+function correctToJSON(date) {
+    var timezoneOffsetInHours = -(date.getTimezoneOffset() / 60); //UTC minus local time
+    var sign = timezoneOffsetInHours >= 0 ? 'x' : '-';
+    var leadingZero = Math.abs(timezoneOffsetInHours) < 10 ? '0' : '';
+
+    //It's a bit unfortunate that we need to construct a new Date instance 
+    //(we don't want _this_ Date instance to be modified)
+    var correctedDate = new Date(date.getFullYear(), date.getMonth(),
+        date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(),
+        date.getMilliseconds());
+    correctedDate.setHours(date.getHours() + timezoneOffsetInHours);
+    var iso = correctedDate.toISOString().replace('Z', '');
+
+    return iso + sign + leadingZero + Math.abs(timezoneOffsetInHours).toString() + ':00';
 }

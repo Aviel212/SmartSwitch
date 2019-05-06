@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using BackEnd.Models;
+using Microsoft.AspNetCore.Cors;
+using System.Net.Http;
 
 namespace BackEnd.Controllers
 {
@@ -14,9 +16,10 @@ namespace BackEnd.Controllers
     public class TasksController : ControllerBase
     {
         // POST: api/Tasks
-        [HttpPost]
-        public string Post([FromBody] string jsonString)
+        [HttpPost("{jsonString}", Name = "PostTask")]
+        public string Post(string jsonString)
         {
+            Console.WriteLine("ddd: " + jsonString);
             JObject json = JObject.Parse(jsonString);
             if (!json.ContainsKey("Mac")) return "missing mac";
 
@@ -26,11 +29,11 @@ namespace BackEnd.Controllers
 
             if (json.ContainsKey("RepeatEvery")) // RepeatedTask
             {
-                plug.AddTask(new RepeatedTask(op, DateTime.Parse(json["StartDate"].ToString()), (int) json["RepeatEvery"]));
+                plug.AddTask(new RepeatedTask(op, DateTime.Parse(json["StartDate"].ToString().Replace('x', '+')), (int) json["RepeatEvery"]));
             }
             else // OneTimeTask
             {
-                plug.AddTask(new OneTimeTask(op, DateTime.Parse(json["DateToBeExecuted"].ToString())));
+                plug.AddTask(new OneTimeTask(op, DateTime.Parse(json["DateToBeExecuted"].ToString().Replace('x', '+'))));
             }
 
             DatabaseManager.GetInstance().Context.SaveChanges();

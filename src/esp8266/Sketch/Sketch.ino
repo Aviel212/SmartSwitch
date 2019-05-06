@@ -167,6 +167,7 @@ bool connectToWebSocketsServer() {
     Serial.println("Connected websockets client");
   } else {
     Serial.println("Connection failed. (websockets)");
+    readyToSendSamples = false;
     return false;
   }
 

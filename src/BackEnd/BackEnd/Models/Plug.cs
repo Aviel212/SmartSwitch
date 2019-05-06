@@ -58,7 +58,7 @@ namespace BackEnd.Models
 
         public void AddTask(Task task)
         {
-            task.Device = this;
+            task.DeviceMac = Mac;
             Tasks.Add(task);
             DatabaseManager.GetInstance().Context.SaveChanges();
         }
