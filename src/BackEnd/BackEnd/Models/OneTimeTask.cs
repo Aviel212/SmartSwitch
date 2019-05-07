@@ -22,7 +22,11 @@ namespace BackEnd.Models
         public OneTimeTask(Operations op, DateTime dateToBeExecuted) : base(op)
         {
             DateToBeExecuted = dateToBeExecuted;
-            BackgroundJob.Schedule<Task>(t => t.Execute(), DateToBeExecuted - DateTime.Now);
+        }
+
+        public override void Schedule()
+        {
+            BackgroundJob.Schedule(() => Execute(Operation, DeviceMac), DateToBeExecuted - DateTime.Now);
         }
     }
 }

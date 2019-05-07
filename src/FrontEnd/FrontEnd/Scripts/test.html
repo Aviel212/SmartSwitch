@@ -30,7 +30,14 @@
         }
 
         function addOneTimeTaskYarden() {
-            addOneTimeTask(currentPlug.Mac, Operations.TURNON, new Date(2019, 4, 7, 0, 25));
+            addOneTimeTask(currentPlug.Mac, Operations.TURNON, new Date(2019, 4, 7, 11, 10));
+        }
+
+        function addRepeatedTaskYardenOn() {
+            addRepeatedTask(currentPlug.Mac, Operations.TURNON, new Date(), 1);
+        }
+        function addRepeatedTaskYardenOff() {
+            addRepeatedTask(currentPlug.Mac, Operations.TURNOFF, new Date(), 1);
         }
     </script>
     <title></title>
@@ -51,6 +58,8 @@
     <input type="button" value="turnYardenPlugOff" onclick="turnYardenPlugOff()" />
     <span id="turnYardenPlugOffResult"></span>
     <input type="button" value="addOneTimeTaskYarden" onclick="addOneTimeTaskYarden()" />
-    <span id="addOneTimeTaskYardenResult"></span>
+    <input type="button" value="addRepeatedTaskYardenOn" onclick="addRepeatedTaskYardenOn()" />
+    <input type="button" value="addRepeatedTaskYardenOff" onclick="addRepeatedTaskYardenOff()" />
+    
 </body>
 </html>

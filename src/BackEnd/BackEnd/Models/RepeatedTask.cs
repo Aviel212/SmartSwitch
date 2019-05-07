@@ -24,13 +24,17 @@ namespace BackEnd.Models
         {
             StartDate = startDate;
             RepeatEvery = repeatEvery;
-            BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(), StartDate - DateTime.Now);
         }
 
-        private void ExecuteAndScheduleNextExecution()
+        public static void ExecuteAndScheduleNextExecution(Operations operation, string mac, int repeatEvery)
         {
-            Execute();
-            BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(), TimeSpan.FromMinutes(RepeatEvery));
+            Execute(operation, mac);
+            BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(operation, mac, repeatEvery), TimeSpan.FromMinutes(repeatEvery));
+        }
+
+        public override void Schedule()
+        {
+            BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(Operation, DeviceMac, RepeatEvery), StartDate - DateTime.Now);
         }
     }
 }

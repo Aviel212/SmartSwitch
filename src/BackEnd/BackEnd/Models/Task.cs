@@ -23,11 +23,11 @@ namespace BackEnd.Models
             Operation = op;
         }
 
-        public void Execute()
+        public static void Execute(Operations op, string mac)
         {
             //when entering this function we need to execute the task
-            Plug device = DatabaseManager.GetInstance().GetPlug(DeviceMac);
-            switch (Operation)
+            Plug device = DatabaseManager.GetInstance().GetPlug(mac);
+            switch (op)
             {
                 case Operations.TURNON:
                     device.TurnOn();
@@ -40,5 +40,6 @@ namespace BackEnd.Models
             }
         }
 
+        public abstract void Schedule();
     }
 }

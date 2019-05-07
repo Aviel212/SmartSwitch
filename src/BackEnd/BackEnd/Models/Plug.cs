@@ -60,6 +60,7 @@ namespace BackEnd.Models
         {
             task.DeviceMac = Mac;
             Tasks.Add(task);
+            task.Schedule();
             DatabaseManager.GetInstance().Context.SaveChanges();
         }
     }
