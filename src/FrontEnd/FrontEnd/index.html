@@ -13,6 +13,9 @@
             z-index:1;
             overflow:auto;
         }
+        .w3-bar-item{
+            text-decoration:none;
+        }
         .w3-bar-item:hover{
             background-color:lightgrey;
             cursor:pointer;
@@ -51,9 +54,9 @@
         </div>
         <div id="menuPanel" class="w3-bar w3-gray">
             <div id="Account" class="w3-bar-item" onclick="w3_open()"><i class="fas fa-user"></i></div>
-            <div id="Home" class="w3-bar-item">Home</div>
-            <div id="Plugs" class="w3-bar-item">Manual</div>
-            <div id="About" class="w3-bar-item">About</div>
+            <a href="#" id="Home" class="w3-bar-item">Home</a>
+            <a href="#" id="Plugs" class="w3-bar-item">Manual</a>
+            <a href="#" id="About" class="w3-bar-item">About</a>
         </div>
     </div>
     <div id="mySidebar" class="sidebar w3-bar-block w3-card">
