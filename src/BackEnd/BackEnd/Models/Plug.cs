@@ -20,6 +20,7 @@ namespace BackEnd.Models
         public bool IsOn { get; set; }
         public bool Approved { get; set; }
         public Priorities Priority { get; set; }
+        public DateTime AddedAt { get; set; }
         public virtual List<Task> Tasks { get; set; }
         public virtual List<PowerUsageSample> Samples { get; set; }
 
@@ -31,6 +32,7 @@ namespace BackEnd.Models
             IsOn = false;
             Approved = false;
             Priority = Priorities.IRRELEVANT;
+            AddedAt = DateTime.Now;
             Tasks = new List<Task>();
             Samples = new List<PowerUsageSample>();
         }
