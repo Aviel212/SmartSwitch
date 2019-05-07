@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hangfire;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,6 +17,12 @@ namespace BackEnd.Models
         public OneTimeTask()
         {
 
+        }
+
+        public OneTimeTask(Operations op, DateTime dateToBeExecuted) : base(op)
+        {
+            DateToBeExecuted = dateToBeExecuted;
+            BackgroundJob.Schedule<Task>(t => t.Execute(), DateToBeExecuted - DateTime.Now);
         }
     }
 }

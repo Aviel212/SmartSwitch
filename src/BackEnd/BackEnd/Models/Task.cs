@@ -14,31 +14,31 @@ namespace BackEnd.Models
 
         public int TaskId { get; set; }
         public Operations Operation { get; set; }
-        public virtual Plug Device { get; set; }
+        public string DeviceMac { get; set; }
 
         public Task() { }
 
-        public Task(Operations op, Plug dev)
+        public Task(Operations op)
         {
             Operation = op;
-            Device = dev;
         }
 
         public void Execute()
         {
             //when entering this function we need to execute the task
-
+            Plug device = DatabaseManager.GetInstance().GetPlug(DeviceMac);
             switch (Operation)
             {
                 case Operations.TURNON:
-                    Device.TurnOn();
+                    device.TurnOn();
                     break;
                 case Operations.TURNOFF:
-                    Device.TurnOff();
+                    device.TurnOff();
                     break;
                 default:
                     break;
             }
         }
+
     }
 }

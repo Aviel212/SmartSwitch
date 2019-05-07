@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="SmartSwitchServerInterface.js"></script>
+    <script>
+        let currentPlug;
+
+        function addYarden() {
+            $("#addYardenResult").text(addUser("yarden", "12345678"));
+        }
+
+        function getYardenPlugs() {
+            let yardenUser = getUser("yarden");
+            console.log("in getYardenPlugs() yardenUser:");
+            console.log(yardenUser);
+            currentPlug = yardenUser.Plugs[0];
+            $("#getYardenPlugsResult").text("name: " + currentPlug.Nickname + ", on: " + currentPlug.IsOn + ", mac: " + currentPlug.Mac);
+        }
+
+        function turnYardenPlugOn() {
+            $("#turnYardenPlugOnResult").text(turnPlugOn(currentPlug.Mac));
+        }
+
+
+        function turnYardenPlugOff() {
+            $("#turnYardenPlugOffResult").text(turnPlugOff(currentPlug.Mac));
+        }
+
+        function addOneTimeTaskYarden() {
+            addOneTimeTask(currentPlug.Mac, Operations.TURNON, new Date(2019, 4, 7, 0, 25));
+        }
+    </script>
+    <title></title>
+    <style>
+        input, span {
+            display: block;
+            margin: 8px;
+        }
+    </style>
+</head>
+<body>
+    <input type="button" value="addYarden" onclick="addYarden()" />
+    <span id="addYardenResult"></span>
+    <input type="button" value="getYardenPlugs" onclick="getYardenPlugs()" />
+    <span id="getYardenPlugsResult"></span>
+    <input type="button" value="turnYardenPlugOn" onclick="turnYardenPlugOn()" />
+    <span id="turnYardenPlugOnResult"></span>
+    <input type="button" value="turnYardenPlugOff" onclick="turnYardenPlugOff()" />
+    <span id="turnYardenPlugOffResult"></span>
+    <input type="button" value="addOneTimeTaskYarden" onclick="addOneTimeTaskYarden()" />
+    <span id="addOneTimeTaskYardenResult"></span>
+</body>
+</html>

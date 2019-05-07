@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
+using Microsoft.AspNetCore.Cors;
 
 namespace BackEnd.Controllers
 {
@@ -14,21 +15,14 @@ namespace BackEnd.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly SmartSwitchDbContext _context;
         private readonly string noSuchUser = "no such user";
-
-        public UsersController(SmartSwitchDbContext context)
-        {
-            _context = context;
-            DatabaseManager.GetInstance().Context = context;
-        }
 
         // GET: api/Users
         [HttpGet]
         public IEnumerable<string> Get()
         {
             List<string> usernames = new List<string>();
-            foreach (User u in _context.Users)
+            foreach (User u in DatabaseManager.GetInstance().Context.Users)
             {
                 usernames.Add(u.UserName);
             }
@@ -48,8 +42,8 @@ namespace BackEnd.Controllers
             {
                 try
                 {
-                    _context.Users.Add(new User(username, password));
-                    _context.SaveChanges();
+                    DatabaseManager.GetInstance().Context.Users.Add(new User(username, password));
+                    DatabaseManager.GetInstance().Context.SaveChanges();
                     return "added " + username;
                 }
                 catch (UsernameAlreadyInUseException)
@@ -64,8 +58,8 @@ namespace BackEnd.Controllers
                 else
                 {
                     if (!toRemove.Password.Equals(password)) return "wrong password";
-                    _context.Users.Remove(toRemove);
-                    _context.SaveChanges();
+                    DatabaseManager.GetInstance().Context.Users.Remove(toRemove);
+                    DatabaseManager.GetInstance().Context.SaveChanges();
                     return "removed " + username;
                 }
             }
@@ -76,7 +70,7 @@ namespace BackEnd.Controllers
                 else
                 {
                     user.Password = password;
-                    _context.SaveChanges();
+                    DatabaseManager.GetInstance().Context.SaveChanges();
                     return "password changed";
                 }
             }

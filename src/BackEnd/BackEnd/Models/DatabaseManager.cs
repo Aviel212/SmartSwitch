@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,7 +16,10 @@ namespace BackEnd.Models
 
         public DatabaseManager()
         {
-
+            DbContextOptionsBuilder<SmartSwitchDbContext> optionsBuilder = new DbContextOptionsBuilder<SmartSwitchDbContext>();
+            var connection = @"Server=.\SQLEXPRESS;Database=SmartSwitchSQLDb;Trusted_Connection=True;ConnectRetryCount=0";
+            optionsBuilder.UseLazyLoadingProxies().UseSqlServer(connection);
+            Context = new SmartSwitchDbContext(optionsBuilder.Options);
         }
 
         public static DatabaseManager GetInstance()
