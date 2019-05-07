@@ -1,43 +1,71 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>Smart Switch - Home Page</title>
 	<meta charset="utf-8" />
     <script src="scripts/jquery.js"></script>
     <link href="styles/w3css.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <style>
         .sidebar{
-            height:70%;
+            height:64%;
             position:fixed;
             z-index:1;
             overflow:auto;
         }
+        .w3-bar-item{
+            text-decoration:none;
+        }
         .w3-bar-item:hover{
             background-color:lightgrey;
+            cursor:pointer;
+        }
+        #footerDiv{
+            position:fixed; 
+            bottom:0px; 
+            border:1px solid black; 
+            width:100%; 
+            height:10%;
+        }
+        #topDiv{
+            position:fixed;
+            top:0px;
+            width:100%;
+        }
+        #mySidebar{
+            display:none; 
+            top:160px;
+        }
+        #mainDiv{
+            border:1px solid black; 
+            width:100%; 
+            height:900px; 
+            position:relative;
+            top:160px;
+            z-index:-1;
         }
     </style>
 </head>
 <body>
-    <div id="topDiv"  style="position:fixed;top:0px;width:100%;">
+    <div id="topDiv">
         <div id="headerDiv" class="w3-container w3-red w3-blue-gray w3-padding" >
             <h1>Welcome to SmartSwitch</h1>
             <h3 class="w3-medium">Login to your account to modify your plugs</h3>
         </div>
         <div id="menuPanel" class="w3-bar w3-gray">
             <div id="Account" class="w3-bar-item" onclick="w3_open()"><i class="fas fa-user"></i></div>
-            <div id="Home" class="w3-bar-item">Home</div>
-            <div id="Plugs" class="w3-bar-item">Manual</div>
-            <div id="About" class="w3-bar-item">About</div>
+            <a href="#" id="Home" class="w3-bar-item">Home</a>
+            <a href="#" id="Plugs" class="w3-bar-item">Manual</a>
+            <a href="#" id="About" class="w3-bar-item">About</a>
         </div>
     </div>
-    <div id="mySidebar" class="sidebar w3-bar-block w3-card" style="display:none; top:160px;">
+    <div id="mySidebar" class="sidebar w3-bar-block w3-card">
         <a href="#" class="w3-bar-item w3-button">Plugs</a>
         <a href="#" class="w3-bar-item w3-button">Add New Device</a>
         <a href="#" class="w3-bar-item w3-button">User Settings</a>
         <a href="#" class="w3-bar-item w3-button">Logout</a>
     </div>
-    <div id="mainDiv" style="border:1px solid black; width:100%; height:900px; position:relative;top:160px;z-index:-1">
+    <div id="mainDiv">
 
         <div id="loginForm" class="w3-border">
             <form action="/login.cs" class="w3-margin-left"> <!-- need to edit the form page to submit-->
@@ -50,11 +78,21 @@
 
         </div>
     </div>
-    <script>        //script to handle sideBar
+    
+    <div id="footerDiv" class="w3-gray">
+
+    </div>
+    <script>
+        //script to handle sideBar
+        let headerDiv, menuDiv, footerDiv;
+        $headerDiv = $("#headerDiv");
+        $footerDiv = $("#footerDiv");
+        $menuDiv = $("#menuPanel");
 
         function w3_open() {
             $("#mainDiv").css({ "margin-left": "20%", "width": "80%" });
-            $("#mySidebar").css({ "width": "20%", "display": "block" });
+            let sideBarHeight = window.innerHeight - parseInt($headerDiv.css("height")) - parseInt($menuDiv.css("height")) - parseInt($footerDiv.css("height"));
+            $("#mySidebar").css({ "width": "20%", "display": "block", "height": sideBarHeight});
             $("#Account").html("<i class='far fa-user'></i>").attr("onclick", "w3_close()");
         }
         function w3_close() {
@@ -63,8 +101,5 @@
             $("#Account").html("<i class='fas fa-user'></i>").attr("onclick", "w3_open()");
         }
     </script>
-    <div id="footerDiv" class="w3-gray" style="position:fixed; bottom:0px; border:1px solid black; width:100%; height:10%">
-
-    </div>
 </body>
 </html>
