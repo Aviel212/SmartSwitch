@@ -154,7 +154,16 @@
                     .addClass("w3-center"));
             let $sendUsernameBtn = $("<input>").prop("type", "button").val("Done").click(function () {
                 $.post(target, { "username-given": "*", "username": $(".usernameInput").val() });
-            })
+                let name = $(".usernameInput").val();
+                $("body")
+                    .empty()
+                    .append($("<h1>")
+                        .text("SmartSwitch")
+                        .addClass("w3-center"))
+                    .append($("<p>")
+                        .text("Thank you " + name + ", please proceed to the SmartSwitch website.")
+                        .addClass("w3-center"));
+            });
 
             $("body").append($("<div>").addClass("w3-center").append($sendUsernameBtn));
 

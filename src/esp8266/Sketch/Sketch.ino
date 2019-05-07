@@ -314,6 +314,7 @@ void handlePost() {
     // username is server.arg("username")
     Serial.println("received username: " + server.arg("username"));
     ownerString = server.arg("username");
+    WiFi.mode(WIFI_STA);
     readyToConnectToWebsocketsServer = true;
     File ownerTxt = SPIFFS.open(ownerFilePath, "w+");
     ownerTxt.println(ownerString);
