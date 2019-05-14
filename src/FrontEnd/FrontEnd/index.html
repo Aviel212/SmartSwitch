@@ -36,13 +36,16 @@
             display:none; 
             top:160px;
         }
-        #mainDiv{
-            border:1px solid black; 
-            width:100%; 
-            height:900px; 
+        #mainFrame{
+            border:1px solid black;  
             position:relative;
-            top:160px;
             z-index:-1;
+
+        }
+        #loginForm{
+            position:relative;
+            top:0px;
+            left:10px;
         }
     </style>
 </head>
@@ -54,9 +57,9 @@
         </div>
         <div id="menuPanel" class="w3-bar w3-gray">
             <div id="Account" class="w3-bar-item" onclick="w3_open()"><i class="fas fa-user"></i></div>
-            <a href="#" id="Home" class="w3-bar-item">Home</a>
-            <a href="#" id="Plugs" class="w3-bar-item">Manual</a>
-            <a href="#" id="About" class="w3-bar-item">About</a>
+            <a href="#" id="Home" class="w3-bar-item" onclick="">Home</a>
+            <a href="#" id="Plugs" class="w3-bar-item" onclick="">Manual</a>
+            <a href="#" id="About" class="w3-bar-item" onclick="">About</a>
         </div>
     </div>
     <div id="mySidebar" class="sidebar w3-bar-block w3-card">
@@ -65,19 +68,10 @@
         <a href="#" class="w3-bar-item w3-button">User Settings</a>
         <a href="#" class="w3-bar-item w3-button">Logout</a>
     </div>
-    <div id="mainDiv">
-
-        <div id="loginForm" class="w3-border">
-            <form action="/login.cs" class="w3-margin-left"> <!-- need to edit the form page to submit-->
-                <p>Nickname: <input type="text" name="Nickname" /></p>
-                <p>Password: <input type="password" name="password" /></p>
-                <input type="submit" value="Sign in" />
-                <!--can be made with dynamic changes, to change the entire form in the current page without reloading-->
-                <p class="w3-small" >If this is your first time, please <a href="/register.html">register</a></p>
-            </form>
-
-        </div>
-    </div>
+    
+    <iframe id="mainFrame" src="about:blank">
+        
+    </iframe>
     
     <div id="footerDiv" class="w3-gray">
 
@@ -89,17 +83,36 @@
         $footerDiv = $("#footerDiv");
         $menuDiv = $("#menuPanel");
 
+        $(document).ready(function () {
+            let frameTopHeight = parseInt($headerDiv.css("height")) + parseInt($menuDiv.css("height"));
+            $("#mainFrame").css({ "position": "absolute", "top": frameTopHeight + "px", "left": "0px", "width": "100%", "height": getMainFrameHeight()});
+            //display loginForm in mainFrame if not loggedIn
+            $("#mainFrame").attr("src", "loginForm.html");
+
+        });
+
         function w3_open() {
-            $("#mainDiv").css({ "margin-left": "20%", "width": "80%" });
-            let sideBarHeight = window.innerHeight - parseInt($headerDiv.css("height")) - parseInt($menuDiv.css("height")) - parseInt($footerDiv.css("height"));
-            $("#mySidebar").css({ "width": "20%", "display": "block", "height": sideBarHeight});
+            $("#mainFrame").css({ "margin-left": "20%", "width": "80%" });
+            $("#mySidebar").css({ "width": "20%", "display": "block", "height": getMainFrameHeight()});
             $("#Account").html("<i class='far fa-user'></i>").attr("onclick", "w3_close()");
         }
         function w3_close() {
-            $("#mainDiv").css({ "margin-left": "0%", "width": "100%" });
+            $("#mainFrame").css({ "margin-left": "0%", "width": "100%" });
             $("#mySidebar").css("display", "none");
             $("#Account").html("<i class='fas fa-user'></i>").attr("onclick", "w3_open()");
         }
+
+        function getMainFrameHeight() {
+            return window.innerHeight - parseInt($headerDiv.css("height")) - parseInt($menuDiv.css("height")) - parseInt($footerDiv.css("height"));
+        }
+
+        function open_Page(nameofpage) {
+            $("#mainFrame").attr("src", nameofpage + ".html");
+            
+        }
+
+        
     </script>
+    
 </body>
 </html>
