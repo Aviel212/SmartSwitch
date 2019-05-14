@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="styles/w3css.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+
+</head>
+<body>
+    <div id="main-div">
+        <table id="main-table">
+            <tr>
+                <td><h3><u>Add New Device:   </u></h3></td>
+                <td>
+                    <a href="AddNewDevice.html">
+                        <i class="fa fa-refresh" aria-hidden="false" style="width:20px"></i>
+                    </a>
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+    <script>
+        //MAY NOT INCLUDE ALL NEEDED FUNCTIONS YET,NEED TO BE TESTED WITH DATABASE
+        function drawMacAddress() {
+            //this function is on load 
+            //gets available mac addressses from database, in order to add them to main table
+            //on loop,create for each address a tr, 2 td
+            //first td contains actuall mac address, second contains accept reject buttons
+            //each button on click eventto different function
+            // add td to tr, add tr to table
+            //need a check not to create a row for an already accepted device(checks if curren mac is in the list of approved devices from database)
+        }
+        function acceptPopUp() {
+            //need to create a mini div that overlaps main div
+            var myPopUp = document.createElement("div");
+            myPopUp.style.zIndex = "1";
+            myPopUp.style.width = "30px";
+            myPopUp.style.height = "30px";
+            myPopUp.style.position="fixed";
+
+            var myMainDiv = document.getElementById("main-div");
+            myMainDiv.disabled;
+
+            //mini div contains option to add nickname and decide device priority, next and cancel buttons
+
+            var miniTable = document.createElement("table");
+            var nicknameTR = document.createElement("tr");
+            var priorityTR = document.createElement("tr");
+            var firstTD  = document.createElement("td");
+            var secondTD = document.createElement("td");
+            var thirdTD = document.createElement("td");
+            var fourthTD = document.createElement("td");
+            var fifthTD = document.createElement("td");
+           
+            var nicknameText = document.createElement("text"), nicknamePar=document.createElement("p");
+            nicknameText.setAttribute("textID", ID);
+            nicknamePar.setAttribute("Nickname: ", VALUE);
+
+            firstTD.appendChild(nicknamePar);
+            secondTD.appendChild(nicknameText);
+            nicknameTR.appendChild(firstTD);
+            nicknameTR.appendChild(secondTD);
+            miniTable.appendChild(nicknameTR);
+
+            var priorityPar = document.createElement("p");
+            priorityPar.setAttribute("Priority: ", VALUE);
+            thirdTD.appendChild(priorityPar);
+
+            var checkbox1 = document.createElement('input');
+            checkbox1.type = "checkbox";
+            checkbox1.name = "chkbox";
+            checkbox1.id = "cbid1";
+            var label1 = document.createElement('label');
+            var tn1 = document.createTextNode("ess");
+            label1.htmlFor = "cbid1";
+            label1.appendChild(tn1);
+            fourthTD.appendChild(label1);
+            fourthTD.appendChild(checkbox1);
+
+            var checkbox2 = document.createElement('input');
+            checkbox2.type = "checkbox";
+            checkbox2.name = "chkbox";
+            checkbox2.id = "cbid2";
+            var label2 = document.createElement('label');
+            var tn2 = document.createTextNode("non-ess");
+            label2.htmlFor = "cbid2";
+            label2.appendChild(tn1);
+            fifthTD.appendChild(label2);
+            fifthTD.appendChild(checkbox2);
+
+            priorityTR.appendChild(thirdTD);
+            priorityTR.appendChild(fourthTD);
+            priorityTR.appendChild(fifthTD);
+
+            miniTable.appendChild(nicknameTR);
+            miniTable.appendChild(priorityTR);
+
+            //create and add next cancel buttons
+            var cancelBTN = document.createElement("BUTTON");
+            cancelBTN.innerHTML = "cancel";
+            cancelBTN.onclick = function () { 
+                //removes popup from main div and "restores" main div to normal operations
+            };
+            var nextBTN = document.createElement("BUTTON");
+            nextBTN.innerHTML = "next"; 
+            nextBTN.onclick = function () { 
+                //takes user input from popup and adds them to device settings (updates them to database)
+            //removes popup from main div and "restores" main div to normal operations
+             //updates main table by removing the entire tr (macc address ,2 buttons)and reloading table to look
+            };
+            
+
+            //add to popup all elements and then pop up to main div( "disable" main div)
+            myPopUp.appendChild(miniTable);
+            myPopUp.appendChild(nextBTN);
+            myPopUp.appendChild(cancelBTN);
+            myMainDiv.appendChild(myPopUp);
+
+            
+        }
+        function rejectPopUp() {
+            //updates main table by removing the entire tr (macc address ,2 buttons)and reloading table to look good
+
+        }
+        //checks if the current mac is in the list of approved devices
+        function checkINList() {
+            //use this function in drawMacAddress when deciding and creating the add new devices list
+            //checking by comparing approved list in database
+        }
+
+        //MAYBE NOT NECCACARY
+        function nextButton() {
+            //takes user input from mini div and adds them to device settings (updates them to database)
+            //removes mini div from main div and "restores" main div to normal operations
+             //updates main table by removing the entire tr (macc address ,2 buttons)and reloading table to look good
+        }
+        function cancelButton() {
+            //removes mini div from main div and "restores" main div to normal operations
+        }
+    </script>
+</body>
+</html>

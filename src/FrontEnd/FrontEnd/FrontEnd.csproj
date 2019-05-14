@@ -95,6 +95,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AddNewDevice.html" />
+    <Content Include="AddNewSwitch.html" />
+    <Content Include="AvailableSwitches.html" />
     <Content Include="device_Timing_Summary.html" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
