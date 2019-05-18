@@ -1,5 +1,5 @@
 ﻿/// <reference path="jquery.js" />
-let server = "http://localhost:50534/api";
+let server = "https://localhost:44315/api";
 let usersApi = "/users";
 let plugsApi = "/plugs";
 let tasksApi = "/tasks";
