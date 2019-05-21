@@ -30,8 +30,14 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Users/yarden
-        [HttpGet("{username}", Name = "Get")]
-        public string Get(string username) => Newtonsoft.Json.JsonConvert.SerializeObject(DatabaseManager.GetInstance().GetUser(username));
+        [HttpGet("{username}/{password}", Name = "Get")]
+        public string Get(string username, string password)
+        {
+            User user = DatabaseManager.GetInstance().GetUser(username);
+            if (user == null) return noSuchUser;
+            if (user.Password == password) return Newtonsoft.Json.JsonConvert.SerializeObject(user);
+            else return "incorrect password";
+        }
 
         // POST: api/Users
         // example: api/Users/create/yarden/12345

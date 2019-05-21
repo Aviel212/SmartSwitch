@@ -49,13 +49,15 @@ function changePassword(username, newPassword) {
     return returnString;
 }
 
-// returns a JSON of the user
-function getUser(username) {
-    let user;
-    $.get(server + usersApi + "/" + username, function (data) {
-        user = JSON.parse(data);
+// returns "no such user" if there is no user with the given username, "incorrect password" if the password doesn't match
+// the user's password and a JSON of the user otherwise
+function getUser(username, password) {
+    let returnData;
+    $.get(server + usersApi + "/" + username + "/" + password, function (data) {
+        if (data === "no such user" || data === "incorrect password") returnData = data;
+        else returnData = JSON.parse(data);
     });
-    return user;
+    return returnData;
 }
 
 // returns a JSON of the plug
