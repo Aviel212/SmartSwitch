@@ -113,6 +113,7 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="device_settings.html" />
+    <Content Include="plugsMainViewer.html" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="scripts\jquery.js" />
