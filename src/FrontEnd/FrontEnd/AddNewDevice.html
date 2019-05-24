@@ -5,8 +5,9 @@
     <title></title>
     <link href="styles/w3css.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="scripts/jquery.js"></script>
+    <script src="scripts/SmartSwitchServerInterface.js"></script>
 </head>
 <body>
     <div id="main-div" style="overflow-y:scroll">
@@ -15,13 +16,13 @@
                 <td><h3><u>Add New Device:   </u></h3></td>
                 <td>
                     <a href="AddNewDevice.html">
-                        <i class="fa fa-refresh" aria-hidden="false" style="width:20px"></i>
+                        <i class="fa fa-refresh"  ></i>
                     </a>
                 </td>
 
             </tr>
         </table>
-        <div id="myPopUp-div">
+        <div id="myPopUp-div" style="display:none"> 
             <table>
                 <tr>
                     <td><p>nickname</p></td>
@@ -30,8 +31,8 @@
                 <tr>
                     <td><p>priority:</p></td>
                     <td>
-                        <input type="radio" name="prio" value="Essential">ess<br>
-                        <input type="radio" name="prio" value="NonEssential"> non-ess<br>
+                        <input type="radio" name="prio" value="essential">ess<br>
+                        <input type="radio" name="prio" value="nonessential"> non-ess<br>
                     </td>
                 </tr>
             </table>
@@ -40,20 +41,22 @@
         </div>
     </div>
     <script>
-        let USER//need to check if user is a global at aviel
+        let USER;//need to check if user is a global at aviel
         let $myPopUp;
         let $main;
         let notApproved = [];
         let $notifier;
 
         $(document).ready(function () {
+            //USER = getUser("yarden", "12345678");//needed for testings
+            
             $main = $("#main-div");
             $main.css("position", "relative");
             $myPopUp = $("#myPopUp-div");
 
             $myPopUp.css("z-index", "2000");
 
-            $myPopUp.css("width", 100);
+            $myPopUp.css("width", 100);//main.css.width*0.2+px
             $myPopUp.css("height", 100);
             $main.css("width",300);//need to be discussed
             $main.css("height", 300);
@@ -69,12 +72,12 @@
 
         function drawMacAddress()
         {
-            for (let i = 0; i < USER.plugs.length; i++)
+            for (let i = 0; i < USER.Plugs.length; i++)
             {
-                if (USER.plugs[i].Approved == false)
+                if (USER.Plugs[i].Approved == false)
                 {
-                    notApproved.add(USER.plugs[i]);
-                    insertnotApproved(USER.plugs[i]);
+                    notApproved.push(USER.Plugs[i]);
+                    insertnotApproved(USER.Plugs[i]);
                 }
 
             }
@@ -88,49 +91,56 @@
             let $buttonsTD = $("<td>");
 
             let $macText = $("<p>");
-            $macText.val("plugg.Mac");//gets the mac address from the current plug
+            $macText.text(plugg.Mac);//gets the mac address from the current plug
             $macTD.append($macText);
 
-            let $accept = $("<button>");
+            let $accept = $("<input>").prop({ "type": "button", "value":"accept"});
             let $reject = $("<button>");
-            $accept.prop('value', 'accept');
-            $reject.prop('value', 'reject');
+            $accept.prop("value", "accept");
+            $reject.prop("value", "reject");
 
             $accept.on('click', function () {//my pop up shows up to let user enter nickname and priority
                 $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
                 $myPopUp.show();
-                $main.prop("disabled", true);//remmember to cancel at the end
-                $myPopUp.prop("disabled", false);
-                $notifer = plugg//copying the current chosen mac address 
+                $("input[type='button']").prop("disabled", true);
+               // $myPopUp.prop("disabled", false);
+                $("#myPopUp-div input[type='button']").prop("disabled", false);
+                $notifier = plugg//copying the current chosen mac address 
                
 
 
             });
 
 
-            $reject.on('click', removeFromList);//need to remove from array then on loop do insert not approved
-            $buttonsTD.append($accept, $reject);//works?
+           // $reject.on('click', removeFromList);//need to remove from array then on loop do insert not approved
+            $buttonsTD.append($accept);//works?
 
             $currentTR.append($macTD);
             $currentTR.append($buttonsTD);
+            $("#main-table").append($currentTR);
+
+
         }
         function cancelPopUp()
         {
             $myPopUp.hide();
-            $main.prop("disabled", false);
+            $("input[type='button']").prop("disabled", false);
+            
 
         }
         function approveContent()
         {
-            for (let i = 0; i < USER.plugs.length; i++)
-            {
-                if (USER.plugs[i].Mac == $notifier)
-                {
-                    USER.plugs[i].Nickname = $("#Nickname").val();//works?
-                    USER.plugs[i].Approved = true;
-                    USER.plugs[i].Priority = $("input[name='prio']:checked").val()
-                }
-            }
+           if( setPlugNickname($notifier.Mac, $("#Nickname").val())==="ok")
+                $notifier.Nickname = $("#Nickname").val();
+
+           if (approvePlug($notifier.Mac) === "ok") 
+                $notifier.Approved = true;
+           if (setPlugPriority($notifier.Mac, $("input[name='prio']:checked").val()) === "ok")
+                $notifier.Priority = $("input[name='prio']:checked").val();
+            
+           $myPopUp.hide();
+           $("input[type='button']").prop("disabled", false);   
+         
         }
         //////////////////////////////////////////////////////////////////
 
