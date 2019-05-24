@@ -47,14 +47,6 @@ C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\roslyn\
 C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\FrontEnd.dll.config
 C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\FrontEnd.dll
 C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\FrontEnd.pdb
-C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.Agent.Intercept.dll
-C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.DependencyCollector.dll
-C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.PerfCounterCollector.dll
-C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.ServerTelemetryChannel.dll
-C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.Web.dll
-C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.WindowsServer.dll
-C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.ApplicationInsights.dll
-C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.DependencyCollector.xml
 C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.ServerTelemetryChannel.xml
 C:\Users\ron katz\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.Web.xml

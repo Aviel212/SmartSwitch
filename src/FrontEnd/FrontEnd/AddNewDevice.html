@@ -6,10 +6,10 @@
     <link href="styles/w3css.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-    <div id="main-div">
+    <div id="main-div" style="overflow-y:scroll">
         <table id="main-table">
             <tr>
                 <td><h3><u>Add New Device:   </u></h3></td>
@@ -21,126 +21,125 @@
 
             </tr>
         </table>
-
+        <div id="myPopUp-div">
+            <table>
+                <tr>
+                    <td><p>nickname</p></td>
+                    <td><input type="text" id="Nickname"></td>
+                </tr>
+                <tr>
+                    <td><p>priority:</p></td>
+                    <td>
+                        <input type="radio" name="prio" value="Essential">ess<br>
+                        <input type="radio" name="prio" value="NonEssential"> non-ess<br>
+                    </td>
+                </tr>
+            </table>
+            <input type="button"  id="answeryes" value="next" onclick="approveContent()" />
+            <input type="button"  id="answerno" value="cancel" onclick="cancelPopUp()"  />
+        </div>
     </div>
     <script>
-        //MAY NOT INCLUDE ALL NEEDED FUNCTIONS YET,NEED TO BE TESTED WITH DATABASE
-        function drawMacAddress() {
-            //this function is on load 
-            //gets available mac addressses from database, in order to add them to main table
-            //on loop,create for each address a tr, 2 td
-            //first td contains actuall mac address, second contains accept reject buttons
-            //each button on click eventto different function
-            // add td to tr, add tr to table
-            //need a check not to create a row for an already accepted device(checks if curren mac is in the list of approved devices from database)
-        }
-        function acceptPopUp() {
-            //need to create a mini div that overlaps main div
-            var myPopUp = document.createElement("div");
-            myPopUp.style.zIndex = "1";
-            myPopUp.style.width = "30px";
-            myPopUp.style.height = "30px";
-            myPopUp.style.position="fixed";
+        let USER//need to check if user is a global at aviel
+        let $myPopUp;
+        let $main;
+        let notApproved = [];
+        let $notifier;
 
-            var myMainDiv = document.getElementById("main-div");
-            myMainDiv.disabled;
+        $(document).ready(function () {
+            $main = $("#main-div");
+            $main.css("position", "relative");
+            $myPopUp = $("#myPopUp-div");
 
-            //mini div contains option to add nickname and decide device priority, next and cancel buttons
+            $myPopUp.css("z-index", "2000");
 
-            var miniTable = document.createElement("table");
-            var nicknameTR = document.createElement("tr");
-            var priorityTR = document.createElement("tr");
-            var firstTD  = document.createElement("td");
-            var secondTD = document.createElement("td");
-            var thirdTD = document.createElement("td");
-            var fourthTD = document.createElement("td");
-            var fifthTD = document.createElement("td");
-           
-            var nicknameText = document.createElement("text"), nicknamePar=document.createElement("p");
-            nicknameText.setAttribute("textID", ID);
-            nicknamePar.setAttribute("Nickname: ", VALUE);
-
-            firstTD.appendChild(nicknamePar);
-            secondTD.appendChild(nicknameText);
-            nicknameTR.appendChild(firstTD);
-            nicknameTR.appendChild(secondTD);
-            miniTable.appendChild(nicknameTR);
-
-            var priorityPar = document.createElement("p");
-            priorityPar.setAttribute("Priority: ", VALUE);
-            thirdTD.appendChild(priorityPar);
-
-            var checkbox1 = document.createElement('input');
-            checkbox1.type = "checkbox";
-            checkbox1.name = "chkbox";
-            checkbox1.id = "cbid1";
-            var label1 = document.createElement('label');
-            var tn1 = document.createTextNode("ess");
-            label1.htmlFor = "cbid1";
-            label1.appendChild(tn1);
-            fourthTD.appendChild(label1);
-            fourthTD.appendChild(checkbox1);
-
-            var checkbox2 = document.createElement('input');
-            checkbox2.type = "checkbox";
-            checkbox2.name = "chkbox";
-            checkbox2.id = "cbid2";
-            var label2 = document.createElement('label');
-            var tn2 = document.createTextNode("non-ess");
-            label2.htmlFor = "cbid2";
-            label2.appendChild(tn1);
-            fifthTD.appendChild(label2);
-            fifthTD.appendChild(checkbox2);
-
-            priorityTR.appendChild(thirdTD);
-            priorityTR.appendChild(fourthTD);
-            priorityTR.appendChild(fifthTD);
-
-            miniTable.appendChild(nicknameTR);
-            miniTable.appendChild(priorityTR);
-
-            //create and add next cancel buttons
-            var cancelBTN = document.createElement("BUTTON");
-            cancelBTN.innerHTML = "cancel";
-            cancelBTN.onclick = function () { 
-                //removes popup from main div and "restores" main div to normal operations
-            };
-            var nextBTN = document.createElement("BUTTON");
-            nextBTN.innerHTML = "next"; 
-            nextBTN.onclick = function () { 
-                //takes user input from popup and adds them to device settings (updates them to database)
-            //removes popup from main div and "restores" main div to normal operations
-             //updates main table by removing the entire tr (macc address ,2 buttons)and reloading table to look
-            };
+            $myPopUp.css("width", 100);
+            $myPopUp.css("height", 100);
+            $main.css("width",300);//need to be discussed
+            $main.css("height", 300);
             
+            $myPopUp.css({ top: 40, left: 50, position: 'absolute' });
+            $myPopUp.hide();
 
-            //add to popup all elements and then pop up to main div( "disable" main div)
-            myPopUp.appendChild(miniTable);
-            myPopUp.appendChild(nextBTN);
-            myPopUp.appendChild(cancelBTN);
-            myMainDiv.appendChild(myPopUp);
+            //getting all available mac addressess and appending them to main div
+            drawMacAddress();
+
+            
+        });
+
+        function drawMacAddress()
+        {
+            for (let i = 0; i < USER.plugs.length; i++)
+            {
+                if (USER.plugs[i].Approved == false)
+                {
+                    notApproved.add(USER.plugs[i]);
+                    insertnotApproved(USER.plugs[i]);
+                }
+
+            }
 
             
         }
-        function rejectPopUp() {
-            //updates main table by removing the entire tr (macc address ,2 buttons)and reloading table to look good
+        function insertnotApproved(plugg)
+        {
+            let $currentTR = $("<tr>");
+            let $macTD = $("<td>");
+            let $buttonsTD = $("<td>");
+
+            let $macText = $("<p>");
+            $macText.val("plugg.Mac");//gets the mac address from the current plug
+            $macTD.append($macText);
+
+            let $accept = $("<button>");
+            let $reject = $("<button>");
+            $accept.prop('value', 'accept');
+            $reject.prop('value', 'reject');
+
+            $accept.on('click', function () {//my pop up shows up to let user enter nickname and priority
+                $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
+                $myPopUp.show();
+                $main.prop("disabled", true);//remmember to cancel at the end
+                $myPopUp.prop("disabled", false);
+                $notifer = plugg//copying the current chosen mac address 
+               
+
+
+            });
+
+
+            $reject.on('click', removeFromList);//need to remove from array then on loop do insert not approved
+            $buttonsTD.append($accept, $reject);//works?
+
+            $currentTR.append($macTD);
+            $currentTR.append($buttonsTD);
+        }
+        function cancelPopUp()
+        {
+            $myPopUp.hide();
+            $main.prop("disabled", false);
 
         }
-        //checks if the current mac is in the list of approved devices
-        function checkINList() {
-            //use this function in drawMacAddress when deciding and creating the add new devices list
-            //checking by comparing approved list in database
+        function approveContent()
+        {
+            for (let i = 0; i < USER.plugs.length; i++)
+            {
+                if (USER.plugs[i].Mac == $notifier)
+                {
+                    USER.plugs[i].Nickname = $("#Nickname").val();//works?
+                    USER.plugs[i].Approved = true;
+                    USER.plugs[i].Priority = $("input[name='prio']:checked").val()
+                }
+            }
         }
+        //////////////////////////////////////////////////////////////////
 
-        //MAYBE NOT NECCACARY
-        function nextButton() {
-            //takes user input from mini div and adds them to device settings (updates them to database)
-            //removes mini div from main div and "restores" main div to normal operations
-             //updates main table by removing the entire tr (macc address ,2 buttons)and reloading table to look good
-        }
-        function cancelButton() {
-            //removes mini div from main div and "restores" main div to normal operations
-        }
+
+
+
+
+
+        
     </script>
 </body>
 </html>
