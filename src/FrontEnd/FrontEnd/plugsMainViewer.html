@@ -144,7 +144,7 @@
 
         var selectArr = [
             { val: 0, text: "ESSENTIAL" },
-            { val: 1, text: "NON-ESSENTIAL" },
+            { val: 1, text: "NONESSENTIAL" },
             { val: 2, text: "IRRELEVANT" }
         ];
 
@@ -195,11 +195,11 @@
             if (!(newName === plug.Nickname))
                 setPlugNickname(mac, newName);
             if (!(newPriority.toLowerCase() === priorityText(plug.Priority).toLowerCase()))
-                setPlugPriority(mac, priorityToNumber(newPriority));
+                setPlugPriority(mac, newPriority);
             if (!(plug.Approved === newApproved))
                 approvePlug(mac);
             if (!(newIsOn === plug.IsOn)) {
-                if (plug.IsOn)
+                if (newIsOn)
                     turnPlugOn(mac);
                 else
                     turnPlugOff(mac);
@@ -354,7 +354,7 @@
                 case 0:
                     return "ESSENTIAL";
                 case 1:
-                    return "NON-ESSENTIAL";
+                    return "NONESSENTIAL";
                 case 2:
                     return "IRRELEVANT";
             }
@@ -365,7 +365,7 @@
             switch (priority) {
                 case "ESSENTIAL":
                     return 0;
-                case "NON-ESSENTIAL":
+                case "NONESSENTIAL":
                     return 1;
                 case "IRRELEVANT":
                     return 2;
