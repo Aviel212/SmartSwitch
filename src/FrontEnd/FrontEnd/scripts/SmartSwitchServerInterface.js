@@ -69,15 +69,15 @@ function getPlug(mac) {
     return plug;
 
 }
-/*+ "/" + username*/
-function getPlugs() {
-    let plugs;
-    let username = "/tal";
-    $.get(server + usersApi + "/plugs", function (data) {
-        plugs = data;//JSON.parse(data);
-    });
-    return plugs;
-}
+///*+ "/" + username*/
+//function getPlugs() {
+//    let plugs;
+//    let username = "/tal";
+//    $.get(server + usersApi + "/plugs", function (data) {
+//        plugs = data;//JSON.parse(data);
+//    });
+//    return plugs;
+//}
 
 // turns a plug on
 // returns "no such plug" if the plug doesn't exist, "plug not connected" if the plug is not

@@ -111,31 +111,21 @@
         </table>
     </div>
 
-    <div id="test">
+    <!--<div id="test">
         <select>
             <option value="ESSENTIAL">ESSENTIAL</option>
             <option value="NONESSENTIAL">NON-ESSENTIAL</option>
             <option value="IRRELEVANT">IRRELEVANT</option>
         </select>
 
-        <input type="text" name="name" value="TV" />
+        <input type="text" name="name" value="TV" />-->
 
-        <script>
-            function fadeRows() {
-                $("tr:has(td)").hover(function (e) {
-                    $(this).css("cursor", "pointer");
-                    $("tr:has(td)").addClass('blur');
-                    $(this).removeClass('blur');
-                },
-                    function (e) {
-                        if (!modify_enabled)
-                        $("tr:has(td)").removeClass('blur');
-                    });
-            }
+        <!--<script>
+
 
 
         </script>
-    </div>
+    </div>-->
 
     <script>
         var manipulatedPlugs = [];
@@ -150,6 +140,18 @@
             { val: 1, text: "NON-ESSENTIAL" },
             { val: 2, text: "IRRELEVANT" }
         ];
+
+        function fadeRows() {
+            $("tr:has(td)").hover(function (e) {
+                $(this).css("cursor", "pointer");
+                $("tr:has(td)").addClass('blur');
+                $(this).removeClass('blur');
+            },
+                function (e) {
+                    if (!modify_enabled)
+                        $("tr:has(td)").removeClass('blur');
+                });
+        }
 
         function init(){
             rowInChange = -1;
@@ -236,7 +238,7 @@
         var plugs;
         function refresh() {
             init();
-            plugs = getPlugs();     //read from server
+            plugs = getUser("yarden","12345678").Plugs;     //read from server
             reloadPlugsIntoTable();
             fadeRows();
             sortByTabe();
@@ -253,11 +255,11 @@
                 let plug = plugs[i];
                     
                 let $td1 = $("<td>").html(++i);
-                let $td2 = $("<td>").html(loadIcon(plug.nickname));
-                let $td3 = $("<td>").html(plug.nickname);
-                let $td4 = $("<td>").html(priorityText(plug.priority));
-                let $td5 = $("<td>").html(approvedText(plug.approved));
-                let $td6 = $("<td>").html(isOnText(plug.isOn));
+                let $td2 = $("<td>").html(loadIcon(plug.Nickname));
+                let $td3 = $("<td>").html(plug.Nickname);
+                let $td4 = $("<td>").html(priorityText(plug.Priority));
+                let $td5 = $("<td>").html(approvedText(plug.Approved));
+                let $td6 = $("<td>").html(isOnText(plug.IsOn));
                 let $td7 = $("<td>").html("...");
                 $tr.append($td1, $td2, $td3, $td4, $td5, $td6, $td7);
                 $tr.click( trClicked);
