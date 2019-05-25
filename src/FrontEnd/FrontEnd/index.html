@@ -26,6 +26,8 @@
             border:1px solid black; 
             width:100%; 
             height:10%;
+            padding:5px;
+            text-align:center;
         }
         #topDiv{
             position:fixed;
@@ -34,12 +36,9 @@
         }
         #mySidebar{
             display:none; 
-            top:160px;
         }
-        #mainDiv{
-            border:1px solid black; 
+        #mainDiv{ 
             width:100%; 
-            height:900px; 
             position:relative;
             top:160px;
             z-index:-1;
@@ -67,7 +66,7 @@
     </div>
     <div id="mainDiv">
 
-        <div id="loginForm" class="w3-border">
+        <div id="loginForm" class="w3-border" style="text-align:center">
             <form action="/login.cs" class="w3-margin-left"> <!-- need to edit the form page to submit-->
                 <p>Nickname: <input type="text" name="Nickname" /></p>
                 <p>Password: <input type="password" name="password" /></p>
@@ -80,7 +79,8 @@
     </div>
     
     <div id="footerDiv" class="w3-gray">
-
+        <p><i class="fa fa-copyright"></i> Ruppin Academic Center Mini Project -  
+            Aviel Vaknin, Yarden Shoham, Ron Katz, Avi Mishayev, Alaa Ganema</p>
     </div>
     <script>
         //script to handle sideBar
@@ -92,7 +92,8 @@
         function w3_open() {
             $("#mainDiv").css({ "margin-left": "20%", "width": "80%" });
             let sideBarHeight = window.innerHeight - parseInt($headerDiv.css("height")) - parseInt($menuDiv.css("height")) - parseInt($footerDiv.css("height"));
-            $("#mySidebar").css({ "width": "20%", "display": "block", "height": sideBarHeight});
+            let topDivHeight = parseInt($headerDiv.css("height")) + parseInt($menuDiv.css("height"));
+            $("#mySidebar").css({ "width": "20%", "display": "block", "height": sideBarHeight, "top": topDivHeight });
             $("#Account").html("<i class='far fa-user'></i>").attr("onclick", "w3_close()");
         }
         function w3_close() {
