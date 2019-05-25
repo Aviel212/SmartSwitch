@@ -163,6 +163,7 @@
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="scripts\jquery.js" />
+    <Content Include="scripts\SmartSwitchServerInterface.js" />
     <Content Include="showPowerConsumption.html" />
     <Content Include="styles\w3css.css" />
     <Content Include="Web.config" />

@@ -1,5 +1,5 @@
 ﻿/// <reference path="jquery.js" />
-let server = "https://localhost:44315/api";
+let server = "https://localhost:50534/api";
 let usersApi = "/users";
 let plugsApi = "/plugs";
 let tasksApi = "/tasks";
@@ -68,6 +68,15 @@ function getPlug(mac) {
     });
     return plug;
 
+}
+/*+ "/" + username*/
+function getPlugs() {
+    let plugs;
+    let username = "/tal";
+    $.get(server + usersApi + "/plugs", function (data) {
+        plugs = data;//JSON.parse(data);
+    });
+    return plugs;
 }
 
 // turns a plug on
