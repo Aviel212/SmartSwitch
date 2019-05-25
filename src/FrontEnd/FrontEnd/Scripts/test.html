@@ -48,6 +48,9 @@
         function addRepeatedTaskYardenOff() {
             addRepeatedTask(currentPlug.Mac, Operations.TURNOFF, new Date(), 1);
         }
+        function changePriorityYarden() {
+            console.log("priority: " + setPlugPriority("BC:DD:C2:23:D6:60", "essential"));
+        }
     </script>
     <title></title>
     <style>
@@ -69,6 +72,7 @@
     <input type="button" value="addOneTimeTaskYarden" onclick="addOneTimeTaskYarden()" />
     <input type="button" value="addRepeatedTaskYardenOn" onclick="addRepeatedTaskYardenOn()" />
     <input type="button" value="addRepeatedTaskYardenOff" onclick="addRepeatedTaskYardenOff()" />
+    <input type="button" value="changePriorityYarden" onclick="changePriorityYarden()" />
     
 </body>
 </html>
