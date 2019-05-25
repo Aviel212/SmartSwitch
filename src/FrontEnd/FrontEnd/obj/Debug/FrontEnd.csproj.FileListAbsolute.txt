@@ -14,14 +14,6 @@ C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\roslyn\VBC
 C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\FrontEnd.dll.config
 C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\FrontEnd.dll
 C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\FrontEnd.pdb
-C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.Agent.Intercept.dll
-C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.DependencyCollector.dll
-C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.PerfCounterCollector.dll
-C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.ServerTelemetryChannel.dll
-C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.Web.dll
-C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.WindowsServer.dll
-C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.ApplicationInsights.dll
-C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.DependencyCollector.xml
 C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.ServerTelemetryChannel.xml
 C:\Users\Aviel\Documents\GitHub\SmartSwitch\src\FrontEnd\FrontEnd\bin\Microsoft.AI.Web.xml

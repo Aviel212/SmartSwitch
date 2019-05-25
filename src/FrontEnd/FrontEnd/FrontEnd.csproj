@@ -95,6 +95,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="about.html" />
     <Content Include="AddNewDevice.html" />
     <Content Include="AddNewSwitch.html" />
     <Content Include="AvailableSwitches.html" />
@@ -127,6 +128,7 @@
     <Content Include="device_Timing_Summary.html" />
     <Content Include="ExamplePage.html" />
     <Content Include="loginForm.html" />
+    <Content Include="manual.html" />
     <Content Include="obj\Debug\FrontEnd.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\FrontEnd.dll" />
     <Content Include="obj\Debug\FrontEnd.pdb" />
