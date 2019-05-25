@@ -26,6 +26,8 @@
             border:1px solid black; 
             width:100%; 
             height:10%;
+            padding:5px;
+            text-align:center;
         }
         #topDiv{
             position:fixed;
@@ -34,18 +36,11 @@
         }
         #mySidebar{
             display:none; 
-            top:160px;
         }
-        #mainFrame{
-            border:1px solid black;  
+        #mainDiv{ 
+            width:100%; 
             position:relative;
             z-index:-1;
-
-        }
-        #loginForm{
-            position:relative;
-            top:0px;
-            left:10px;
         }
     </style>
 </head>
@@ -56,28 +51,30 @@
             <h3 class="w3-medium">Login to your account to modify your plugs</h3>
         </div>
         <div id="menuPanel" class="w3-bar w3-gray">
-            <div id="Account" class="w3-bar-item" onclick="w3_open()"><i class="fas fa-user"></i></div>
-            <a href="#" id="Home" class="w3-bar-item" onclick="">Home</a>
-            <a href="#" id="Plugs" class="w3-bar-item" onclick="">Manual</a>
-            <a href="#" id="About" class="w3-bar-item" onclick="">About</a>
+            <div id="Account" class="w3-bar-item" onclick="w3_openSidebar()"><i class="fas fa-user"></i></div>
+            <a href="#" id="Home" class="w3-bar-item" onclick="openPage('loginForm')">Home</a>
+            <a href="#" id="Plugs" class="w3-bar-item" onclick="openPage('manual')">Manual</a>
+            <a href="#" id="About" class="w3-bar-item" onclick="openPage('about')">About</a>
         </div>
     </div>
     <div id="mySidebar" class="sidebar w3-bar-block w3-card">
-        <a href="#" class="w3-bar-item w3-button">Plugs</a>
-        <a href="#" class="w3-bar-item w3-button">Add New Device</a>
-        <a href="#" class="w3-bar-item w3-button">User Settings</a>
-        <a href="#" class="w3-bar-item w3-button">Logout</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="openPage('plugsMainViewer')">Plugs</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="openPage('addNewDevice')">Add New Device</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="openPage('plugs')">User Settings</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="openPage('plugs')">Logout</a>
     </div>
-    
-    <iframe id="mainFrame" src="about:blank">
-        
-    </iframe>
+    <div id="mainDiv">
+
+        <iframe id="mainFrame">
+
+        </iframe>
+    </div>
     
     <div id="footerDiv" class="w3-gray">
-
+        <p><i class="fa fa-copyright"></i> Ruppin Academic Center Mini Project -  
+            Aviel Vaknin, Yarden Shoham, Ron Katz, Avi Mishayev, Alaa Ganema</p>
     </div>
     <script>
-        //script to handle sideBar
         let headerDiv, menuDiv, footerDiv;
         $headerDiv = $("#headerDiv");
         $footerDiv = $("#footerDiv");
@@ -91,22 +88,24 @@
 
         });
 
-        function w3_open() {
-            $("#mainFrame").css({ "margin-left": "20%", "width": "80%" });
-            $("#mySidebar").css({ "width": "20%", "display": "block", "height": getMainFrameHeight()});
-            $("#Account").html("<i class='far fa-user'></i>").attr("onclick", "w3_close()");
+        function w3_openSidebar() {
+            $("#mainDiv").css({ "margin-left": "20%", "width": "80%" });
+            let sideBarHeight = window.innerHeight - parseInt($headerDiv.css("height")) - parseInt($menuDiv.css("height")) - parseInt($footerDiv.css("height"));
+            let topDivHeight = parseInt($headerDiv.css("height")) + parseInt($menuDiv.css("height"));
+            $("#mySidebar").css({ "width": "20%", "display": "block", "height": sideBarHeight, "top": topDivHeight });
+            $("#Account").html("<i class='far fa-user'></i>").attr("onclick", "w3_closeSidebar()");
         }
-        function w3_close() {
-            $("#mainFrame").css({ "margin-left": "0%", "width": "100%" });
+        function w3_closeSidebar() {
+            $("#mainDiv").css({ "margin-left": "0%", "width": "100%" });
             $("#mySidebar").css("display", "none");
-            $("#Account").html("<i class='fas fa-user'></i>").attr("onclick", "w3_open()");
+            $("#Account").html("<i class='fas fa-user'></i>").attr("onclick", "w3_openSidebar()");
         }
 
         function getMainFrameHeight() {
             return window.innerHeight - parseInt($headerDiv.css("height")) - parseInt($menuDiv.css("height")) - parseInt($footerDiv.css("height"));
         }
 
-        function open_Page(nameofpage) {
+        function openPage(nameofpage) {
             $("#mainFrame").attr("src", nameofpage + ".html");
             
         }

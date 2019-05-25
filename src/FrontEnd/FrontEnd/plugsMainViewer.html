@@ -6,6 +6,7 @@
     <link href="./styles/w3css.css" rel="stylesheet" />
     <script src="Scripts/jquery.js"></script>
     <script src="./Scripts/SmartSwitchServerInterface.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Bree+Serif&display=swap" rel="stylesheet">
     <style>
         /*#mainTable {
             margin: auto;
@@ -15,25 +16,44 @@
             #mainTable td {
                 border: 1px solid black;
                 padding: 5px;
-                
+
             }*/
 
         img {
-            width: 30px;
-            height: 30px;
+            width: 50px;
+            height: 50px;
+            
         }
-        #circle{
-            width:20px;
-            height:20px;
+
+        #circle {
+            width: 20px;
+            height: 20px;
+            margin:auto;
         }
-        button{
+
+        button {
             margin: 10px;
         }
+
         .blur {
             text-shadow: 1px 1px 5px #aaa;
             color: transparent;
+           
         }
-
+            .blur img, .blur div, .blur input[type=checkbox] {
+               opacity: 0.3;
+            }
+        body {
+            font-family: 'Bree Serif', serif;
+        }
+        #plugs_tbl td, #plugs_tbl th {
+            text-align: center;
+            vertical-align: middle;
+            padding: 8px 8px;
+            /*display: table-cell;*/
+            border-right:1px solid black;
+        }
+        
     </style>
 </head>
 <body>
@@ -110,25 +130,12 @@
             </tbody>
         </table>
     </div>
-
-    <!--<div id="test">
-        <select>
-            <option value="ESSENTIAL">ESSENTIAL</option>
-            <option value="NONESSENTIAL">NON-ESSENTIAL</option>
-            <option value="IRRELEVANT">IRRELEVANT</option>
-        </select>
-
-        <input type="text" name="name" value="TV" />-->
-
-        <!--<script>
-
-
-
-        </script>
+    <!--<div>
+        <input id="ch" class="w3-check" type="checkbox" checked="">
     </div>-->
-
     <script>
         var manipulatedPlugs = [];
+        var plugs;
         var row;
         var $maniRow;
         var rowInChange = -1;
@@ -141,6 +148,13 @@
             { val: 2, text: "IRRELEVANT" }
         ];
 
+        function updatePlug() {
+            if (rowInChange == -1)
+                return;
+            //if (plugs[rowInChange - 1].Nickname === $maniRow.children("td").eq()
+             //Priority Approved IsOn
+        }
+
         function fadeRows() {
             $("tr:has(td)").hover(function (e) {
                 $(this).css("cursor", "pointer");
@@ -151,18 +165,45 @@
                     if (!modify_enabled)
                         $("tr:has(td)").removeClass('blur');
                 });
+
+            $("img").hover(function (e) {
+                $(this).css("cursor", "pointer");
+                $("img").addClass('blur');
+                $(this).removeClass('blur');
+            },
+                function (e) {
+                    if (!modify_enabled)
+                        $("img").removeClass('blur');
+                });
         }
 
-        function init(){
+        function init() {
             rowInChange = -1;
             inChanging = false;
             modify_enabled = false;
         }
 
         function modifyMode() {
-            
+
             modify_enabled = true;
             $("tr").css("border", "2px solid #ff9980");
+        }
+
+        function updatePlug(newName, newPriority, newApproved, newIsOn) {
+            let mac = plugs[rowInChange - 1].Mac;
+            let plug = plugs[rowInChange - 1];
+            if (!(newName === plug.Nickname))
+                setPlugNickname(mac, newName);
+            if (!(newPriority.toLowerCase() === priorityText(plug.Priority).toLowerCase()))
+                setPlugPriority(mac, priorityToNumber(newPriority));
+            if (!(plug.Approved === newApproved))
+                approvePlug(mac);
+            if (!(newIsOn === plug.IsOn)) {
+                if (plug.IsOn)
+                    turnPlugOn(mac);
+                else
+                    turnPlugOff(mac);
+            }
         }
 
         function saveChanges() {
@@ -171,18 +212,35 @@
                 let $tdPriority = $maniRow.children("td").eq(3);
                 let $tdApproved = $maniRow.children("td").eq(4);
                 let $tdIsOn = $maniRow.children("td").eq(5);
-                $tdName.html($tdName.children("input").eq(0).val());
-                $tdPriority.html($tdPriority.children("select").children("option:selected").text());
-                $tdApproved.children("input").eq(0).attr("disabled", "disabled");
-                $tdIsOn.children("div").unbind();
+
+                let newName = $tdName.children("input").eq(0).val();
+                let newPriority = $tdPriority.children("select").children("option:selected").text();
+                let newApproved = $tdApproved.children("input").eq(0).is(":checked") ? true : false;
+                //let newApproved = $tdApproved.children("input").eq(0).attr("checked") === "checked" ? true : false;
+                let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
+                //alert(newApproved);
+                updatePlug(newName, newPriority, newApproved, newIsOn);
+
+                refresh();
+                //$tdName.html(newName);
+                //$tdPriority.html(newPriority);
+                //$tdApproved.children("input").eq(0).attr("disabled", "disabled");
+                //$tdIsOn.children("div").unbind();
                 $maniRow.css("backgroundColor", "");
-                
+
             }
+            rowInChange = -1;
             inChanging = false;
             $("tr").css("border", "");
             modify_enabled = false;
             $("tr:has(td)").on("mouseenter mouseleave");
             fadeRows();
+        }
+
+        function is() {
+            if ($('#ch').is(":checked")) {
+                alert("hi");
+            }
         }
 
         function trClicked() {
@@ -203,7 +261,7 @@
             let $tdName = $maniRow.children("td").eq(2);
             let old_name = $tdName.html();
             $tdName.empty();
-            let $text = $("<input>").attr({ "type": "text", "name": "name", "value": old_name , "size":"10","margin":"0px"});
+            let $text = $("<input>").attr({ "type": "text", "name": "name", "value": old_name, "size": "10", "margin": "0px" });
             $tdName.append($text);
 
             let $tdPriority = $maniRow.children("td").eq(3);
@@ -221,13 +279,13 @@
             $tdApproved.children("input").eq(0).removeAttr("disabled");
 
             let $tdIsOn = $maniRow.children("td").eq(5);
-            $tdIsOn.children("div").eq(0).click(function() {
+            $tdIsOn.children("div").eq(0).click(function () {
                 if ($(this).hasClass("w3-green"))
                     $(this).removeClass("w3-green").addClass("w3-red");
                 else if ($(this).hasClass("w3-red"))
                     $(this).removeClass("w3-red").addClass("w3-green");
             })
-            
+
         }
 
         function plugHasChanged() {
@@ -235,17 +293,16 @@
             manipulatedPlugs.add(plug[id - 1]);
         }
 
-        var plugs;
+        
         function refresh() {
             init();
-            plugs = getUser("yarden","12345678").Plugs;     //read from server
+            plugs = getUser("yarden", "12345678").Plugs;     //read from server
             reloadPlugsIntoTable();
             fadeRows();
             sortByTabe();
         }
 
-        function reloadPlugsIntoTable()
-        {
+        function reloadPlugsIntoTable() {
             // init table
             $table = $("#plugs_tbl tbody");
             $table.empty();
@@ -253,7 +310,7 @@
             for (i in plugs) {
                 let $tr = $("<tr>");
                 let plug = plugs[i];
-                    
+                
                 let $td1 = $("<td>").html(++i);
                 let $td2 = $("<td>").html(loadIcon(plug.Nickname));
                 let $td3 = $("<td>").html(plug.Nickname);
@@ -262,7 +319,7 @@
                 let $td6 = $("<td>").html(isOnText(plug.IsOn));
                 let $td7 = $("<td>").html("...");
                 $tr.append($td1, $td2, $td3, $td4, $td5, $td6, $td7);
-                $tr.click( trClicked);
+                $tr.click(trClicked);
                 $table.append($tr);
             }
         }
@@ -280,22 +337,44 @@
 
         function loadIcon(name) {
             let $img = $("<img>").attr("src", "./resources/" + name + ".png");
+
+            //$img.on("error", function () {
+            //    $(this).remove();
+            //}).attr("src", "./resources/plug.png");
+
+            $img.on("error", function () {
+                $(this).attr("src", "./resources/plug.png");
+            });
+
             return $img;
         }
 
         function priorityText(priority) {
             switch (priority) {
                 case 0:
-                    return "essential";
+                    return "ESSENTIAL";
                 case 1:
-                    return "non-essential";
-                
+                    return "NON-ESSENTIAL";
+                case 2:
+                    return "IRRELEVANT";
+            }
+        }
+
+        function priorityToNumber(priority) {
+            priority = priority.toUpperCase();
+            switch (priority) {
+                case "ESSENTIAL":
+                    return 0;
+                case "NON-ESSENTIAL":
+                    return 1;
+                case "IRRELEVANT":
+                    return 2;
             }
         }
 
         function approvedText(approved) {
             let $input = $("<input>");
-            $input.addClass("w3-check").attr({ type: "checkbox" }).attr("disabled","");
+            $input.addClass("w3-check").attr({ type: "checkbox" }).attr("disabled", "");
             if (approved === true)
                 $input.attr("checked", "checked");
             else
@@ -327,8 +406,8 @@
             }
             function getCellValue(row, index) {
                 let text = $(row).children('td').eq(index).text();
-                if(text === "")
-                return;
+                //if(text === "")
+                return text;
             }
         }
 
