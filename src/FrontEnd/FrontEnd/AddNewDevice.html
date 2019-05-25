@@ -13,7 +13,7 @@
     <div id="main-div" style="overflow-y:scroll">
         <table id="main-table">
             <tr>
-                <td><h3><u>Add New Device:   </u></h3></td>
+                <td><h4><u>Add New Device:   </u></h4></td>
                 <td>
                     <a href="AddNewDevice.html">
                         <i class="fa fa-refresh"  ></i>
@@ -48,7 +48,7 @@
         let $notifier;
 
         $(document).ready(function () {
-            //USER = getUser("yarden", "12345678");//needed for testings
+            USER = getUser("yarden", "12345678");//needed for testings
             
             $main = $("#main-div");
             $main.css("position", "relative");
@@ -56,11 +56,11 @@
 
             $myPopUp.css("z-index", "2000");
 
-            $myPopUp.css("width", 100);//main.css.width*0.2+px
-            $myPopUp.css("height", 100);
+            $myPopUp.css("width", 290);//parseint(main.css.width)*0.2+"px"
+            $myPopUp.css("height", 150);
             $main.css("width",300);//need to be discussed
             $main.css("height", 300);
-            
+            $myPopUp.css("background-color", "yellow");
             $myPopUp.css({ top: 40, left: 50, position: 'absolute' });
             $myPopUp.hide();
 
@@ -94,8 +94,9 @@
             $macText.text(plugg.Mac);//gets the mac address from the current plug
             $macTD.append($macText);
 
-            let $accept = $("<input>").prop({ "type": "button", "value":"accept"});
-            let $reject = $("<button>");
+            let $accept = $("<input>").prop({ "type": "button", "value": "accept" });
+            let $reject = $("<input>").prop({ "type": "button", "value": "reject" });
+           
             $accept.prop("value", "accept");
             $reject.prop("value", "reject");
 
@@ -103,17 +104,25 @@
                 $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
                 $myPopUp.show();
                 $("input[type='button']").prop("disabled", true);
-               // $myPopUp.prop("disabled", false);
                 $("#myPopUp-div input[type='button']").prop("disabled", false);
-                $notifier = plugg//copying the current chosen mac address 
-               
-
-
+                $notifier = plugg//copying the current chosen mac address              
+            });
+            $reject.on('click', function () {
+                if (removePlug(plugg.Mac) === "ok")
+                    location.reload;//the plug was removed as an option, therefore we now build the list of unapproved plugs again without him by rebooting page
             });
 
+            let $buttonTable = $("<table>");//creating a place for the buttons
+            let $buttonTR = $("<tr>");
+            let $Atd = $("<td>");
+            let $Btd = $("<td>");
+            $Atd.append($accept);
+            $Btd.append($reject);
+            $buttonTR.append($Atd);
+            $buttonTR.append($Btd);
+            $buttonTable.append($buttonTR);
 
-           // $reject.on('click', removeFromList);//need to remove from array then on loop do insert not approved
-            $buttonsTD.append($accept);//works?
+            $buttonsTD.append($buttonTable);//works?
 
             $currentTR.append($macTD);
             $currentTR.append($buttonsTD);
@@ -139,7 +148,10 @@
                 $notifier.Priority = $("input[name='prio']:checked").val();
             
            $myPopUp.hide();
-           $("input[type='button']").prop("disabled", false);   
+            $("input[type='button']").prop("disabled", false);
+
+            location.reload();//plug is approves so we need to rebuild the list of unapproved plugs by rebooting the page
+            
          
         }
         //////////////////////////////////////////////////////////////////
