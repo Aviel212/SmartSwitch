@@ -1,5 +1,5 @@
 ﻿/// <reference path="jquery.js" />
-let server = "http://localhost:50534/api";
+let server = "https://backend.conveyor.cloud/api";
 let usersApi = "/users";
 let plugsApi = "/plugs";
 let tasksApi = "/tasks";
@@ -49,13 +49,15 @@ function changePassword(username, newPassword) {
     return returnString;
 }
 
-// returns a JSON of the user
-function getUser(username) {
-    let user;
-    $.get(server + usersApi + "/" + username, function (data) {
-        user = JSON.parse(data);
+// returns "no such user" if there is no user with the given username, "incorrect password" if the password doesn't match
+// the user's password and a JSON of the user otherwise
+function getUser(username, password) {
+    let returnData;
+    $.get(server + usersApi + "/" + username + "/" + password, function (data) {
+        if (data === "no such user" || data === "incorrect password") returnData = data;
+        else returnData = JSON.parse(data);
     });
-    return user;
+    return returnData;
 }
 
 // returns a JSON of the plug
@@ -67,6 +69,15 @@ function getPlug(mac) {
     return plug;
 
 }
+///*+ "/" + username*/
+//function getPlugs() {
+//    let plugs;
+//    let username = "/tal";
+//    $.get(server + usersApi + "/plugs", function (data) {
+//        plugs = data;//JSON.parse(data);
+//    });
+//    return plugs;
+//}
 
 // turns a plug on
 // returns "no such plug" if the plug doesn't exist, "plug not connected" if the plug is not

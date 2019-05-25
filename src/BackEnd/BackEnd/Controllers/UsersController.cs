@@ -17,6 +17,48 @@ namespace BackEnd.Controllers
     {
         private readonly string noSuchUser = "no such user";
 
+        // GET: api/Users/plugs/{username}
+        [HttpGet]
+        [Route("plugs")]
+        public IEnumerable<Plug> Get(string username)
+        {
+            //read plugs of yarden from db
+            string uname = "yarden";
+            User user = DatabaseManager.GetInstance().Context.Users.SingleOrDefault(x => x.UserName == uname);
+            if (user == null)
+                return null;
+            List<Plug> Plugs = user.Plugs;
+            //Plug p1 = new Plug("aa:bb")
+            //{
+            //    IsOn = true,
+            //    Nickname = "TV",
+            //    Approved = true,
+            //    AddedAt = DateTime.Now,
+            //    Priority = Plug.Priorities.ESSENTIAL
+            //};
+            //Plug p2 = new Plug("qq:ww")
+            //{
+            //    IsOn = false,
+            //    Nickname = "Toaster",
+            //    Approved = false,
+            //    AddedAt = DateTime.Now,
+            //    Priority = Plug.Priorities.NONESSENTIAL
+            //};
+            //Plug p3 = new Plug("yy:uu")
+            //{
+            //    IsOn = true,
+            //    Nickname = "Fridge",
+            //    Approved = true,
+            //    AddedAt = new DateTime(2018, 01, 01),
+            //    Priority = Plug.Priorities.ESSENTIAL
+            //};
+            //plugs.Add(p1);
+            //plugs.Add(p2);
+            //plugs.Add(p3);
+            return Plugs;
+        }
+
+
         // GET: api/Users
         [HttpGet]
         public IEnumerable<string> Get()
@@ -30,8 +72,14 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Users/yarden
-        [HttpGet("{username}", Name = "Get")]
-        public string Get(string username) => Newtonsoft.Json.JsonConvert.SerializeObject(DatabaseManager.GetInstance().GetUser(username));
+        [HttpGet("{username}/{password}", Name = "Get")]
+        public string Get(string username, string password)
+        {
+            User user = DatabaseManager.GetInstance().GetUser(username);
+            if (user == null) return noSuchUser;
+            if (user.Password == password) return Newtonsoft.Json.JsonConvert.SerializeObject(user);
+            else return "incorrect password";
+        }
 
         // POST: api/Users
         // example: api/Users/create/yarden/12345

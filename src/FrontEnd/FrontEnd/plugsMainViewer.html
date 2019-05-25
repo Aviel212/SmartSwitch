@@ -3,13 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <link href="../styles/w3css.css" rel="stylesheet" />
-
+    <link href="./styles/w3css.css" rel="stylesheet" />
+    <script src="Scripts/jquery.js"></script>
+    <script src="./Scripts/SmartSwitchServerInterface.js"></script>
     <style>
-        h3 {
-        }
-
-        #mainTable {
+        /*#mainTable {
             margin: auto;
             border-collapse: collapse;
             margin-top: 20px;
@@ -18,17 +16,24 @@
                 border: 1px solid black;
                 padding: 5px;
                 
-            }
+            }*/
 
         img {
             width: 30px;
             height: 30px;
         }
-
         #circle{
             width:20px;
             height:20px;
         }
+        button{
+            margin: 10px;
+        }
+        .blur {
+            text-shadow: 1px 1px 5px #aaa;
+            color: transparent;
+        }
+
     </style>
 </head>
 <body>
@@ -38,16 +43,17 @@
 
     <br />
 
-    <div class="w3-bar">
-        <button class="w3-bar-item w3-button w3-green w3-ripple" style="width:33.3%">Add</button>
-        <button class="w3-bar-item w3-button w3-teal w3-ripple" style="width:33.3%">Modify</button>
-        <button class="w3-bar-item w3-button w3-red w3-ripple" style="width:33.3%">Remove</button>
+    <div class="w3-bar" style="width:60%;margin-left:100px">
+        <button onclick="refresh()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:20%">Refresh</button>
+        <button onclick="modifyMode()" class="w3-bar-item w3-button w3-teal w3-ripple" style="width:20%">Modify</button>
+        <button onclick="getFocus()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">Remove</button>
+        <button class="w3-bar-item w3-button w3-gray w3-ripple" style="width:20%" onclick="saveChanges()">Save</button>
     </div>
 
     <br />
 
     <div>
-        <table class="w3-table-all w3-hoverable">
+        <table id="plugs_tbl" class="w3-table-all w3-hoverable">
             <thead>
                 <tr class="w3-gray">
                     <th>N.</th>
@@ -59,64 +65,273 @@
                     <th>properties</th>
                 </tr>
             </thead>
-            <tr>
-                <td>1</td>
-                <td><img src="./resources/toaster.png" /></td>
-                <td>toaster</td>
-                <td>non-essential</td>
-                <td>
-                    <input class="w3-check" type="checkbox" checked="checked" disabled>
-                </td>
-                <td><div id="circle" class="w3-circle w3-red"></div></td>
-                <td><a href="#">...</a></td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td><img src="./resources/tv.png" /></td>
-                <td>TV</td>
-                <td>non-essential</td>
-                <td>
-                    <input class="w3-check" type="checkbox" checked="" disabled>
-                </td>
-                <td>
-                    <div id="circle" class="w3-circle w3-green"></div>
-                </td>
-                <td>
-                    <a href="#">...</a>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td><img src="./resources/fridge.png" /></td>
-                <td>Fridge</td>
-                <td>essential</td>
-                <td>
-                    <input class="w3-check" type="checkbox" checked="" disabled>
-                </td>
-                <td>
-                    <div id="circle" class="w3-circle w3-green"></div>
-                </td>
-                <td>
-                    <a href="#">...</a>
-                </td>
-            </tr>
+            <tbody>
+                <!--<tr>
+                    <td>1</td>
+                    <td><img src="./resources/toaster.png" /></td>
+                    <td>toaster</td>
+                    <td>non-essential</td>
+                    <td>
+                        <input class="w3-check" type="checkbox" checked="checked" disabled>
+                    </td>
+                    <td><div id="circle" class="w3-circle w3-red"></div></td>
+                    <td><a href="#">...</a></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><img src="./resources/tv.png" /></td>
+                    <td>TV</td>
+                    <td>non-essential</td>
+                    <td>
+                        <input class="w3-check" type="checkbox" unchecked="" disabled>
+                    </td>
+                    <td>
+                        <div id="circle" class="w3-circle w3-green"></div>
+                    </td>
+                    <td>
+                        <a href="#">...</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><img src="./resources/fridge.png" /></td>
+                    <td>Fridge</td>
+                    <td>essential</td>
+                    <td>
+                        <input class="w3-check" type="checkbox" checked="" disabled>
+                    </td>
+                    <td>
+                        <div id="circle" class="w3-circle w3-green"></div>
+                    </td>
+                    <td>
+                        <a href="#">...</a>
+                    </td>
+                </tr>-->
+            </tbody>
         </table>
     </div>
 
-    <!--<script>
+    <!--<div id="test">
+        <select>
+            <option value="ESSENTIAL">ESSENTIAL</option>
+            <option value="NONESSENTIAL">NON-ESSENTIAL</option>
+            <option value="IRRELEVANT">IRRELEVANT</option>
+        </select>
 
-        document.onpageReload
+        <input type="text" name="name" value="TV" />-->
+
+        <!--<script>
+
+
+
+        </script>
+    </div>-->
+
+    <script>
+        var manipulatedPlugs = [];
+        var row;
+        var $maniRow;
+        var rowInChange = -1;
+        var inChanging = false;
+        var modify_enabled = false;
+
+        var selectArr = [
+            { val: 0, text: "ESSENTIAL" },
+            { val: 1, text: "NON-ESSENTIAL" },
+            { val: 2, text: "IRRELEVANT" }
+        ];
+
+        function fadeRows() {
+            $("tr:has(td)").hover(function (e) {
+                $(this).css("cursor", "pointer");
+                $("tr:has(td)").addClass('blur');
+                $(this).removeClass('blur');
+            },
+                function (e) {
+                    if (!modify_enabled)
+                        $("tr:has(td)").removeClass('blur');
+                });
+        }
+
+        function init(){
+            rowInChange = -1;
+            inChanging = false;
+            modify_enabled = false;
+        }
+
+        function modifyMode() {
+            
+            modify_enabled = true;
+            $("tr").css("border", "2px solid #ff9980");
+        }
+
+        function saveChanges() {
+            if (inChanging) {
+                let $tdName = $maniRow.children("td").eq(2);
+                let $tdPriority = $maniRow.children("td").eq(3);
+                let $tdApproved = $maniRow.children("td").eq(4);
+                let $tdIsOn = $maniRow.children("td").eq(5);
+                $tdName.html($tdName.children("input").eq(0).val());
+                $tdPriority.html($tdPriority.children("select").children("option:selected").text());
+                $tdApproved.children("input").eq(0).attr("disabled", "disabled");
+                $tdIsOn.children("div").unbind();
+                $maniRow.css("backgroundColor", "");
+                
+            }
+            inChanging = false;
+            $("tr").css("border", "");
+            modify_enabled = false;
+            $("tr:has(td)").on("mouseenter mouseleave");
+            fadeRows();
+        }
+
+        function trClicked() {
+            if (inChanging || !modify_enabled)
+                return;
+            $maniRow = $(this);
+            let id = $(this).children("td").eq(0).html();
+            //if (id == rowInChange)
+            //    return;
+            inChanging = true;
+            $maniRow.css("backgroundColor", "#ff9980");
+            rowInChange = id;
+            editMode();
+            $("tr:has(td)").off("mouseenter mouseleave");
+        }
+
+        function editMode() {
+            let $tdName = $maniRow.children("td").eq(2);
+            let old_name = $tdName.html();
+            $tdName.empty();
+            let $text = $("<input>").attr({ "type": "text", "name": "name", "value": old_name , "size":"10","margin":"0px"});
+            $tdName.append($text);
+
+            let $tdPriority = $maniRow.children("td").eq(3);
+            let old_prio = $tdPriority.html();
+            $tdPriority.empty();
+            let $select = $("<select>").attr({ "type": "text", "name": "name", "value": old_name });
+            $tdPriority.append($select);
+            $(selectArr).each(function () {
+                $op = $("<option>").attr("value", this.val).text(this.text);
+                if (this.text.toLowerCase() === old_prio.toLowerCase()) $op.attr("selected", "selected");
+                $select.append($op);
+            });
+
+            let $tdApproved = $maniRow.children("td").eq(4);
+            $tdApproved.children("input").eq(0).removeAttr("disabled");
+
+            let $tdIsOn = $maniRow.children("td").eq(5);
+            $tdIsOn.children("div").eq(0).click(function() {
+                if ($(this).hasClass("w3-green"))
+                    $(this).removeClass("w3-green").addClass("w3-red");
+                else if ($(this).hasClass("w3-red"))
+                    $(this).removeClass("w3-red").addClass("w3-green");
+            })
+            
+        }
+
+        function plugHasChanged() {
+            $tbody.children("tr").css("backgroundColor", "red");
+            manipulatedPlugs.add(plug[id - 1]);
+        }
+
+        var plugs;
+        function refresh() {
+            init();
+            plugs = getUser("yarden","12345678").Plugs;     //read from server
+            reloadPlugsIntoTable();
+            fadeRows();
+            sortByTabe();
+        }
 
         function reloadPlugsIntoTable()
         {
+            // init table
+            $table = $("#plugs_tbl tbody");
+            $table.empty();
 
+            for (i in plugs) {
+                let $tr = $("<tr>");
+                let plug = plugs[i];
+                    
+                let $td1 = $("<td>").html(++i);
+                let $td2 = $("<td>").html(loadIcon(plug.Nickname));
+                let $td3 = $("<td>").html(plug.Nickname);
+                let $td4 = $("<td>").html(priorityText(plug.Priority));
+                let $td5 = $("<td>").html(approvedText(plug.Approved));
+                let $td6 = $("<td>").html(isOnText(plug.IsOn));
+                let $td7 = $("<td>").html("...");
+                $tr.append($td1, $td2, $td3, $td4, $td5, $td6, $td7);
+                $tr.click( trClicked);
+                $table.append($tr);
+            }
         }
 
-        orderByTabe()
+        //// in case we need to read from the server the img
+        //function loadIcon2(name) {
+        //    $.get("./resources/" + name + ".png", function (data, textStatus) {
+        //        if (textStatus == "success") {
+        //            return data;
+        //        }
+        //        if (textStatus == "error")
+        //            return "/";
+        //    })
+        //}
 
-    </script>-->
+        function loadIcon(name) {
+            let $img = $("<img>").attr("src", "./resources/" + name + ".png");
+            return $img;
+        }
 
+        function priorityText(priority) {
+            switch (priority) {
+                case 0:
+                    return "essential";
+                case 1:
+                    return "non-essential";
+                
+            }
+        }
 
+        function approvedText(approved) {
+            let $input = $("<input>");
+            $input.addClass("w3-check").attr({ type: "checkbox" }).attr("disabled","");
+            if (approved === true)
+                $input.attr("checked", "checked");
+            else
+                $input.attr("checked", false);
+            return $input;
+        }
 
+        function isOnText(isOn) {
+            let color = "red";
+            if (isOn)
+                color = "green"
+            return $("<div>").attr({ id: "circle", class: "w3-circle w3-" + color });
+        }
+
+        function sortByTabe() {
+            $("th").click(function () {
+                let table = $(this).parents("table").eq(0);
+                var rows = table.find("tr:gt(0)").toArray().sort(comparer($(this).index()));
+                this.asc = !this.asc;
+                if (!this.asc) { rows = rows.reverse(); }
+                for (var i = 0; i < rows.length; i++) { table.append(rows[i]); }
+            })
+
+            function comparer(index) {
+                return function (a, b) {
+                    var valA = getCellValue(a, index), valB = getCellValue(b, index);
+                    return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB);
+                }
+            }
+            function getCellValue(row, index) {
+                let text = $(row).children('td').eq(index).text();
+                if(text === "")
+                return;
+            }
+        }
+
+    </script>
 </body>
 </html>

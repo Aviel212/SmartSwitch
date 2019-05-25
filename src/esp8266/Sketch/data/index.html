@@ -13,7 +13,6 @@
 
         .available-wifi-list td,th {
             border: 1px solid black;
-            
         }
 
         .debug-test-btn {
@@ -29,6 +28,7 @@
         let triedToConnect = 0;
         let periodIndex = 1;
         let connectionIntervalKillCode, connectingAnimationKillCode;
+        let showingUsernamePage = false;
 
         $(document).ready(function () {
             getWiFi();
@@ -124,7 +124,8 @@
 
         function connectAnswer() {
             $.post(target, { "are-you-connected": "*" }).done(function (data) {
-                if (data == "yes") {
+                if (data == "yes" && !showingUsernamePage) {
+                    showingUsernamePage = true;
                     setStatus("Connected");
                     clearInterval(connectionIntervalKillCode);
                     clearInterval(connectingAnimationKillCode);

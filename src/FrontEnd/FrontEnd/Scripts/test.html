@@ -7,17 +7,26 @@
     <script src="SmartSwitchServerInterface.js"></script>
     <script>
         let currentPlug;
+        
 
         function addYarden() {
             $("#addYardenResult").text(addUser("yarden", "12345678"));
         }
 
         function getYardenPlugs() {
-            let yardenUser = getUser("yarden");
+            let yardenUser = getUser("yarden", "12345678");
             console.log("in getYardenPlugs() yardenUser:");
             console.log(yardenUser);
             currentPlug = yardenUser.Plugs[0];
             $("#getYardenPlugsResult").text("name: " + currentPlug.Nickname + ", on: " + currentPlug.IsOn + ", mac: " + currentPlug.Mac);
+            for (let i = 0; i < yardenUser.Plugs.length; i++) {
+                $("body").append($("<input>").prop("type", "button").val("turn on " + i + " - " + yardenUser.Plugs[i].Mac).click(function () {
+                    $("#turnYardenPlugOnResult").text(turnPlugOn(yardenUser.Plugs[i].Mac));
+                }));
+                $("body").append($("<input>").prop("type", "button").val("turn off " + i + " - " + yardenUser.Plugs[i].Mac).click(function () {
+                    $("#turnYardenPlugOffResult").text(turnPlugOff(yardenUser.Plugs[i].Mac));
+                }));
+            }
         }
 
         function turnYardenPlugOn() {
