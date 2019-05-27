@@ -1,6 +1,5 @@
 ﻿/// <reference path="jquery.js" />
-//let server = "https://backend.conveyor.cloud/api";
-let server = "http://localhost:50750/api";
+let server = "https://backend.conveyor.cloud/api";
 let usersApi = "/users";
 let plugsApi = "/plugs";
 let tasksApi = "/tasks";
