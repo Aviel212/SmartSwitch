@@ -63,7 +63,8 @@ namespace BackEnd.Controllers
                     }
                     else if (value.ToLower().Equals("false"))
                     {
-                        DatabaseManager.GetInstance().Context.Plugs.Remove(plug);
+                        // DatabaseManager.GetInstance().Context.Plugs.Remove(plug); prod - only
+                        plug.Approved = false; // debug only
                     }
                     else return valueNotRecognized;
 
