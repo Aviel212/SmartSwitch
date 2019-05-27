@@ -6,6 +6,7 @@
     <script src="scripts/jquery.js"></script>
     <link href="styles/w3css.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <script src="scripts/SmartSwitchServerInterface.js"></script>
     <style>
         .sidebar{
             height:64%;
@@ -86,8 +87,15 @@
             let frameTopHeight = parseInt($headerDiv.css("height")) + parseInt($menuDiv.css("height"));
             $("#mainFrame").css({ "position": "absolute", "top": frameTopHeight + "px", "left": "0px", "width": "100%", "height": getMainFrameHeight()});
             //display loginForm in mainFrame if not loggedIn
-            $("#mainFrame").attr("src", "loginForm.html");
-
+            console.log(sessionStorage.currentSmartSwitchUser.UserName);
+            /////////////need to check
+            if (sessionStorage.currentSmartSwitchUser.UserName != undefined) { //if someone is logged in
+                openPage(sessionStorage.getItem("currentSmartSwitchPage"));
+            } else {
+                openPage("loginForm");
+            }
+            
+            
         });
 
         function w3_openSidebar() {
@@ -109,13 +117,16 @@
         }
         
         function openPage(nameofpage) {
+            
             $("#mainFrame").attr("src", nameofpage + ".html");
-
+            sessionStorage.setItem("currentSmartSwitchPage", nameofpage);
+            console.log(sessionStorage.getItem("currentSmartSwitchPage"));
         }
 
         function logout() {
 
         }
+
     </script>
     
 </body>

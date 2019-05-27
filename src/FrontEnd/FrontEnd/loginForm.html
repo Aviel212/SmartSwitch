@@ -1,8 +1,11 @@
-﻿<div id="loginForm" class="w3-border">
+﻿<script src="scripts/jquery.js">
+    sessionStorage.setItem("currentSmartSwitchPage", window.location.pathname.split("/").pop());
+</script>
+<div id="loginForm" class="w3-border">
     <form action="/login.cs" class="w3-margin-left">
         <!-- need to edit the form page to submit-->
         <p id="paraForErrors"></p>
-        <p>Nickname: <input id="nickNameInpt" type="text" name="Nickname" /></p>
+        <p>Username: <input id="UsernameInpt" type="text" name="Username" /></p>
         <p>Password: <input id="passwordInpt" type="password" name="password" /></p>
         <input id="signInBtn" type="button" value="Sign in" onclick="signIn()"/>
         <p class="w3-small">If this is your first time, please <b id="registerBtn" onclick="parent.openPage('registerForm')">Register Here</b></p>
@@ -21,9 +24,41 @@
     }
 </style>
 <script>
+    let userName, pass, paraForErrors;
+    $(document).ready(function () {
+        paraForErrors = $("#paraForErrors");
+        
+    });
 
     function signIn() {
         //check if user exist
+        userName = $("#UsernameInpt").val();
+        pass = $("#passwordInpt").val();
+        if (userName === "" || pass === "") {
+            alert("Please Enter Username and Password");
+            return;
+        }
+        let userFromServer = parent.getUser(userName, pass);
+        //console.log(userFromServer);
+        console.log(userName + ' ' + pass);
+        
+        if (userFromServer === "no such user") {
+            // TODO
+            
+            $("#paraForErrors").html("Error - No Such User").css("visibility","visible");
+        } else if (userFromServer === "incorrect password") {
+            // TODO
+        } else if (userFromServer != null) { // JSON!
+            $("#paraForErrors").html("Welcome " + userFromServer.UserName).css("visibility", "visible");
+            sessionStorage.currentSmartSwitchUser = userFromServer; //get Global User currently logged in
+            
+            parent.openPage("plugsMainViewer");
+        }
+        //a way to get the page's name using the path
+        //var path = window.location.pathname;
+        //var page = path.split("/").pop();
+        //console.log(page);
+        
 
         //if exists sign in
 
