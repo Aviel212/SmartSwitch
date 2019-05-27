@@ -158,12 +158,13 @@
     <Content Include="device_settings.html" />
     <Content Include="pageron.html" />
     <Content Include="plugsMainViewer.html" />
-    <Content Include="register.html" />
+    <Content Include="registerForm.html" />
     <Content Include="resources\fridge.png" />
     <Content Include="resources\toaster.png" />
     <Content Include="resources\tv.png" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="scripts\globalScriptsForEachPage.js" />
     <Content Include="scripts\jquery.js" />
     <Content Include="scripts\SmartSwitchServerInterface.js" />
     <Content Include="showPowerConsumption.html" />

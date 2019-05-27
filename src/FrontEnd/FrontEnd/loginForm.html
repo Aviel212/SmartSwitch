@@ -1,11 +1,12 @@
 ﻿<div id="loginForm" class="w3-border">
     <form action="/login.cs" class="w3-margin-left">
         <!-- need to edit the form page to submit-->
+        <p id="paraForErrors"></p>
         <p>Nickname: <input id="nickNameInpt" type="text" name="Nickname" /></p>
         <p>Password: <input id="passwordInpt" type="password" name="password" /></p>
         <input id="signInBtn" type="button" value="Sign in" onclick="signIn()"/>
         <!--can be made with dynamic changes, to change the entire form in the current page without reloading-->
-        <p class="w3-small">If this is your first time, please <b id="registerBtn" onclick="register()">Register Here</b></p>
+        <p class="w3-small">If this is your first time, please <b id="registerBtn" onclick="parent.openPage('registerForm')">Register Here</b></p>
     </form>
 </div>
 <style>
@@ -16,6 +17,9 @@
     #registerBtn:hover {
         cursor:pointer;
     }
+    #paraForErrors {
+        visibility:hidden;
+    }
 </style>
 <script>
 
@@ -24,9 +28,6 @@
         
     }
 
-    function register() {
-        open_Page('register'); //mistake
-
-    }
 
 </script>
+

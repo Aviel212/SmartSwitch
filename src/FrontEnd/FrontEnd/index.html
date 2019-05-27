@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Smart Switch - Home Page</title>
+    <title>Smart Switch</title>
 	<meta charset="utf-8" />
     <script src="scripts/jquery.js"></script>
     <link href="styles/w3css.css" rel="stylesheet" />
@@ -57,12 +57,14 @@
             <a href="#" id="About" class="w3-bar-item" onclick="openPage('about')">About</a>
         </div>
     </div>
+
     <div id="mySidebar" class="sidebar w3-bar-block w3-card">
         <a href="#" class="w3-bar-item w3-button" onclick="openPage('plugsMainViewer')">Plugs</a>
         <a href="#" class="w3-bar-item w3-button" onclick="openPage('addNewDevice')">Add New Device</a>
         <a href="#" class="w3-bar-item w3-button" onclick="openPage('plugs')">User Settings</a>
         <a href="#" class="w3-bar-item w3-button" onclick="openPage('plugs')">Logout</a>
     </div>
+
     <div id="mainDiv">
 
         <iframe id="mainFrame">
@@ -95,6 +97,7 @@
             $("#mySidebar").css({ "width": "20%", "display": "block", "height": sideBarHeight, "top": topDivHeight });
             $("#Account").html("<i class='far fa-user'></i>").attr("onclick", "w3_closeSidebar()");
         }
+
         function w3_closeSidebar() {
             $("#mainDiv").css({ "margin-left": "0%", "width": "100%" });
             $("#mySidebar").css("display", "none");
@@ -104,13 +107,11 @@
         function getMainFrameHeight() {
             return window.innerHeight - parseInt($headerDiv.css("height")) - parseInt($menuDiv.css("height")) - parseInt($footerDiv.css("height"));
         }
-
+        
         function openPage(nameofpage) {
             $("#mainFrame").attr("src", nameofpage + ".html");
-            
-        }
 
-        
+        }
     </script>
     
 </body>
