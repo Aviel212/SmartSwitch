@@ -156,7 +156,6 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="device_settings.html" />
-    <Content Include="pageron.html" />
     <Content Include="plugsMainViewer.html" />
     <Content Include="registerForm.html" />
     <Content Include="resources\fridge.png" />
@@ -169,6 +168,7 @@
     <Content Include="scripts\SmartSwitchServerInterface.js" />
     <Content Include="showPowerConsumption.html" />
     <Content Include="styles\w3css.css" />
+    <Content Include="userSettings.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
