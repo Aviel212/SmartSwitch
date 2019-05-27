@@ -1,167 +1,146 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-    <link href="styles/w3css.css" rel="stylesheet" />
+﻿<script src="scripts/SmartSwitchServerInterface.js"></script>
+<div id="main-div" style="overflow-y:scroll">
+    <table id="main-table">
+        <tr>
+            <td><h4><u>Add New Device:   </u></h4></td>
+            <td>
+                <a href="AddNewDevice.html">
+                    <i class="fa fa-refresh"  ></i>
+                </a>
+            </td>
 
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="scripts/jquery.js"></script>
-    <script src="scripts/SmartSwitchServerInterface.js"></script>
-</head>
-<body>
-    <div id="main-div" style="overflow-y:scroll">
-        <table id="main-table">
+        </tr>
+    </table>
+    <div id="myPopUp-div" style="display:none"> 
+        <table>
             <tr>
-                <td><h4><u>Add New Device:   </u></h4></td>
+                <td><p>nickname</p></td>
+                <td><input type="text" id="Nickname"></td>
+            </tr>
+            <tr>
+                <td><p>priority:</p></td>
                 <td>
-                    <a href="AddNewDevice.html">
-                        <i class="fa fa-refresh"  ></i>
-                    </a>
+                    <input type="radio" name="prio" value="essential">ess<br>
+                    <input type="radio" name="prio" value="nonessential">non-ess<br>
                 </td>
-
             </tr>
         </table>
-        <div id="myPopUp-div" style="display:none"> 
-            <table>
-                <tr>
-                    <td><p>nickname</p></td>
-                    <td><input type="text" id="Nickname"></td>
-                </tr>
-                <tr>
-                    <td><p>priority:</p></td>
-                    <td>
-                        <input type="radio" name="prio" value="essential">ess<br>
-                        <input type="radio" name="prio" value="nonessential">non-ess<br>
-                    </td>
-                </tr>
-            </table>
-            <input type="button"  id="answeryes" value="next" onclick="approveContent()" />
-            <input type="button"  id="answerno" value="cancel" onclick="cancelPopUp()"  />
-        </div>
+        <input type="button"  id="answeryes" value="next" onclick="approveContent()" />
+        <input type="button"  id="answerno" value="cancel" onclick="cancelPopUp()"  />
     </div>
-    <script>
-        let USER;//need to check if user is a global at aviel
-        let $myPopUp;
-        let $main;
-        let notApproved = [];
-        let $notifier;
+</div>
+<script>
+    let USER;//need to check if user is a global at aviel
+    let $myPopUp;
+    let $main;
+    let notApproved = [];
+    let $notifier;
 
-        $(document).ready(function () {
-            USER = getUser("yarden", "12345678");//needed for testings
-            
-            $main = $("#main-div");
-            $main.css("position", "relative");
-            $myPopUp = $("#myPopUp-div");
+    $(document).ready(function () {
+        USER = getUser("yarden", "12345678");//needed for testings
+        
+        $main = $("#main-div");
+        $main.css("position", "relative");
+        $myPopUp = $("#myPopUp-div");
 
-            $myPopUp.css("z-index", "2000");
+        $myPopUp.css("z-index", "2000");
 
-            $myPopUp.css("width", 290);//parseint(main.css.width)*0.2+"px"
-            $myPopUp.css("height", 150);
-            $main.css("width",300);//need to be discussed
-            $main.css("height", 300);
-            $myPopUp.css("background-color", "yellow");
-            $myPopUp.css({ top: 40, left: 50, position: 'absolute' });
-            $myPopUp.hide();
+        $myPopUp.css("width", 290);//parseint(main.css.width)*0.2+"px"
+        $myPopUp.css("height", 150);
+        $main.css("width",300);//need to be discussed
+        $main.css("height", 300);
+        $myPopUp.css("background-color", "yellow");
+        $myPopUp.css({ top: 40, left: 50, position: 'absolute' });
+        $myPopUp.hide();
 
-            //getting all available mac addressess and appending them to main div
-            drawMacAddress();
-
-            
-        });
-
-        function drawMacAddress()
-        {
-            for (let i = 0; i < USER.Plugs.length; i++)
-            {
-                if (USER.Plugs[i].Approved == false)
-                {
-                    notApproved.push(USER.Plugs[i]);
-                    insertnotApproved(USER.Plugs[i]);
-                }
-
-            }
-
-            
-        }
-        function insertnotApproved(plugg)
-        {
-            let $currentTR = $("<tr>");
-            let $macTD = $("<td>");
-            let $buttonsTD = $("<td>");
-
-            let $macText = $("<p>");
-            $macText.text(plugg.Mac);//gets the mac address from the current plug
-            $macTD.append($macText);
-
-            let $accept = $("<input>").prop({ "type": "button", "value": "accept" });
-            let $reject = $("<input>").prop({ "type": "button", "value": "reject" });
-           
-            $accept.prop("value", "accept");
-            $reject.prop("value", "reject");
-
-            $accept.on('click', function () {//my pop up shows up to let user enter nickname and priority
-                $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
-                $myPopUp.show();
-                $("input[type='button']").prop("disabled", true);
-                $("#myPopUp-div input[type='button']").prop("disabled", false);
-                $notifier = plugg//copying the current chosen mac address              
-            });
-            $reject.on('click', function () {
-                if (removePlug(plugg.Mac) === "ok")
-                    location.reload;//the plug was removed as an option, therefore we now build the list of unapproved plugs again without him by rebooting page
-            });
-
-            let $buttonTable = $("<table>");//creating a place for the buttons
-            let $buttonTR = $("<tr>");
-            let $Atd = $("<td>");
-            let $Btd = $("<td>");
-            $Atd.append($accept);
-            $Btd.append($reject);
-            $buttonTR.append($Atd);
-            $buttonTR.append($Btd);
-            $buttonTable.append($buttonTR);
-
-            $buttonsTD.append($buttonTable);//works?
-
-            $currentTR.append($macTD);
-            $currentTR.append($buttonsTD);
-            $("#main-table").append($currentTR);
-
-
-        }
-        function cancelPopUp()
-        {
-            $myPopUp.hide();
-            $("input[type='button']").prop("disabled", false);
-            
-
-        }
-        function approveContent()
-        {
-           if( setPlugNickname($notifier.Mac, $("#Nickname").val())==="ok")
-                $notifier.Nickname = $("#Nickname").val();
-
-           if (approvePlug($notifier.Mac) === "ok") 
-                $notifier.Approved = true;
-           if (setPlugPriority($notifier.Mac, $("input[name='prio']:checked").val()) === "ok")
-                $notifier.Priority = $("input[name='prio']:checked").val();
-            
-           $myPopUp.hide();
-            $("input[type='button']").prop("disabled", false);
-
-            location.reload();//plug is approves so we need to rebuild the list of unapproved plugs by rebooting the page
-            
-         
-        }
-        //////////////////////////////////////////////////////////////////
-
-
-
-
-
+        //getting all available mac addressess and appending them to main div
+        drawMacAddress();
 
         
-    </script>
-</body>
-</html>
+    });
+
+    function drawMacAddress()
+    {
+        for (let i = 0; i < USER.Plugs.length; i++)
+        {
+            if (USER.Plugs[i].Approved == false)
+            {
+                notApproved.push(USER.Plugs[i]);
+                insertnotApproved(USER.Plugs[i]);
+            }
+        }    
+    }
+
+    function insertnotApproved(plugg)
+    {
+        let $currentTR = $("<tr>");
+        let $macTD = $("<td>");
+        let $buttonsTD = $("<td>");
+        let $macText = $("<p>");
+
+        $macText.text(plugg.Mac);//gets the mac address from the current plug
+        $macTD.append($macText);
+
+        let $accept = $("<input>").prop({ "type": "button", "value": "accept" });
+        let $reject = $("<input>").prop({ "type": "button", "value": "reject" });
+       
+        $accept.prop("value", "accept");
+        $reject.prop("value", "reject");
+
+        $accept.on('click', function () {//my pop up shows up to let user enter nickname and priority
+            $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
+            $myPopUp.show();
+            $("input[type='button']").prop("disabled", true);
+            $("#myPopUp-div input[type='button']").prop("disabled", false);
+            $notifier = plugg//copying the current chosen mac address              
+        });
+
+        $reject.on('click', function () {
+            if (removePlug(plugg.Mac) === "ok")
+                location.reload;//the plug was removed as an option, therefore we now build the list of unapproved plugs again without him by rebooting page
+        });
+
+        let $buttonTable = $("<table>");//creating a place for the buttons
+        let $buttonTR = $("<tr>");
+        let $Atd = $("<td>");
+        let $Btd = $("<td>");
+        $Atd.append($accept);
+        $Btd.append($reject);
+        $buttonTR.append($Atd);
+        $buttonTR.append($Btd);
+        $buttonTable.append($buttonTR);
+
+        $buttonsTD.append($buttonTable);//works?
+
+        $currentTR.append($macTD);
+        $currentTR.append($buttonsTD);
+        $("#main-table").append($currentTR);
+
+
+    }
+
+    function cancelPopUp()
+    {
+        $myPopUp.hide();
+        $("input[type='button']").prop("disabled", false);
+    }
+
+    function approveContent()
+    {
+       if( setPlugNickname($notifier.Mac, $("#Nickname").val())==="ok")
+            $notifier.Nickname = $("#Nickname").val();
+
+       if (approvePlug($notifier.Mac) === "ok") 
+            $notifier.Approved = true;
+       if (setPlugPriority($notifier.Mac, $("input[name='prio']:checked").val()) === "ok")
+            $notifier.Priority = $("input[name='prio']:checked").val();
+        
+       $myPopUp.hide();
+        $("input[type='button']").prop("disabled", false);
+
+        location.reload();//plug is approves so we need to rebuild the list of unapproved plugs by rebooting the page
+        
+     
+    }
+
+</script>

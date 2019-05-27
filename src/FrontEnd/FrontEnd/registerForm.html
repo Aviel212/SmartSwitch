@@ -14,13 +14,30 @@
             <td><input id="re_password" type="password" /></td>
         </tr>
         <tr>
-            <td rowspan="2"><input type="button" value="Register" /></td>
+            <td rowspan="2"><input type="button" value="Register" onclick="checkAndRegister()"/></td>
         </tr>
 
     </table>
 </div>
-    <!--need to connect it with the Database to check:
-        -if username already exist
-        -strong password
-        -add to database if conditions are good
-    -->
+
+<script>
+    let $userName, $pass;
+
+    function checkAndRegister() {
+        //check if username exist
+
+
+        //check for valid pass
+
+
+        //register the user if passed all tests
+        register($userName, $pass);
+
+    }
+
+    function register(un, pass) {
+        //save the new user in the database
+
+    }
+</script>
+
