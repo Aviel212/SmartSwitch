@@ -15,7 +15,7 @@
             <tr>
                 <td><h4><u>Add New Device:   </u></h4></td>
                 <td>
-                    <a href="AddNewDevice.html">
+                    <a id="reloader" href="AddNewDevice.html">
                         <i class="fa fa-refresh"></i>
                     </a>
                 </td>
@@ -47,9 +47,10 @@
         let notApproved = [];
         let $notifier;
         let $rowToDelete;
+        let locationHref = $('#reloader').attr("href");
 
         $(document).ready(function () {
-            //USER = getUser("yarden", "12345678");//needed for testings
+            //USER = getUser("ron", "123123");//needed for testings
             USER = JSON.parse(sessionStorage.currentSmartSwitchUser);
             $main = $("#main-div");
             $main.css("position", "relative");
@@ -93,13 +94,22 @@
             $accept.prop("value", "accept");
             $reject.prop("value", "reject");
 
-            $accept.on('click', function () {//my pop up shows up to let user enter nickname and priority
+            $accept.on('click', function (e) {//my pop up shows up to let user enter nickname and priority
                 $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
-                $myPopUp.show();
+                //$myPopUp.show();
                 $("input[type='button']").prop("disabled", true);
                 $("#myPopUp-div input[type='button']").prop("disabled", false);
                 $notifier = plugg//copying the current chosen mac address
                 $rowToDelete = $currentTR;
+                //testing disabaling reload
+                $("#reloader").removeAttr('href');
+
+              
+                let offset = $main.offset();
+                let y = e.pageY - offset.top;
+                $myPopUp.css('top', y + 'px');              
+                $myPopUp.show();
+           
             });
             $reject.on('click', function () {
                 if (denyPlug(plugg.Mac) === "ok")
@@ -128,12 +138,16 @@
             $myPopUp.hide();
             $("input[type='button']").prop("disabled", false);
 
+            $("#reloader").attr("href", locationHref);
+
 
         }
         function approveContent() {
             $myPopUp.hide();
             $("input[type='button']").prop("disabled", false);
             $rowToDelete.remove();
+
+            $("#reloader").attr("href", locationHref);
 
             if (setPlugNickname($notifier.Mac, $("#Nickname").val()) === "ok")
                 $notifier.Nickname = $("#Nickname").val();
@@ -143,11 +157,8 @@
             if (setPlugPriority($notifier.Mac, $("input[name='prio']:checked").val()) === "ok")
                 $notifier.Priority = $("input[name='prio']:checked").val();
 
-            
-
-            //location.reload();//plug is approves so we need to rebuild the list of unapproved plugs by rebooting the page
-            
-
+                       
+           
         }
             //////////////////////////////////////////////////////////////////
 
