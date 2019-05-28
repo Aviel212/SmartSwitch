@@ -93,7 +93,7 @@ namespace BackEnd.Models
                                 // remove the plug from other users if a device was transferred between users 
                                 foreach (User u in DatabaseManager.GetInstance().Context.Users)
                                 {
-                                    if (!u.UserName.ToLower().Equals(owner.UserName.ToLower()))
+                                    if (!u.Username.ToLower().Equals(owner.Username.ToLower()))
                                     {
                                         foreach (Plug p in u.Plugs) if (p.Mac == _macConnections[socket]) u.Plugs.Remove(p);
                                     }

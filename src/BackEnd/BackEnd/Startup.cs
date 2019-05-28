@@ -44,9 +44,9 @@ namespace BackEnd
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var connection = @"Server=.\SQLEXPRESS;Database=SmartSwitchSQLDb;Trusted_Connection=True;ConnectRetryCount=0";
+            var connection = @"Server=.\SQLEXPRESS;Database=SmartSwitchSqlDb;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<SmartSwitchDbContext>
-                (options => options.UseLazyLoadingProxies().UseSqlServer(connection));
+                (options => options.UseSqlServer(connection));
 
             services.AddHangfire(configuration =>
             {

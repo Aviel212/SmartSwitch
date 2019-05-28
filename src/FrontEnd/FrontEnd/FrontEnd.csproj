@@ -166,6 +166,7 @@
     <Content Include="scripts\globalScriptsForEachPage.js" />
     <Content Include="scripts\jquery.js" />
     <Content Include="scripts\SmartSwitchServerInterface.js" />
+    <Content Include="scripts\test.html" />
     <Content Include="showPowerConsumption.html" />
     <Content Include="styles\w3css.css" />
     <Content Include="userSettings.html" />

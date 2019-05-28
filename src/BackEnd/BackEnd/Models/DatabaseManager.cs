@@ -17,7 +17,7 @@ namespace BackEnd.Models
         public DatabaseManager()
         {
             DbContextOptionsBuilder<SmartSwitchDbContext> optionsBuilder = new DbContextOptionsBuilder<SmartSwitchDbContext>();
-            var connection = @"Server=.\SQLEXPRESS;Database=SmartSwitchSQLDb;Trusted_Connection=True;ConnectRetryCount=0";
+            var connection = @"Server=.\SQLEXPRESS;Database=SmartSwitch;Trusted_Connection=True;ConnectRetryCount=0";
             optionsBuilder.UseLazyLoadingProxies().UseSqlServer(connection);
             Context = new SmartSwitchDbContext(optionsBuilder.Options);
         }
@@ -31,7 +31,7 @@ namespace BackEnd.Models
             return _instance;
         }
 
-        public User GetUser(string username) => Context.Users.FirstOrDefault(u => u.UserName.ToLower().Equals(username.ToLower()));
+        public User GetUser(string username) => Context.Users.FirstOrDefault(u => u.Username.ToLower().Equals(username.ToLower()));
 
         public Plug GetPlug(string mac) => Context.Plugs.FirstOrDefault(x => x.Mac == mac);
     }
