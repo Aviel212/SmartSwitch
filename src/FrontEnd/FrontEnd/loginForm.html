@@ -1,9 +1,8 @@
 ﻿<script src="scripts/jquery.js">
-    sessionStorage.setItem("currentSmartSwitchPage", window.location.pathname.split("/").pop());
+    
 </script>
 <div id="loginForm" class="w3-border">
     <form action="/login.cs" class="w3-margin-left">
-        <!-- need to edit the form page to submit-->
         <p id="paraForErrors"></p>
         <p>Username: <input id="UsernameInpt" type="text" name="Username" /></p>
         <p>Password: <input id="passwordInpt" type="password" name="password" /></p>
@@ -11,6 +10,7 @@
         <p class="w3-small">If this is your first time, please <b id="registerBtn" onclick="parent.openPage('registerForm')">Register Here</b></p>
     </form>
 </div>
+
 <style>
     #registerBtn {
         color: blue;
@@ -25,47 +25,33 @@
 </style>
 <script>
     let userName, pass, paraForErrors;
+
     $(document).ready(function () {
         paraForErrors = $("#paraForErrors");
         
     });
 
     function signIn() {
-        //check if user exist
         userName = $("#UsernameInpt").val();
         pass = $("#passwordInpt").val();
+        //check if inputs are empty
         if (userName === "" || pass === "") {
             alert("Please Enter Username and Password");
             return;
         }
         let userFromServer = parent.getUser(userName, pass);
-        //console.log(userFromServer);
-        console.log(userName + ' ' + pass);
-        
-        if (userFromServer === "no such user") {
-            // TODO
-            
-            $("#paraForErrors").html("Error - No Such User").css("visibility","visible");
-        } else if (userFromServer === "incorrect password") {
-            // TODO
-        } else if (userFromServer != null) { // JSON!
-            $("#paraForErrors").html("Welcome " + userFromServer.UserName).css("visibility", "visible");
-            sessionStorage.currentSmartSwitchUser = userFromServer; //get Global User currently logged in
-            
+        console.log(userFromServer);
+        //check if user exist
+        if (userFromServer === "no such user" || userFromServer === "incorrect password") {
+            let errMsg = "Error - " + userFromServer;
+            $("#paraForErrors").html(errMsg).css("visibility", "visible");
+        } else if (userFromServer != null) { // //if exists sign in
+            sessionStorage.setItem("currentSmartSwitchUser", JSON.stringify(userFromServer)); //set Global User currently logged in
+            console.log(sessionStorage.currentSmartSwitchUser);
             parent.openPage("plugsMainViewer");
+            parent.setSideBar(true);
         }
-        //a way to get the page's name using the path
-        //var path = window.location.pathname;
-        //var page = path.split("/").pop();
-        //console.log(page);
-        
-
-        //if exists sign in
-
-        //if dont exist show error message
-        
     }
-
 
 </script>
 

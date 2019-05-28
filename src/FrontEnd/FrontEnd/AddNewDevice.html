@@ -49,8 +49,8 @@
         let $rowToDelete;
 
         $(document).ready(function () {
-            USER = getUser("yarden", "12345678");//needed for testings
-
+            //USER = getUser("yarden", "12345678");//needed for testings
+            USER = JSON.parse(sessionStorage.currentSmartSwitchUser);
             $main = $("#main-div");
             $main.css("position", "relative");
             $myPopUp = $("#myPopUp-div");

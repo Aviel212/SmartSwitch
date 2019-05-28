@@ -97,7 +97,6 @@
   <ItemGroup>
     <Content Include="about.html" />
     <Content Include="AddNewDevice.html" />
-    <Content Include="AddNewSwitch.html" />
     <Content Include="AvailableSwitches.html" />
     <Content Include="bin\FrontEnd.dll" />
     <Content Include="bin\FrontEnd.pdb" />
