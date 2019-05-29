@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
-using Microsoft.AspNetCore.Cors;
-using System.Net.Http;
 
 namespace BackEnd.Controllers
 {
@@ -15,29 +13,71 @@ namespace BackEnd.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-        // POST: api/Tasks
-        [HttpPost("{jsonString}", Name = "PostTask")]
-        public string Post(string jsonString)
+        private readonly SmartSwitchDbContext _context;
+
+        public TasksController(SmartSwitchDbContext context)
         {
-            Console.WriteLine("ddd: " + jsonString);
-            JObject json = JObject.Parse(jsonString);
-            if (!json.ContainsKey("Mac")) return "missing mac";
+            _context = context;
+        }
 
-            Plug plug = DatabaseManager.GetInstance().GetPlug(json["Mac"].ToString());
-            Models.Task.Operations op = json["Operation"].ToString().Equals("TURNON") ? Models.Task.Operations.TURNON : Models.Task.Operations.TURNOFF;
-
-
-            if (json.ContainsKey("RepeatEvery")) // RepeatedTask
+        // GET: api/Tasks/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTask([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
             {
-                plug.AddTask(new RepeatedTask(op, DateTime.Parse(json["StartDate"].ToString().Replace('x', '+')), (int) json["RepeatEvery"]));
-            }
-            else // OneTimeTask
-            {
-                plug.AddTask(new OneTimeTask(op, DateTime.Parse(json["DateToBeExecuted"].ToString().Replace('x', '+'))));
+                return BadRequest(ModelState);
             }
 
-            DatabaseManager.GetInstance().Context.SaveChanges();
-            return "ok";
+            var task = await _context.Tasks.FindAsync(id);
+
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(task);
+        }
+
+        // POST: api/Tasks
+        [HttpPost]
+        public async Task<IActionResult> PostTask([FromBody] Models.Task task)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.Tasks.Add(task);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTask", new { id = task.TaskId }, task);
+        }
+
+        // DELETE: api/Tasks/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTask([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var task = await _context.Tasks.FindAsync(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            return Ok(task);
+        }
+
+        private bool TaskExists(int id)
+        {
+            return _context.Tasks.Any(e => e.TaskId == id);
         }
     }
 }

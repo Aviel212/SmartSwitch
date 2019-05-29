@@ -13,6 +13,7 @@ namespace BackEnd.Models
     public class PowerUsageSample
     {
         [Key]
+        public int PowerUsageSampleId { get; set; }
         public DateTime SampleDate { get; set; }
         public double Current { get; set; } // [V]
         public double Voltage { get; set; } // [A]

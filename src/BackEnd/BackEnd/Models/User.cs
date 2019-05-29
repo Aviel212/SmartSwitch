@@ -7,7 +7,7 @@ using System.Web;
 namespace BackEnd.Models
 {
     /// <summary>
-    /// User can add new plugs to his acctive plugs, remove plugs and more
+    /// User can add new plugs to his active plugs, remove plugs and more
     /// </summary>
     public class User
     {
