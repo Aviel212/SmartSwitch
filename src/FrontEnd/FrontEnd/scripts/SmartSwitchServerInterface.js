@@ -1,5 +1,5 @@
 ﻿/// <reference path="jquery.js" />
-let server = "https://backend.conveyor.cloud/api";
+let server = "https://backend.conveyor.cloud/api"; //static address
 let usersApi = "/users";
 let plugsApi = "/plugs";
 let tasksApi = "/tasks";

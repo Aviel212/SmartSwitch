@@ -6,6 +6,8 @@
     <script src="scripts/jquery.js"></script>
     <link href="styles/w3css.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <script src="scripts/SmartSwitchServerInterface.js"></script>
+
     <style>
         .sidebar{
             height:64%;
@@ -45,6 +47,7 @@
     </style>
 </head>
 <body>
+    <!--the topDiv contains the header and the menuPanel-->
     <div id="topDiv">
         <div id="headerDiv" class="w3-container w3-red w3-blue-gray w3-padding" >
             <h1>Welcome to SmartSwitch</h1>
@@ -52,19 +55,22 @@
         </div>
         <div id="menuPanel" class="w3-bar w3-gray">
             <div id="Account" class="w3-bar-item" onclick="w3_openSidebar()"><i class="fas fa-user"></i></div>
-            <a href="#" id="Home" class="w3-bar-item" onclick="openPage('loginForm')">Home</a>
+            <!--if logged in Home will go to plugs page, if not it will go to login page-->
+            <a href="#" id="Home" class="w3-bar-item" onclick="openPage('loginForm')">Home</a> 
             <a href="#" id="Plugs" class="w3-bar-item" onclick="openPage('manual')">Manual</a>
             <a href="#" id="About" class="w3-bar-item" onclick="openPage('about')">About</a>
         </div>
     </div>
 
+    <!--if not logged in the sidebar needs to show only Login-->
     <div id="mySidebar" class="sidebar w3-bar-block w3-card">
-        <a href="#" class="w3-bar-item w3-button" onclick="openPage('plugsMainViewer')">Plugs</a>
+        <!--<a href="#" class="w3-bar-item w3-button" onclick="openPage('plugsMainViewer')">Plugs</a>
         <a href="#" class="w3-bar-item w3-button" onclick="openPage('addNewDevice')">Add New Device</a>
         <a href="#" class="w3-bar-item w3-button" onclick="openPage('userSettings')">User Settings</a>
-        <a href="#" class="w3-bar-item w3-button" onclick="logout()">Logout</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="logout()">Logout</a>-->
     </div>
 
+    <!--the main Div conctent is what changing with every page loading-->
     <div id="mainDiv">
 
         <iframe id="mainFrame">
@@ -72,23 +78,63 @@
         </iframe>
     </div>
     
+    <!--the footerDiv contains our names and ruppin's-->
     <div id="footerDiv" class="w3-gray">
         <p><i class="fa fa-copyright"></i> Ruppin Academic Center Mini Project -  
             Aviel Vaknin, Yarden Shoham, Ron Katz, Avi Mishayev, Alaa Ganema</p>
     </div>
+
     <script>
         let headerDiv, menuDiv, footerDiv;
         $headerDiv = $("#headerDiv");
         $footerDiv = $("#footerDiv");
         $menuDiv = $("#menuPanel");
+        $sidebarDiv = $("#mySidebar");
+
+        //if its the first time opening the website we will save the pages name as 'index'
+        if (sessionStorage.getItem("currentSmartSwitchPage") === null) {
+            sessionStorage.setItem("currentSmartSwitchPage", "index");
+        }
 
         $(document).ready(function () {
+            //fix the mainFrame position
             let frameTopHeight = parseInt($headerDiv.css("height")) + parseInt($menuDiv.css("height"));
             $("#mainFrame").css({ "position": "absolute", "top": frameTopHeight + "px", "left": "0px", "width": "100%", "height": getMainFrameHeight()});
-            //display loginForm in mainFrame if not loggedIn
-            $("#mainFrame").attr("src", "loginForm.html");
 
+            //deal with loggedIn and notLoggedIn
+            if (sessionStorage.currentSmartSwitchUser != undefined) { //if someone is logged in show plugs page
+                openPage(sessionStorage.getItem("currentSmartSwitchPage"));
+
+                setSideBar(true); //true means logged in??????
+            } else { //else show the login form
+                openPage("loginForm");
+
+                setSideBar(false); //false means not logged in??????????
+            }
+            
         });
+
+        function setSideBar(loggedIn) {
+            if (loggedIn === true) {
+                //empty Sidebar
+                $sidebarDiv.empty();
+                //create sideBar in loggedIn state
+                let $plugs = $("<a>").attr({"href":"#", "class":"w3-bar-item w3-button", "onclick":"openPage('plugsMainViewer')"}).html("Plugs");
+                $sidebarDiv.append($plugs);
+                let $addNewDevice = $("<a>").attr({ "href": "#", "class": "w3-bar-item w3-button", "onclick": "openPage('addNewDevice')" }).html("Add New Device");
+                $sidebarDiv.append($addNewDevice);
+                let $userSettings = $("<a>").attr({ "href": "#", "class": "w3-bar-item w3-button", "onclick": "openPage('userSettings')" }).html("User Settings");
+                $sidebarDiv.append($userSettings);
+                let $logout = $("<a>").attr({ "href": "#", "class": "w3-bar-item w3-button", "onclick": "logout()" }).html("Logout");
+                $sidebarDiv.append($logout);
+            } else {
+                //empty Sidebar
+                $sidebarDiv.empty();
+                //create Sidebar in notLoggedIn state
+                let $login = $("<a>").attr({ "href": "#", "class": "w3-bar-item w3-button", "onclick": "openPage('loginForm')" }).html("Login");
+                $sidebarDiv.append($login);
+            }
+        }
 
         function w3_openSidebar() {
             $("#mainDiv").css({ "margin-left": "20%", "width": "80%" });
@@ -109,13 +155,18 @@
         }
         
         function openPage(nameofpage) {
+            //change the page
             $("#mainFrame").attr("src", nameofpage + ".html");
-
+            //saving the new page's name when opened
+            sessionStorage.setItem("currentSmartSwitchPage", nameofpage); 
         }
 
         function logout() {
-
+            sessionStorage.clear();
+            setSideBar(false);
+            openPage("loginForm");
         }
+
     </script>
     
 </body>

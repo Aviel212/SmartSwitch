@@ -57,13 +57,13 @@
     </style>
 </head>
 <body>
-    <h3>
+    <h3 id="PlugsMngrHeader">
         Plugs Manager
     </h3>
 
     <br />
 
-    <div class="w3-bar" style="width:60%;margin-left:100px">
+    <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:100px">
         <button onclick="refresh()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:20%">Refresh</button>
         <button onclick="modifyMode()" class="w3-bar-item w3-button w3-teal w3-ripple" style="width:20%">Modify</button>
         <button onclick="getFocus()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">Remove</button>
@@ -72,7 +72,7 @@
 
     <br />
 
-    <div>
+    <div id="plugsTableContainer">
         <table id="plugs_tbl" class="w3-table-all w3-hoverable">
             <thead>
                 <tr class="w3-gray">
@@ -130,6 +130,7 @@
             </tbody>
         </table>
     </div>
+
     <!--<div>
         <input id="ch" class="w3-check" type="checkbox" checked="">
     </div>-->
@@ -292,7 +293,6 @@
             $tbody.children("tr").css("backgroundColor", "red");
             manipulatedPlugs.add(plug[id - 1]);
         }
-
         
         function refresh() {
             init();
@@ -411,6 +411,12 @@
             }
         }
 
+    </script>
+    <script>
+        ////////////////////////////need to check
+        if (sessionStorage.currentSmartSwitchUser) {
+            refresh();
+        }
     </script>
 </body>
 </html>

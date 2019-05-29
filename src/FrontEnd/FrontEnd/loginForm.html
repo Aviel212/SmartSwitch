@@ -1,13 +1,16 @@
-﻿<div id="loginForm" class="w3-border">
+﻿<script src="scripts/jquery.js">
+    
+</script>
+<div id="loginForm" class="w3-border">
     <form action="/login.cs" class="w3-margin-left">
-        <!-- need to edit the form page to submit-->
         <p id="paraForErrors"></p>
-        <p>Nickname: <input id="nickNameInpt" type="text" name="Nickname" /></p>
+        <p>Username: <input id="UsernameInpt" type="text" name="Username" /></p>
         <p>Password: <input id="passwordInpt" type="password" name="password" /></p>
         <input id="signInBtn" type="button" value="Sign in" onclick="signIn()"/>
         <p class="w3-small">If this is your first time, please <b id="registerBtn" onclick="parent.openPage('registerForm')">Register Here</b></p>
     </form>
 </div>
+
 <style>
     #registerBtn {
         color: blue;
@@ -21,16 +24,34 @@
     }
 </style>
 <script>
+    let userName, pass, paraForErrors;
+
+    $(document).ready(function () {
+        paraForErrors = $("#paraForErrors");
+        
+    });
 
     function signIn() {
+        userName = $("#UsernameInpt").val();
+        pass = $("#passwordInpt").val();
+        //check if inputs are empty
+        if (userName === "" || pass === "") {
+            alert("Please Enter Username and Password");
+            return;
+        }
+        let userFromServer = parent.getUser(userName, pass);
+        console.log(userFromServer);
         //check if user exist
-
-        //if exists sign in
-
-        //if dont exist show error message
-        
+        if (userFromServer === "no such user" || userFromServer === "incorrect password") {
+            let errMsg = "Error - " + userFromServer;
+            $("#paraForErrors").html(errMsg).css("visibility", "visible");
+        } else if (userFromServer != null) { // //if exists sign in
+            sessionStorage.setItem("currentSmartSwitchUser", JSON.stringify(userFromServer)); //set Global User currently logged in
+            console.log(sessionStorage.currentSmartSwitchUser);
+            parent.openPage("plugsMainViewer");
+            parent.setSideBar(true);
+        }
     }
-
 
 </script>
 
