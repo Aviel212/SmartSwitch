@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Http;
-using Microsoft.AspNetCore.Cors;
+using BackEnd.Models;
 
 namespace BackEnd.Controllers
 {
@@ -15,114 +13,106 @@ namespace BackEnd.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly string noSuchUser = "no such user";
+        private readonly SmartSwitchDbContext _context;
 
-        // GET: api/Users/plugs/{username}
-        [HttpGet]
-        [Route("plugs")]
-        public IEnumerable<Plug> Get(string username)
+        public UsersController(SmartSwitchDbContext context)
         {
-            //read plugs of yarden from db
-            string uname = "yarden";
-            User user = DatabaseManager.GetInstance().Context.Users.SingleOrDefault(x => x.UserName == uname);
-            if (user == null)
-                return null;
-            List<Plug> Plugs = user.Plugs;
-            //Plug p1 = new Plug("aa:bb")
-            //{
-            //    IsOn = true,
-            //    Nickname = "TV",
-            //    Approved = true,
-            //    AddedAt = DateTime.Now,
-            //    Priority = Plug.Priorities.ESSENTIAL
-            //};
-            //Plug p2 = new Plug("qq:ww")
-            //{
-            //    IsOn = false,
-            //    Nickname = "Toaster",
-            //    Approved = false,
-            //    AddedAt = DateTime.Now,
-            //    Priority = Plug.Priorities.NONESSENTIAL
-            //};
-            //Plug p3 = new Plug("yy:uu")
-            //{
-            //    IsOn = true,
-            //    Nickname = "Fridge",
-            //    Approved = true,
-            //    AddedAt = new DateTime(2018, 01, 01),
-            //    Priority = Plug.Priorities.ESSENTIAL
-            //};
-            //plugs.Add(p1);
-            //plugs.Add(p2);
-            //plugs.Add(p3);
-            return Plugs;
+            _context = context;
         }
 
-
-        // GET: api/Users
-        [HttpGet]
-        public IEnumerable<string> Get()
+        // GET: api/Users/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUser([FromRoute] string id)
         {
-            List<string> usernames = new List<string>();
-            foreach (User u in DatabaseManager.GetInstance().Context.Users)
+            if (!ModelState.IsValid)
             {
-                usernames.Add(u.UserName);
+                return BadRequest(ModelState);
             }
-            return usernames;
+
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
 
-        // GET: api/Users/yarden
-        [HttpGet("{username}/{password}", Name = "Get")]
-        public string Get(string username, string password)
+        // PUT: api/Users/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUser([FromRoute] string id, [FromBody] User user)
         {
-            User user = DatabaseManager.GetInstance().GetUser(username);
-            if (user == null) return noSuchUser;
-            if (user.Password == password) return Newtonsoft.Json.JsonConvert.SerializeObject(user);
-            else return "incorrect password";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != user.Username)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(user).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // POST: api/Users
-        // example: api/Users/create/yarden/12345
-        [HttpPost("{op}/{username}/{password}", Name = "Post")]
-        public string Post(string op, string username, string password)
+        [HttpPost]
+        public async Task<IActionResult> PostUser([FromBody] User user)
         {
-            if (op.Equals("add"))
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    DatabaseManager.GetInstance().Context.Users.Add(new User(username, password));
-                    DatabaseManager.GetInstance().Context.SaveChanges();
-                    return "added " + username;
-                }
-                catch (UsernameAlreadyInUseException)
-                {
-                    return "username exists";
-                }
+                return BadRequest(ModelState);
             }
-            else if (op.Equals("remove"))
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetUser", new { id = user.Username }, user);
+        }
+
+        // DELETE: api/Users/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
             {
-                User toRemove = DatabaseManager.GetInstance().GetUser(username);
-                if (toRemove == null) return noSuchUser;
-                else
-                {
-                    if (!toRemove.Password.Equals(password)) return "wrong password";
-                    DatabaseManager.GetInstance().Context.Users.Remove(toRemove);
-                    DatabaseManager.GetInstance().Context.SaveChanges();
-                    return "removed " + username;
-                }
+                return BadRequest(ModelState);
             }
-            else if (op.Equals("change-password"))
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
-                User user = DatabaseManager.GetInstance().GetUser(username);
-                if (user == null) return noSuchUser;
-                else
-                {
-                    user.Password = password;
-                    DatabaseManager.GetInstance().Context.SaveChanges();
-                    return "password changed";
-                }
+                return NotFound();
             }
-            return "op not recognized";
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
+        }
+
+        private bool UserExists(string id)
+        {
+            return _context.Users.Any(e => e.Username == id);
         }
     }
 }

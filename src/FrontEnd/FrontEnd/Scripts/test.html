@@ -13,6 +13,19 @@
             $("#addYardenResult").text(addUser("yarden", "12345678"));
         }
 
+        function getYarden() {
+            $.ajax({
+                url: server + usersApi + "/yarden",
+                method: "GET",
+                success: function (data) {
+                    $("#getYardenResult").text("username: " + data.UserName, + "password: " + data.Password);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
+
         function getYardenPlugs() {
             let yardenUser = getUser("yarden", "12345678");
             console.log("in getYardenPlugs() yardenUser:");
@@ -65,6 +78,8 @@
     <span id="addYardenResult"></span>
     <input type="button" value="getYardenPlugs" onclick="getYardenPlugs()" />
     <span id="getYardenPlugsResult"></span>
+    <input type="button" value="getYarden" onclick="getYarden()" />
+    <span id="getYardenResult"></span>
     <input type="button" value="turnYardenPlugOn" onclick="turnYardenPlugOn()" />
     <span id="turnYardenPlugOnResult"></span>
     <input type="button" value="turnYardenPlugOff" onclick="turnYardenPlugOff()" />

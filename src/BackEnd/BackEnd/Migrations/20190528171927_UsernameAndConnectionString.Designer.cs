@@ -4,14 +4,16 @@ using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(SmartSwitchDbContext))]
-    partial class SmartSwitchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190528171927_UsernameAndConnectionString")]
+    partial class UsernameAndConnectionString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,19 +47,15 @@ namespace BackEnd.Migrations
 
             modelBuilder.Entity("BackEnd.Models.PowerUsageSample", b =>
                 {
-                    b.Property<int>("PowerUsageSampleId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<DateTime>("SampleDate");
 
                     b.Property<double>("Current");
 
                     b.Property<string>("PlugMac");
 
-                    b.Property<DateTime>("SampleDate");
-
                     b.Property<double>("Voltage");
 
-                    b.HasKey("PowerUsageSampleId");
+                    b.HasKey("SampleDate");
 
                     b.HasIndex("PlugMac");
 
