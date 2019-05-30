@@ -8,14 +8,29 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using BackEnd.Models;
+using Autofac;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd
 {
     public class Program
     {
+        public static IContainer Container { get; set; }
+
         public static void Main(string[] args)
         {
-            WebsocketsServer.GetInstance().Start();
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterType<WebsocketsServer>().As<IWebsocketsServer>().SingleInstance();
+            builder.Register(c =>
+            {
+                var opt = new DbContextOptionsBuilder<SmartSwitchDbContext>();
+                opt.UseSqlServer(Startup.SmartSwitchSqlConnectionString);
+                return new SmartSwitchDbContext(opt.Options);
+            }).AsSelf().InstancePerLifetimeScope();
+            Container = builder.Build();
+
+            using (ILifetimeScope scope = Container.BeginLifetimeScope()) scope.Resolve<IWebsocketsServer>().Start();
+
             CreateWebHostBuilder(args).Build().Run();
         }
 

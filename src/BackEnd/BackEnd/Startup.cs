@@ -19,6 +19,8 @@ namespace BackEnd
 {
     public class Startup
     {
+        public static readonly string SmartSwitchSqlConnectionString = @"Server=.\SQLEXPRESS;Database=SmartSwitchSqlDb;Trusted_Connection=True;ConnectRetryCount=0";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -44,9 +46,10 @@ namespace BackEnd
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var connection = @"Server=.\SQLEXPRESS;Database=SmartSwitchSqlDb;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<SmartSwitchDbContext>
-                (options => options.UseSqlServer(connection));
+                (options => options.UseSqlServer(SmartSwitchSqlConnectionString));
+
+            services.AddSingleton<IWebsocketsServer, WebsocketsServer>();
 
             services.AddHangfire(configuration =>
             {

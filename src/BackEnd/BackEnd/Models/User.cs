@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace BackEnd.Models
 
         public User(string name, string pass)
         {
-            if (DatabaseManager.GetInstance().GetUser(name) != null) throw new UsernameAlreadyInUseException();
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope()) if (scope.Resolve<SmartSwitchDbContext>().Users.Any(x => x.Username == name)) throw new UsernameAlreadyInUseException();
             Username = name;
             Password = pass;
             Plugs = new List<Plug>();

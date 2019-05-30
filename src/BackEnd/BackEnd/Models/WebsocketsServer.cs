@@ -3,35 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Fleck;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using Autofac;
 
 namespace BackEnd.Models
 {
-    public class WebsocketsServer
+    public class WebsocketsServer : IWebsocketsServer
     {
-        private static WebsocketsServer _instance = null;
-
         private WebSocketServer _server;
-        private Dictionary<IWebSocketConnection, string> _macConnections;
+        private SynchronizedCollection<MacConnectionPair> _macConnectionPairs;
 
-        private WebsocketsServer()
+        public WebsocketsServer()
         {
             _server = new WebSocketServer("ws://0.0.0.0:8181");
-            _macConnections = new Dictionary<IWebSocketConnection, string>();
-        }
-
-        public static WebsocketsServer GetInstance()
-        {
-            if (_instance == null) _instance = new WebsocketsServer();
-            return _instance;
+            _macConnectionPairs = new SynchronizedCollection<MacConnectionPair>();
         }
 
         // Turns the plug with mac MAC address on or off, on if op is "on" or off if op is "off".
         // Returns true is successful, false otherwise
-        private bool Turn(string op, string mac)
+        private async Task<bool> Turn(string op, string mac)
         {
             try
             {
-                _macConnections.FirstOrDefault(x => x.Value == mac).Key.Send("turn-load-" + op);
+                await GetSocket(mac).Send("turn-load-" + op);
             }
             catch (NullReferenceException)
             {
@@ -41,96 +36,109 @@ namespace BackEnd.Models
         }
 
         // Turns the plug with mac MAC address on; returns true is successful, false otherwise
-        public bool TurnOn(string mac)
-        {
-            return Turn("on", mac);
-        }
+        public async Task<bool> TurnOn(string mac) => await Turn("on", mac);
 
         // Turns the plug with mac MAC address off; returns true is successful, false otherwise
-        public bool TurnOff(string mac)
-        {
-            return Turn("off", mac);
-        }
+        public async Task<bool> TurnOff(string mac) => await Turn("off", mac);
 
         public void Start()
         {
             _server.Start(socket =>
             {
-                socket.OnOpen = () =>
+                socket.OnOpen = async () =>
                 {
-                    _macConnections.Add(socket, null);
-                    socket.Send("who-are-you");
+                    await socket.Send("who-are-you");
                 };
                 socket.OnClose = () =>
                 {
-                    _macConnections.Remove(socket);
+                    RemovePair(socket);
+                };
+                socket.OnError = error =>
+                {
+                    RemovePair(socket);
                 };
                 socket.OnMessage = message =>
                 {
                     string[] messageWords = message.Split(" ");
 
-                    if (message.StartsWith("i-am")) // answer to who-are-you: i-am macAddress ownerUsername
+                    switch (messageWords[0])
                     {
-                        // removing old sockets
-                        foreach (KeyValuePair<IWebSocketConnection, string> macConnection in _macConnections)
-                        {
-                            if (macConnection.Value == messageWords[1])
-                            {
-                                _macConnections.Remove(macConnection.Key);
-                                break;
-                            }
-                        }
-
-                        _macConnections[socket] = messageWords[1]; // updating mac
-                        
-                        User owner = DatabaseManager.GetInstance().GetUser(messageWords[2]);
-                        if (owner != null)
-                        {
-                            if (owner.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]) == null)
-                            {
-                                owner.Plugs.Add(new Plug(_macConnections[socket])); // owner exists so we'll add the plug
-
-                                // remove the plug from other users if a device was transferred between users 
-                                foreach (User u in DatabaseManager.GetInstance().Context.Users)
-                                {
-                                    if (!u.Username.ToLower().Equals(owner.Username.ToLower()))
-                                    {
-                                        foreach (Plug p in u.Plugs) if (p.Mac == _macConnections[socket]) u.Plugs.Remove(p);
-                                    }
-                                }
-                                DatabaseManager.GetInstance().Context.SaveChanges();
-                            }
-                        }
-                        socket.Send("are-you-on");
+                        case "i-am": HandleIAmMessage(socket, messageWords);
+                            break;
+                        case "on": HandleOnMessage(socket, messageWords);
+                            break;
+                        case "sample": HandleSampleMessage(socket, messageWords);
+                            break;
                     }
-                    else if (message.StartsWith("on")) // answer to are-you-on: on yes/no
-                    {
-                        foreach (User u in DatabaseManager.GetInstance().Context.Users)
-                        {
-                            Plug plug = u.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]);
-                            if (plug != null) plug.IsOn = messageWords[1].Equals("yes");
-                        }
-                        DatabaseManager.GetInstance().Context.SaveChanges();
-                    }
-                    else if (message.StartsWith("sample")) // message: sample voltage current
-                    {
-                        foreach (User u in DatabaseManager.GetInstance().Context.Users)
-                        {
-                            Plug plug = u.Plugs.FirstOrDefault(p => p.Mac == _macConnections[socket]);
-                            if (plug != null) plug.Samples.Add(new PowerUsageSample(Convert.ToDouble(messageWords[1]), Convert.ToDouble(messageWords[2])));
-                        }
-                        DatabaseManager.GetInstance().Context.SaveChanges();
-                    }
-                    
                 };
             });
         }
 
-        public void TurnAll(string op)
+        private IWebSocketConnection GetSocket(string mac) => _macConnectionPairs.FirstOrDefault(x => x.Mac == mac).Socket;
+
+        private string GetMac(IWebSocketConnection socket) => _macConnectionPairs.FirstOrDefault(x => x.Socket == socket).Mac;
+
+        private bool RemovePair(IWebSocketConnection socket) => _macConnectionPairs.Remove(_macConnectionPairs.FirstOrDefault(x => x.Socket == socket));
+
+        private async void HandleIAmMessage(IWebSocketConnection socket, string[] messageWords)
         {
-            foreach (KeyValuePair<IWebSocketConnection, string> keyValue in _macConnections)
+            string currentMac = messageWords[1];
+            string ownerUsername = messageWords[2];
+            _macConnectionPairs.Add(new MacConnectionPair()
             {
-                Turn(op, keyValue.Value);
+                Mac = currentMac,
+                Socket = socket
+            });
+
+            // TODO - add error handling in case user doesn't exist
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            {
+                SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+
+                Plug currentPlug = await context.Plugs.FindAsync(currentMac);
+                if (currentPlug == null) // if the plug is brand new (not in the system), we'll add it to the owner
+                {
+                    User owner = await context.Users.FindAsync(ownerUsername);
+                    owner.Plugs.Add(new Plug(currentMac));
+                    await context.SaveChangesAsync();
+                }
+                else // otherwise, if the plug belongs to another user -- we'll transfer ownership
+                {
+                    var currentPlugEntry = context.Entry(currentPlug);
+                    if (currentPlugEntry.CurrentValues["Username"].ToString() != ownerUsername)
+                    {
+                        currentPlugEntry.CurrentValues["Username"] = ownerUsername;
+                        await context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            await socket.Send("are-you-on");
+        }
+
+        private async void HandleOnMessage(IWebSocketConnection socket, string[] messageWords)
+        {
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            {
+                SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                // get plug by mac and update its IsOn property
+                Plug currentPlug = await context.Plugs.FindAsync(GetMac(socket));
+                currentPlug.IsOn = messageWords[1] == "yes";
+                await context.SaveChangesAsync();
+            }
+        }
+
+        private async void HandleSampleMessage(IWebSocketConnection socket, string[] messageWords)
+        {
+            PowerUsageSample newSample = new PowerUsageSample(Convert.ToDouble(messageWords[1]), Convert.ToDouble(messageWords[2]));
+
+            // get plug by mac and add the new sample
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            {
+                SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                Plug currentPlug = await context.Plugs.FindAsync(GetMac(socket));
+                currentPlug.Samples.Add(newSample);
+                await context.SaveChangesAsync();
             }
         }
     }

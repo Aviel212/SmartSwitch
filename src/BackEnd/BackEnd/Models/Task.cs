@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,7 +7,7 @@ using System.Web;
 namespace BackEnd.Models
 {
     /// <summary>
-    /// Task class for execute some action in certain time
+    /// Task class to execute some action at a certain time
     /// </summary>
     public abstract class Task
     {
@@ -23,10 +24,12 @@ namespace BackEnd.Models
             Operation = op;
         }
 
-        public static void Execute(Operations op, string mac)
+        public async static void Execute(Operations op, string mac)
         {
-            //when entering this function we need to execute the task
-            Plug device = DatabaseManager.GetInstance().GetPlug(mac);
+            // when entering this function we need to execute the task
+            Plug device;
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope()) device = await scope.Resolve<SmartSwitchDbContext>().Plugs.FindAsync(mac);
+
             switch (op)
             {
                 case Operations.TURNON:
@@ -34,8 +37,6 @@ namespace BackEnd.Models
                     break;
                 case Operations.TURNOFF:
                     device.TurnOff();
-                    break;
-                default:
                     break;
             }
         }

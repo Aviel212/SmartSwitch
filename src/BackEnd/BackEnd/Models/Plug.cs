@@ -1,14 +1,17 @@
-﻿using System;
+﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace BackEnd.Models
 {
     /// <summary>
-    /// this class representing a smart device which you can turn on and off and use simple tasks on it
+    /// this class represents a smart device which you can turn on and off and use simple tasks on it
     /// </summary>
     public class Plug
     {
@@ -38,32 +41,47 @@ namespace BackEnd.Models
         }
 
         // turn the device on
-        public void TurnOn()
+        public async void TurnOn()
         {
-            if (WebsocketsServer.GetInstance().TurnOn(Mac))
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
             {
-                IsOn = true;
-                DatabaseManager.GetInstance().Context.SaveChanges();
+                if (await scope.Resolve<IWebsocketsServer>().TurnOn(Mac))
+                {
+                    IsOn = true;
+                    SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                    context.Entry(this).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                }
             }
-            
         }
 
         // turn the device off
-        public void TurnOff()
+        public async void TurnOff()
         {
-            if (WebsocketsServer.GetInstance().TurnOff(Mac))
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
             {
-                IsOn = false;
-                DatabaseManager.GetInstance().Context.SaveChanges();
+                if (await scope.Resolve<IWebsocketsServer>().TurnOff(Mac))
+                {
+                    IsOn = false;
+                    SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                    context.Entry(this).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                }
             }
         }
 
-        public void AddTask(Task task)
+        public async void AddTask(Task task)
         {
             task.DeviceMac = Mac;
             Tasks.Add(task);
             task.Schedule();
-            DatabaseManager.GetInstance().Context.SaveChanges();
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            {
+                SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                context.Entry(this).State = EntityState.Modified;
+                context.Entry(task).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
