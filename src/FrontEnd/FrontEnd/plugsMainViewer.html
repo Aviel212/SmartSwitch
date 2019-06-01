@@ -7,6 +7,7 @@
     <script src="Scripts/jquery.js"></script>
     <script src="./Scripts/SmartSwitchServerInterface.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Bree+Serif&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./styles/popup.css">
     <style>
         /*#mainTable {
             margin: auto;
@@ -22,13 +23,12 @@
         img {
             width: 50px;
             height: 50px;
-            
         }
 
         #circle {
             width: 20px;
             height: 20px;
-            margin:auto;
+            margin: auto;
         }
 
         button {
@@ -38,23 +38,30 @@
         .blur {
             text-shadow: 1px 1px 5px #aaa;
             color: transparent;
-           
         }
+
             .blur img, .blur div, .blur input[type=checkbox] {
-               opacity: 0.3;
+                opacity: 0.3;
             }
+
         body {
             font-family: 'Bree Serif', serif;
         }
+
+        #plugsTableContainer {
+            margin-left: 100px;
+            margin-right: 100px;
+        }
+
         #plugs_tbl td, #plugs_tbl th {
             text-align: center;
             vertical-align: middle;
             padding: 8px 8px;
             /*display: table-cell;*/
-            border-right:1px solid black;
+            border-right: 1px solid black;
         }
-        
     </style>
+
 </head>
 <body>
     <h3 id="PlugsMngrHeader">
@@ -72,7 +79,7 @@
 
     <br />
 
-    <div id="plugsTableContainer">
+    <div id="plugsTableContainer" class="w3-container">
         <table id="plugs_tbl" class="w3-table-all w3-hoverable">
             <thead>
                 <tr class="w3-gray">
@@ -82,11 +89,11 @@
                     <th>priority</th>
                     <th>approval</th>
                     <th>isWork</th>
-                    <th>properties</th>
+                    <th>Options</th>
                 </tr>
             </thead>
             <tbody>
-                <!--<tr>
+                <tr data-row="1">
                     <td>1</td>
                     <td><img src="./resources/toaster.png" /></td>
                     <td>toaster</td>
@@ -95,7 +102,16 @@
                         <input class="w3-check" type="checkbox" checked="checked" disabled>
                     </td>
                     <td><div id="circle" class="w3-circle w3-red"></div></td>
-                    <td><a href="#">...</a></td>
+                    <td>
+                        <div class="popup" onclick="popupShow()">
+                            ...
+                            <span class="popuptext" id="myPopup">
+                                <input type="button" name="name" value="btn1" style="display:inline-block;"/>
+                                <input type="button" name="name" value="btn2" style="display:inline-block;"/>
+                                <input type="button" name="name" value="btn3" style="display:inline-block;"/>
+                            </span>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -126,7 +142,7 @@
                     <td>
                         <a href="#">...</a>
                     </td>
-                </tr>-->
+                </tr>
             </tbody>
         </table>
     </div>
@@ -135,6 +151,12 @@
         <input id="ch" class="w3-check" type="checkbox" checked="">
     </div>-->
     <script>
+        // When the user clicks on div, open the popup
+        function popupShow() {
+            $("#myPopup").toggleClass("show");
+            //alert()
+        }
+
         var manipulatedPlugs = [];
         var plugs;
         var row;
@@ -296,7 +318,7 @@
         
         function refresh() {
             init();
-            plugs = getUser("yarden", "12345678").Plugs;     //read from server
+            //plugs = getUser("yarden", "12345678").Plugs;     //read from server
             reloadPlugsIntoTable();
             fadeRows();
             sortByTabe();
@@ -306,6 +328,19 @@
             // init table
             $table = $("#plugs_tbl tbody");
             $table.empty();
+
+            plugs = [{
+                Nickname: "TV",
+                Priority: 0,
+                Approved: true,
+                IsOn:true
+            },
+                {
+                    Nickname: "Fridge",
+                    Priority: 1,
+                    Approved: false,
+                    IsOn: false
+                }]
 
             for (i in plugs) {
                 let $tr = $("<tr>");
@@ -317,11 +352,34 @@
                 let $td4 = $("<td>").html(priorityText(plug.Priority));
                 let $td5 = $("<td>").html(approvedText(plug.Approved));
                 let $td6 = $("<td>").html(isOnText(plug.IsOn));
-                let $td7 = $("<td>").html("...");
+                let $td7 = $("<td>").append(moreOptionsColumn(i));
+
+                //<div class="popup" onclick="popupShow()">
+                //    ...
+                //            <span class="popuptext" id="myPopup">
+                //        <input type="button" name="name" value="btn1" style="display:inline-block;" />
+                //        <input type="button" name="name" value="btn2" style="display:inline-block;" />
+                //        <input type="button" name="name" value="btn3" style="display:inline-block;" />
+                //    </span>
+                //</div>
                 $tr.append($td1, $td2, $td3, $td4, $td5, $td6, $td7);
                 $tr.click(trClicked);
                 $table.append($tr);
             }
+        }
+
+        function moreOptionsColumn(rowIndex) {
+            var $diva = $("<div>", { text: "..." }).addClass("popup").on("click", function () {
+                $("#myPopup" + (rowIndex)).toggleClass("show");
+            })
+            let $span = $("<span>", { class: "popuptext", id: "myPopup" + (rowIndex) }).appendTo($diva);
+
+            for (let i = 1; i < 4; i++) {
+                $("<input>", {
+                    type: "button", class: "btn" + i, value: "btn" + i, style: "display:inline-block;"
+                }).appendTo($span);
+            }
+            return $diva;
         }
 
         //// in case we need to read from the server the img
