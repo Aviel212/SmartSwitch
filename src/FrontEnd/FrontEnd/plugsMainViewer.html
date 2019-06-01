@@ -9,17 +9,6 @@
     <link href="https://fonts.googleapis.com/css?family=Bree+Serif&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="./styles/popup.css">
     <style>
-        /*#mainTable {
-            margin: auto;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-            #mainTable td {
-                border: 1px solid black;
-                padding: 5px;
-
-            }*/
-
         img {
             width: 50px;
             height: 50px;
@@ -46,6 +35,7 @@
 
         body {
             font-family: 'Bree Serif', serif;
+            margin-top:50px;
         }
 
         #plugsTableContainer {
@@ -64,23 +54,17 @@
 
 </head>
 <body>
-    <h3 id="PlugsMngrHeader">
-        Plugs Manager
-    </h3>
-
-    <br />
-
     <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:100px">
         <button onclick="refresh()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:20%">Refresh</button>
-        <button onclick="modifyMode()" class="w3-bar-item w3-button w3-teal w3-ripple" style="width:20%">Modify</button>
-        <button onclick="getFocus()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">Remove</button>
+        <button onclick="modifyMode()" class="w3-bar-item w3-button w3-teal w3-ripple" style="width:20%">Edit Device</button>
+        <button onclick="" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">Remove</button>
         <button onclick="saveChanges()" class="w3-bar-item w3-button w3-gray w3-ripple" style="width:20%">Save</button>
     </div>
 
     <br />
 
-    <div id="plugsTableContainer" class="w3-container">
-        <table id="plugs_tbl" class="w3-table-all w3-hoverable">
+    <div id="plugsTableContainer" class="w3-container aa">
+        <table id="plugs_tbl" class="w3-table-all w3-hoverable aa">
             <thead>
                 <tr class="w3-gray">
                     <th>N.</th>
@@ -93,69 +77,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-row="1">
-                    <td>1</td>
-                    <td><img src="./resources/toaster.png" /></td>
-                    <td>toaster</td>
-                    <td>non-essential</td>
-                    <td>
-                        <input class="w3-check" type="checkbox" checked="checked" disabled>
-                    </td>
-                    <td><div id="circle" class="w3-circle w3-red"></div></td>
-                    <td>
-                        <div class="popup" onclick="popupShow()">
-                            ...
-                            <span class="popuptext" id="myPopup">
-                                <input type="button" name="name" value="btn1" style="display:inline-block;"/>
-                                <input type="button" name="name" value="btn2" style="display:inline-block;"/>
-                                <input type="button" name="name" value="btn3" style="display:inline-block;"/>
-                            </span>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td><img src="./resources/tv.png" /></td>
-                    <td>TV</td>
-                    <td>non-essential</td>
-                    <td>
-                        <input class="w3-check" type="checkbox" unchecked="" disabled>
-                    </td>
-                    <td>
-                        <div id="circle" class="w3-circle w3-green"></div>
-                    </td>
-                    <td>
-                        <a href="#">...</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td><img src="./resources/fridge.png" /></td>
-                    <td>Fridge</td>
-                    <td>essential</td>
-                    <td>
-                        <input class="w3-check" type="checkbox" checked="" disabled>
-                    </td>
-                    <td>
-                        <div id="circle" class="w3-circle w3-green"></div>
-                    </td>
-                    <td>
-                        <a href="#">...</a>
-                    </td>
-                </tr>
             </tbody>
         </table>
     </div>
 
-    <!--<div>
-        <input id="ch" class="w3-check" type="checkbox" checked="">
-    </div>-->
     <script>
-        // When the user clicks on div, open the popup
-        function popupShow() {
-            $("#myPopup").toggleClass("show");
-            //alert()
-        }
+        $(document).ready(refresh());
 
         var manipulatedPlugs = [];
         var plugs;
@@ -171,35 +98,6 @@
             { val: 2, text: "IRRELEVANT" }
         ];
 
-        function updatePlug() {
-            if (rowInChange == -1)
-                return;
-            //if (plugs[rowInChange - 1].Nickname === $maniRow.children("td").eq()
-             //Priority Approved IsOn
-        }
-
-        function fadeRows() {
-            $("tr:has(td)").hover(function (e) {
-                $(this).css("cursor", "pointer");
-                $("tr:has(td)").addClass('blur');
-                $(this).removeClass('blur');
-            },
-                function (e) {
-                    if (!modify_enabled)
-                        $("tr:has(td)").removeClass('blur');
-                });
-
-            $("img").hover(function (e) {
-                $(this).css("cursor", "pointer");
-                $("img").addClass('blur');
-                $(this).removeClass('blur');
-            },
-                function (e) {
-                    if (!modify_enabled)
-                        $("img").removeClass('blur');
-                });
-        }
-
         function init() {
             rowInChange = -1;
             inChanging = false;
@@ -207,7 +105,6 @@
         }
 
         function modifyMode() {
-
             modify_enabled = true;
             $("tr").css("border", "2px solid #ff9980");
         }
@@ -245,10 +142,6 @@
                 updatePlug(newName, newPriority, newApproved, newIsOn);
 
                 refresh();
-                //$tdName.html(newName);
-                //$tdPriority.html(newPriority);
-                //$tdApproved.children("input").eq(0).attr("disabled", "disabled");
-                //$tdIsOn.children("div").unbind();
                 $maniRow.css("backgroundColor", "");
 
             }
@@ -258,12 +151,6 @@
             modify_enabled = false;
             $("tr:has(td)").on("mouseenter mouseleave");
             fadeRows();
-        }
-
-        function is() {
-            if ($('#ch').is(":checked")) {
-                alert("hi");
-            }
         }
 
         function trClicked() {
@@ -328,7 +215,7 @@
             // init table
             $table = $("#plugs_tbl tbody");
             $table.empty();
-
+            // ###################################to check#############################
             plugs = [{
                 Nickname: "TV",
                 Priority: 0,
@@ -341,7 +228,7 @@
                     Approved: false,
                     IsOn: false
                 }]
-
+            // #########################################################################
             for (i in plugs) {
                 let $tr = $("<tr>");
                 let plug = plugs[i];
@@ -354,14 +241,6 @@
                 let $td6 = $("<td>").html(isOnText(plug.IsOn));
                 let $td7 = $("<td>").append(moreOptionsColumn(i));
 
-                //<div class="popup" onclick="popupShow()">
-                //    ...
-                //            <span class="popuptext" id="myPopup">
-                //        <input type="button" name="name" value="btn1" style="display:inline-block;" />
-                //        <input type="button" name="name" value="btn2" style="display:inline-block;" />
-                //        <input type="button" name="name" value="btn3" style="display:inline-block;" />
-                //    </span>
-                //</div>
                 $tr.append($td1, $td2, $td3, $td4, $td5, $td6, $td7);
                 $tr.click(trClicked);
                 $table.append($tr);
@@ -369,29 +248,18 @@
         }
 
         function moreOptionsColumn(rowIndex) {
-            var $diva = $("<div>", { text: "..." }).addClass("popup").on("click", function () {
+            var $div = $("<div>", { text: "..." }).addClass("popup").on("click", function () {
                 $("#myPopup" + (rowIndex)).toggleClass("show");
             })
-            let $span = $("<span>", { class: "popuptext", id: "myPopup" + (rowIndex) }).appendTo($diva);
+            let $span = $("<span>", { class: "popuptext", id: "myPopup" + (rowIndex) }).appendTo($div);
 
             for (let i = 1; i < 4; i++) {
                 $("<input>", {
                     type: "button", class: "btn" + i, value: "btn" + i, style: "display:inline-block;"
                 }).appendTo($span);
             }
-            return $diva;
+            return $div;
         }
-
-        //// in case we need to read from the server the img
-        //function loadIcon2(name) {
-        //    $.get("./resources/" + name + ".png", function (data, textStatus) {
-        //        if (textStatus == "success") {
-        //            return data;
-        //        }
-        //        if (textStatus == "error")
-        //            return "/";
-        //    })
-        //}
 
         function loadIcon(name) {
             let $img = $("<img>").attr("src", "./resources/" + name + ".png");
@@ -447,6 +315,7 @@
             return $("<div>").attr({ id: "circle", class: "w3-circle w3-" + color });
         }
 
+        // sort 
         function sortByTabe() {
             $("th").click(function () {
                 let table = $(this).parents("table").eq(0);
@@ -468,6 +337,30 @@
                 return text;
             }
         }
+
+        // style function fading rows on hover
+        function fadeRows() {
+            $("tr:has(td)").hover(function (e) {
+                $(this).css("cursor", "pointer");
+                $("tr:has(td)").addClass('blur');
+                $(this).removeClass('blur');
+            },
+                function (e) {
+                    if (!modify_enabled)
+                        $("tr:has(td)").removeClass('blur');
+                });
+
+            $("img").hover(function (e) {
+                $(this).css("cursor", "pointer");
+                $("img").addClass('blur');
+                $(this).removeClass('blur');
+            },
+                function (e) {
+                    if (!modify_enabled)
+                        $("img").removeClass('blur');
+                });
+        }
+
 
     </script>
     <script>
