@@ -57,22 +57,22 @@
     <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:100px">
         <button onclick="refresh()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:20%">Refresh</button>
         <button onclick="modifyMode()" class="w3-bar-item w3-button w3-teal w3-ripple" style="width:20%">Edit Device</button>
-        <button onclick="" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">Remove</button>
+        <button onclick="forTesting()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">For Testing</button>
         <button onclick="saveChanges()" class="w3-bar-item w3-button w3-gray w3-ripple" style="width:20%">Save</button>
     </div>
 
     <br />
 
-    <div id="plugsTableContainer" class="w3-container aa">
-        <table id="plugs_tbl" class="w3-table-all w3-hoverable aa">
+    <div id="plugsTableContainer" class="w3-container">
+        <table id="plugs_tbl" class="w3-table-all w3-hoverable">
             <thead>
                 <tr class="w3-gray">
                     <th>N.</th>
-                    <th>icon</th>
-                    <th>name</th>
-                    <th>priority</th>
-                    <th>approval</th>
-                    <th>isWork</th>
+                    <th>Icon</th>
+                    <th>Name</th>
+                    <th>Priority</th>
+                    <th>Approval</th>
+                    <th>IsOn</th>
                     <th>Options</th>
                 </tr>
             </thead>
@@ -81,7 +81,19 @@
         </table>
     </div>
 
+    <div id="test"></div>
+
     <script>
+        function forTesting() {
+            //addUser("Dudi", "1122");
+            //turnPlugOn("qq:ww");
+            //approvePlug("qq:ww");
+            let plugs = getPlugs("yarden");
+            for (i in plugs)
+                $("<p>").html(plugs[i].mac + ", " + plugs[i].isOn + ", " + plugs[i].approved + "<br />").appendTo("#test");
+            //alert(users);
+        }
+
         $(document).ready(refresh());
 
         var manipulatedPlugs = [];
@@ -217,12 +229,14 @@
             $table.empty();
             // ###################################to check#############################
             plugs = [{
+                Mac: "aa:bb",
                 Nickname: "TV",
                 Priority: 0,
                 Approved: true,
                 IsOn:true
             },
                 {
+                    Mac: "qq:yy",
                     Nickname: "Fridge",
                     Priority: 1,
                     Approved: false,
@@ -252,11 +266,16 @@
                 $("#myPopup" + (rowIndex)).toggleClass("show");
             })
             let $span = $("<span>", { class: "popuptext", id: "myPopup" + (rowIndex) }).appendTo($div);
-
+            let pages = ["device_Timing_Summary.html", "showPowerConsumption.html", "device_settings.html"];
+            let btnNames = ["Timing Settings", "Power Usage", "Settings"];
+            let plug = plugs[rowIndex - 1];
             for (let i = 1; i < 4; i++) {
                 $("<input>", {
-                    type: "button", class: "btn" + i, value: "btn" + i, style: "display:inline-block;"
-                }).appendTo($span);
+                    type: "button", class: "btn" + i + " w3-button w3-teal w3-ripple" , value: btnNames[i-1], style: "display:inline-block;margin:3px;"
+                }).appendTo($span).on("click", function () {
+                    if (plug.Mac)
+                        window.parent.$("#mainFrame").attr("src", "./" + pages[i-1] + "?mac=" + plug.Mac);
+                });
             }
             return $div;
         }

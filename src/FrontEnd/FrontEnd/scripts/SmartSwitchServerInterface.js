@@ -1,5 +1,6 @@
 ﻿/// <reference path="jquery.js" />
-let server = "https://backend.conveyor.cloud/api"; //static address
+//let server = "https://backend.conveyor.cloud/api"; //static address
+let server = "http://localhost:50270/api";
 let usersApi = "/users";
 let plugsApi = "/plugs";
 let tasksApi = "/tasks";
@@ -10,20 +11,58 @@ $.ajaxSetup({ async: false});
 // returns "ok" if added successfully or "username exists" if the username is taken.
 function addUser(username, password) {
     let returnString;
-    $.post(server + usersApi + "/add/" + username + "/" + password, function (data) {
-        if (data.startsWith("added")) returnString = "ok";
-        else if (data === "username exists") returnString = data;
-    });
+    let newUser = {
+        Username: username,
+        Password: password
+    };
+
+    $.ajax({
+        dataType: "json",
+        url: server + usersApi,
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        data: JSON.stringify(newUser),
+        success: function (data) {
+            returnString = "ok";
+            //alert("Success");
+        },
+        error: function (jqXHR, textStatus, errorThrown ) {
+            returnString = "username exists";
+            //alert(errorThrown);
+        }
+    })
+
+    //$.post(server + usersApi + "/add/" + username + "/" + password, function (data) {
+    //    if (data.startsWith("added")) ;
+    //    else if (data === "username exists") returnString = data;
+    //});
     return returnString;
 }
 
 // returns a string array containing all usernames
 function getAllUsernames() {
     let returnStringArray;
-    $.get(server + usersApi, function (data) {
-        returnStringArray = data;
-    });
-    return returnStringArray;
+
+    $.ajax({
+        dataType: "json",
+        url: server + usersApi,
+        contentType: "application/json; charset=utf-8",
+        type: "GET",
+        //data: JSON.stringify(),
+        success: function (data) {
+            returnStringArray = data;
+            //alert("Success");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            returnStringArray = "username exists";
+            //alert(errorThrown);
+        }
+    })
+
+    //$.get(server + usersApi, function (data) {
+    //    returnStringArray = data;
+    //});
+    return returnStringArray;       //return array of objects(user)-- for user name in place 0 = users[0].username
 }
 
 // removes a user
@@ -31,85 +70,217 @@ function getAllUsernames() {
 // incorrect and "ok" if removed successfully
 function removeUser(username, password) {
     let returnString;
-    $.post(server + usersApi + "/remove/" + username + "/" + password, function (data) {
-        if (data.startsWith("removed")) returnString = "ok";
-        else returnString = data;
-    });
+
+    $.ajax({
+        dataType: "json",
+        url: server + usersApi + "/" + username,
+        contentType: "application/json; charset=utf-8",
+        type: "DELETE",
+        //data: JSON.stringify(),
+        success: function (data) {
+            returnString = "ok";
+            //alert("Success");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            returnString = "no such user";
+            //alert(errorThrown);
+        }
+    })
+
+    //$.post(server + usersApi + "/remove/" + username + "/" + password, function (data) {
+    //    if (data.startsWith("removed")) returnString = "ok";
+    //    else returnString = data;
+    //});
     return returnString;
 }
 
 // changes a user's password
 // returns "no such user" if the user does not exist and "ok" if changed password successfully
 function changePassword(username, newPassword) {
-    let returnString;
-    $.post(server + usersApi + "/change-password/" + username + "/" + newPassword, function (data) {
-        if (data === "password changed") returnString = "ok";
-        else returnString = data;
-    });
-    return returnString;
+    //let returnString;
+    //$.post(server + usersApi + "/change-password/" + username + "/" + newPassword, function (data) {
+    //    if (data === "password changed") returnString = "ok";
+    //    else returnString = data;
+    //});
+    //return returnString;
 }
 
 // returns "no such user" if there is no user with the given username, "incorrect password" if the password doesn't match
 // the user's password and a JSON of the user otherwise
 function getUser(username, password) {
     let returnData;
-    $.get(server + usersApi + "/" + username + "/" + password, function (data) {
-        if (data === "no such user" || data === "incorrect password") returnData = data;
-        else returnData = JSON.parse(data);
-    });
+    $.ajax({
+        dataType: "json",
+        url: server + usersApi + "/Duda",
+        contentType: "application/json; charset=utf-8",
+        type: "GET",
+        //data: JSON.stringify(),
+        success: function (data) {
+            returnString = "ok";
+            //alert("Success");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            returnString = errorThrown;
+            //alert(errorThrown);
+        }
+    })
+
+    //$.get(server + usersApi + "/" + username + "/" + password, function (data) {
+    //    if (data === "no such user" || data === "incorrect password") returnData = data;
+    //    else returnData = JSON.parse(data);
+    //});
     return returnData;
 }
 
-// returns a JSON of the plug
+// returns a object of plug
 function getPlug(mac) {
     let plug;
-    $.get(server + plugsApi + "/" + mac, function (data) {
-        plug = JSON.parse(data);
-    });
+
+    $.ajax({
+        dataType: "json",
+        url: server + plugsApi + "/" + mac,
+        contentType: "application/json; charset=utf-8",
+        type: "GET",
+        //data: JSON.stringify(),
+        success: function (data) {
+            plug = data;
+            //alert("Success");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            //alert(errorThrown);
+        }
+    })
+
+    //$.get(server + plugsApi + "/" + mac, function (data) {
+    //    plug = JSON.parse(data);
+    //});
     return plug;
 
 }
-///*+ "/" + username*/
-//function getPlugs() {
-//    let plugs;
-//    let username = "/tal";
-//    $.get(server + usersApi + "/plugs", function (data) {
-//        plugs = data;//JSON.parse(data);
-//    });
-//    return plugs;
-//}
+
+function getPlugs(username) {
+    let plugs;
+
+    $.ajax({
+        dataType: "json",
+        url: server + plugsApi + "/user/" + username,
+        contentType: "application/json; charset=utf-8",
+        type: "GET",
+        //data: JSON.stringify(),
+        success: function (data) {
+            plugs = data;
+            //alert("Success");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            //alert(errorThrown);
+        }
+    })
+
+    //$.get(server + usersApi + "/plugs", function (data) {
+    //    plugs = data;//JSON.parse(data);
+    //});
+    return plugs;
+}
 
 // turns a plug on
 // returns "no such plug" if the plug doesn't exist, "plug not connected" if the plug is not
 // connected to the server and "ok" if turned on successfully
 function turnPlugOn(mac) {
-    let returnString;
-    $.post(server + plugsApi + "/" + mac + "/ison/true", function (data) {
-        if (data === "turned on") returnString = "ok";
-        else returnString = data;
-    });
-    return returnString;
+    //let returnString;
+    //let plug = {
+    //    mac: mac,
+    //    IsOn: true
+    //}
+
+    //$.ajax({
+    //    dataType: "json",
+    //    url: server + plugsApi + "/" + mac,
+    //    contentType: "application/json; charset=utf-8",
+    //    type: "PUT",
+    //    data: JSON.stringify(plug),
+    //    success: function (data) {
+    //        returnString = "ok";
+    //        //alert("Success");
+    //    },
+    //    error: function (jqXHR, textStatus, errorThrown) {
+    //        alert(errorThrown);
+    //    }
+    //})
+
+    //$.post(server + plugsApi + "/" + mac + "/ison/true", function (data) {
+    //    if (data === "turned on") returnString = "ok";
+    //    else returnString = data;
+    //});
+    return updatesPlug(mac, true);
 }
 
 // turns a plug off
 // returns "no such plug" if the plug doesn't exist, "plug not connected" if the plug is not
 // connected to the server and "ok" if turned ff successfully
 function turnPlugOff(mac) {
-    let returnString;
-    $.post(server + plugsApi + "/" + mac + "/ison/false", function (data) {
-        if (data === "turned off") returnString = "ok";
-        else returnString = data;
-    });
-    return returnString;
+    //let returnString;
+    //let plug = {
+    //    mac: mac,
+    //    IsOn: false
+    //}
+
+    //$.ajax({
+    //    dataType: "json",
+    //    url: server + plugsApi + "/" + mac,
+    //    contentType: "application/json; charset=utf-8",
+    //    type: "PUT",
+    //    data: JSON.stringify(plug),
+    //    success: function (data) {
+    //        returnString = "ok";
+    //        //alert("Success");
+    //    },
+    //    error: function (jqXHR, textStatus, errorThrown) {
+    //        alert(errorThrown);
+    //    }
+    //})
+
+    //$.post(server + plugsApi + "/" + mac + "/ison/false", function (data) {
+    //    if (data === "turned off") returnString = "ok";
+    //    else returnString = data;
+    //});
+    return updatesPlug(mac,false);
 }
 
 // approves a given plug
 // returns "no such plug" if the plug doesn't exist and "ok" if the plug was approved successfully
 function approvePlug(mac) {
+    //let returnString;
+
+
+    //$.post(server + plugsApi + "/" + mac + "/approved/true", function (data) {
+    //    returnString = data;
+    //});
+    return updatesPlug(mac,undefined,true);
+}
+
+function updatesPlug(mac, stat, approve) {
     let returnString;
-    $.post(server + plugsApi + "/" + mac + "/approved/true", function (data) {
-        returnString = data;
-    });
+    let plug = {
+        mac: mac,
+        IsOn: stat,
+        approved: approve
+    }
+
+    $.ajax({
+        dataType: "json",
+        url: server + plugsApi + "/" + mac,
+        contentType: "application/json; charset=utf-8",
+        type: "PUT",
+        data: JSON.stringify(plug),
+        success: function (data) {
+            returnString = "ok";
+            //alert("Success");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    })
+
     return returnString;
 }
 
@@ -117,9 +288,27 @@ function approvePlug(mac) {
 // returns "no such plug" if the plug doesn't exist and "ok" if the plug was removed successfully
 function removePlug(mac) {
     let returnString;
-    $.post(server + plugsApi + "/" + mac + "/approved/false", function (data) {
-        returnString = data;
-    });
+
+    $.ajax({
+        dataType: "json",
+        url: server + plugsApi + "/" + mac,
+        contentType: "application/json; charset=utf-8",
+        type: "DELETE",
+        //data: JSON.stringify(),
+        success: function (data) {
+            returnString = "ok";
+            //alert("Success");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            returnString = "no such plug";
+            //alert(errorThrown);
+        }
+    })
+
+
+    //$.post(server + plugsApi + "/" + mac + "/approved/false", function (data) {
+    //    returnString = data;
+    //});
     return returnString;
 }
 

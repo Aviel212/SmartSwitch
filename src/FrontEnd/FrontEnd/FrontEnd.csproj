@@ -167,6 +167,7 @@
     <Content Include="scripts\SmartSwitchServerInterface.js" />
     <Content Include="scripts\test.html" />
     <Content Include="showPowerConsumption.html" />
+    <Content Include="styles\popup.css" />
     <Content Include="styles\w3css.css" />
     <Content Include="userSettings.html" />
     <Content Include="Web.config" />

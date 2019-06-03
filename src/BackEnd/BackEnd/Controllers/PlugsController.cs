@@ -39,6 +39,35 @@ namespace BackEnd.Controllers
             return Ok(plug);
         }
 
+        // GET: api/Plugs/User/{user.id}
+        [HttpGet("user/{userName}")]
+        //[Route("")]
+        public async Task<IActionResult> GetUserPlugs([FromRoute] string userName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var plugs = await _context.Users.Where(u => u.Username == userName).Select(u => u.Plugs).FirstOrDefaultAsync();
+
+            if (plugs == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(plugs);
+            //return _context.Plugs.Include("Username").ToList();//.Where(p => p.Username);
+            //var plugs2 =  _context.Plugs.Where(
+            //    p => _context.Entry(p).CurrentValues["Username"].ToString() != userName)
+            //                                                                    .ToList();
+            //var plugs = _context.Plugs.ToList();
+
+
+            ////return Ok(plugs);
+            //return plugs2;
+        }
+
         // PUT: api/Plugs/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPlug([FromRoute] string id, [FromBody] Plug plug)
@@ -98,6 +127,20 @@ namespace BackEnd.Controllers
         private bool PlugExists(string id)
         {
             return _context.Plugs.Any(e => e.Mac == id);
+        }
+
+        private async void UpdatePowerState(string mac)
+        {
+            Plug plug = await _context.Plugs.SingleOrDefaultAsync(p => p.Mac == mac);
+            if (plug == null)
+            {
+
+            }
+            if (plug.IsOn)
+                plug.TurnOn();
+            else
+                plug.TurnOff();
+            _context.SaveChanges();
         }
     }
 }

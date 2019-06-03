@@ -20,6 +20,25 @@ namespace BackEnd.Controllers
             _context = context;
         }
 
+        // GET: api/Users
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var users = await _context.Users.ToListAsync();
+
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(users);
+        }
+
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser([FromRoute] string id)
