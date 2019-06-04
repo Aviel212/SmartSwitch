@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ namespace BackEnd.Models
     /// <summary>
     /// User can add new plugs to his active plugs, remove plugs and more
     /// </summary>
-    public class User
+    public class User : IdentityUser
     {
         [Key]
         public string Username { get; set; }
