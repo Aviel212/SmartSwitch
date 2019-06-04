@@ -12,10 +12,12 @@ namespace BackEnd.Models
     public abstract class Task
     {
         public enum Operations { TURNON, TURNOFF };
+        public enum TaskTypes { ONETIME, REPEATED };
 
         public int TaskId { get; set; }
         public Operations Operation { get; set; }
         public string DeviceMac { get; set; }
+        public TaskTypes taskType { get; set; }
 
         public Task() { }
 

@@ -16,7 +16,7 @@ namespace BackEnd.Models
 
         public OneTimeTask()
         {
-
+            taskType = TaskTypes.ONETIME;
         }
 
         public OneTimeTask(Operations op, DateTime dateToBeExecuted) : base(op)

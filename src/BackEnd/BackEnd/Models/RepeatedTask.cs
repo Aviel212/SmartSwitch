@@ -17,7 +17,7 @@ namespace BackEnd.Models
 
         public RepeatedTask()
         {
-
+            taskType = TaskTypes.REPEATED;
         }
 
         public RepeatedTask(Operations op, DateTime startDate, int repeatEvery) : base(op)
