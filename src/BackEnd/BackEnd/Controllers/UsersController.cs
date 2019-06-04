@@ -43,42 +43,7 @@ namespace BackEnd.Controllers
             return Ok(_mapper.Map<UserDto>(user));
         }
 
-        // PUT: api/Users/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] string id, [FromBody] User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != user.Username)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // PUT: api/Users/{username}/password
+        // PUT: api/Users/yarden/password
         [HttpPut("{username}/password")]
         public async Task<IActionResult> ChangePassword(string username, [FromBody] string password)
         {
@@ -112,14 +77,14 @@ namespace BackEnd.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] User user)
+        public async Task<IActionResult> PostUser([FromBody] UserDto user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Users.Add(user);
+            _context.Users.Add(_mapper.Map<User>(user));
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUser", new { id = user.Username }, user);

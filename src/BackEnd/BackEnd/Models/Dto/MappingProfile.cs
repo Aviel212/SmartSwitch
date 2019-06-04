@@ -11,6 +11,7 @@ namespace BackEnd.Models.Dto
         public MappingProfile()
         {
             CreateMap<User, UserDto>();
+            CreateMap<UserDto, User>();
         }
     }
 }
