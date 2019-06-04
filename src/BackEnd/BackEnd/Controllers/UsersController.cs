@@ -77,17 +77,19 @@ namespace BackEnd.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] UserDto user)
+        public async Task<IActionResult> PostUser([FromBody] UserDto userDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Users.Add(_mapper.Map<User>(user));
+            if (UserExists(userDto.Username)) return BadRequest();
+
+            _context.Users.Add(_mapper.Map<User>(userDto));
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Username }, user);
+            return CreatedAtAction("GetUser", new { id = userDto.Username }, userDto);
         }
 
         private bool UserExists(string id)
