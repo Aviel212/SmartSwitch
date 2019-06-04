@@ -22,10 +22,16 @@ namespace BackEnd.Controllers
             this._userManager = userManager;
         }
 
+        // POST api/Auth/login
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
@@ -56,10 +62,10 @@ namespace BackEnd.Controllers
             return Unauthorized();
         }
 
-        // POST api/accounts
+        // POST api/Auth/register
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Post()
+        public async Task<IActionResult> Register([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -68,13 +74,13 @@ namespace BackEnd.Controllers
 
             ApplicationUser user = new ApplicationUser()
             {
-                Email = "aa@b.com",
+                //Email = "aa@b.com",
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = "dudi"
+                UserName = model.Username
             };
-            await _userManager.CreateAsync(user, "Password@123");
+            await _userManager.CreateAsync(user, model.Password);       //password requird P @ 1????
 
-            return Ok();// new OkObjectResult("Account created");
+            return new OkObjectResult("Account created");
         }
 
 
