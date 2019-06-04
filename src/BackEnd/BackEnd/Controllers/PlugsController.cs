@@ -42,7 +42,7 @@ namespace BackEnd.Controllers
         // GET: api/Plugs/User/{user.id}
         [HttpGet("user/{userName}")]
         //[Route("")]
-        public async Task<IActionResult> GetUserPlugs([FromRoute] string userName)
+        public async Task<ActionResult<IEnumerable<Plug>>> GetUserPlugs([FromRoute] string userName)
         {
             if (!ModelState.IsValid)
             {
@@ -81,6 +81,8 @@ namespace BackEnd.Controllers
             {
                 return BadRequest();
             }
+
+            UpdatePowerState(id, plug.IsOn);
 
             _context.Entry(plug).State = EntityState.Modified;
 
@@ -129,18 +131,21 @@ namespace BackEnd.Controllers
             return _context.Plugs.Any(e => e.Mac == id);
         }
 
-        private async void UpdatePowerState(string mac)
+        private async void UpdatePowerState(string mac, bool newStatus)
         {
-            Plug plug = await _context.Plugs.SingleOrDefaultAsync(p => p.Mac == mac);
-            if (plug == null)
+            Plug plug = await _context.Plugs.FindAsync(mac);
+            if(plug == null)
             {
-
+                return;             // exception
             }
-            if (plug.IsOn)
-                plug.TurnOn();
-            else
-                plug.TurnOff();
-            _context.SaveChanges();
+
+            if (plug.IsOn != newStatus)
+            {
+                if (newStatus == true)
+                    plug.TurnOn();
+                else
+                    plug.TurnOff();
+            }
         }
     }
 }
