@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
+using AutoMapper;
+using BackEnd.Models.Dto;
 
 namespace BackEnd.Controllers
 {
@@ -14,34 +16,17 @@ namespace BackEnd.Controllers
     public class UsersController : ControllerBase
     {
         private readonly SmartSwitchDbContext _context;
+        private readonly IMapper _mapper;
 
-        public UsersController(SmartSwitchDbContext context)
+        public UsersController(SmartSwitchDbContext context, IMapper mapper)
         {
             _context = context;
-        }
-
-        // GET: api/Users
-        [HttpGet]
-        public async Task<IActionResult> GetUsers()
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var users = await _context.Users.ToListAsync();
-
-            if (users == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(users);
+            _mapper = mapper;
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] string id)
+        public async Task<ActionResult<UserDto>> GetUser([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
@@ -55,7 +40,7 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
 
-            return Ok(user);
+            return Ok(_mapper.Map<UserDto>(user));
         }
 
         // PUT: api/Users/5
@@ -93,6 +78,38 @@ namespace BackEnd.Controllers
             return NoContent();
         }
 
+        // PUT: api/Users/{username}/password
+        [HttpPut("{username}/password")]
+        public async Task<IActionResult> ChangePassword(string username, [FromBody] string password)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            User user = await _context.Users.FindAsync(username);
+            if (user == null) return BadRequest();
+            user.Password = password;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(username))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         // POST: api/Users
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody] User user)
@@ -106,27 +123,6 @@ namespace BackEnd.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUser", new { id = user.Username }, user);
-        }
-
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] string id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
         }
 
         private bool UserExists(string id)

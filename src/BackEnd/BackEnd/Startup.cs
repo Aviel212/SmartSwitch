@@ -14,6 +14,8 @@ using Microsoft.Extensions.Options;
 using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Hangfire;
+using AutoMapper;
+using BackEnd.Models.Dto;
 
 namespace BackEnd
 {
@@ -55,10 +57,12 @@ namespace BackEnd
             {
                 configuration.UseSqlServerStorage(@"Server=.\SQLEXPRESS;Trusted_Connection=True;ConnectRetryCount=0");
             });
+
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper mapper)
         {
             if (env.IsDevelopment())
             {
@@ -75,6 +79,8 @@ namespace BackEnd
 
             app.UseHangfireServer();
             app.UseHangfireDashboard();
+
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
     }
 }
