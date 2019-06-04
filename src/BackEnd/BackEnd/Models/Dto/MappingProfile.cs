@@ -14,6 +14,7 @@ namespace BackEnd.Models.Dto
             CreateMap<UserDto, User>();
             CreateMap<Plug, PlugDto>();
             CreateMap<PlugDto, Plug>();
+            
         }
     }
 }

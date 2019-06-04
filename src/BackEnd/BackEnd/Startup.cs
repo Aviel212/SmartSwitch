@@ -107,8 +107,6 @@ namespace BackEnd
             app.UseHangfireServer();
             app.UseHangfireDashboard();
             app.UseAuthentication();
-
-            //mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
     }
 }
