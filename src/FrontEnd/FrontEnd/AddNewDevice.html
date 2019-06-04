@@ -97,8 +97,8 @@
             $accept.on('click', function (e) {//my pop up shows up to let user enter nickname and priority
                 $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
                 //$myPopUp.show();
-                $("input[type='button']").prop("disabled", true);
-                $("#myPopUp-div input[type='button']").prop("disabled", false);
+                $("input[type='button']").prop("disabled", true); //disable all buttons
+                $("#myPopUp-div input[type='button']").prop("disabled", false);//leave the buttons in the hidden div working
                 $notifier = plugg//copying the current chosen mac address
                 $rowToDelete = $currentTR;
                 //testing disabaling reload
