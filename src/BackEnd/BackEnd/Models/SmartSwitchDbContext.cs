@@ -9,7 +9,7 @@ namespace BackEnd.Models
 {
     public class SmartSwitchDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> Usersa { get; set; }
         public DbSet<Plug> Plugs { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<PowerUsageSample> PowerUsageSamples { get; set; }

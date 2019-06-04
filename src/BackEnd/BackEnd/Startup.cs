@@ -61,7 +61,6 @@ namespace BackEnd
                 configuration.UseSqlServerStorage(@"Server=.\SQLEXPRESS;Trusted_Connection=True;ConnectRetryCount=0");
             });
 
-            services.AddIdentity<User, IdentityRole>()
             services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<SmartSwitchDbContext>()
              .AddDefaultTokenProviders();

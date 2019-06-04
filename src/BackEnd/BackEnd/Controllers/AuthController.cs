@@ -15,13 +15,10 @@ namespace BackEnd.Controllers
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
-        private UserManager<User> UserManager;
         private UserManager<ApplicationUser> _userManager;
 
-        public AuthController(UserManager<User> userManager)
         public AuthController(UserManager<ApplicationUser> userManager)
         {
-            this.UserManager = userManager;
             this._userManager = userManager;
         }
 
@@ -29,8 +26,6 @@ namespace BackEnd.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await UserManager.FindByNameAsync(model.Username);
-            if (user != null && await UserManager.CheckPasswordAsync(user, model.Password))
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
@@ -45,7 +40,6 @@ namespace BackEnd.Controllers
                 var token = new JwtSecurityToken(
                     issuer: "http://oec.com",
                     audience: "http://oec.com",
-                    expires: DateTime.UtcNow.AddHours(1),
                     expires: DateTime.Now.AddDays(2),
                     claims: claims,
                     signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
