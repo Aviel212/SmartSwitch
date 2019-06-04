@@ -25,15 +25,15 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUser([FromRoute] string id)
+        [HttpGet("{username}")]
+        public async Task<ActionResult<UserDto>> GetUser([FromRoute] string username)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(username);
 
             if (user == null)
             {
@@ -43,7 +43,7 @@ namespace BackEnd.Controllers
             return Ok(_mapper.Map<UserDto>(user));
         }
 
-        // PUT: api/Users/yarden/password
+        // PUT: api/Users/{username}/password
         [HttpPut("{username}/password")]
         public async Task<IActionResult> ChangePassword(string username, [FromBody] string password)
         {
