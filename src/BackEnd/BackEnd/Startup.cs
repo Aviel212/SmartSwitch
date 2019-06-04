@@ -10,12 +10,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
+using System.Text;
 using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Hangfire;
 using AutoMapper;
 using BackEnd.Models.Dto;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BackEnd
 {
@@ -58,6 +61,30 @@ namespace BackEnd
                 configuration.UseSqlServerStorage(@"Server=.\SQLEXPRESS;Trusted_Connection=True;ConnectRetryCount=0");
             });
 
+            services.AddIdentity<User, IdentityRole>()
+            .AddEntityFrameworkStores<SmartSwitchDbContext>()
+             .AddDefaultTokenProviders();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = "http://oec.com",
+                    ValidIssuer = "http://oec.com",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"))
+                };
+            });
+
             services.AddAutoMapper(typeof(Startup));
         }
 
@@ -79,8 +106,9 @@ namespace BackEnd
 
             app.UseHangfireServer();
             app.UseHangfireDashboard();
+            app.UseAuthentication();
 
-            mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            //mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
     }
 }
