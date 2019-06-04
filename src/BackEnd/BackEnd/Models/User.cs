@@ -11,7 +11,7 @@ namespace BackEnd.Models
     /// <summary>
     /// User can add new plugs to his active plugs, remove plugs and more
     /// </summary>
-    public class User : IdentityUser
+    public class User 
     {
         [Key]
         public string Username { get; set; }

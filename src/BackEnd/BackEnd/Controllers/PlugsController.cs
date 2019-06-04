@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
 using AutoMapper;
 using BackEnd.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackEnd.Controllers
 {

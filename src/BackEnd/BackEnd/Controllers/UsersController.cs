@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
 using AutoMapper;
 using BackEnd.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackEnd.Controllers
 {
@@ -26,7 +27,6 @@ namespace BackEnd.Controllers
 
         // GET: api/Users/5
         [HttpGet("{username}")]
-        public async Task<ActionResult<UserDto>> GetUser([FromRoute] string username)
         {
             if (!ModelState.IsValid)
             {
@@ -40,7 +40,6 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<UserDto>(user));
         }
 
         // PUT: api/Users/{username}/password

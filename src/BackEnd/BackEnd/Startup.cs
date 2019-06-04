@@ -62,6 +62,7 @@ namespace BackEnd
             });
 
             services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<SmartSwitchDbContext>()
              .AddDefaultTokenProviders();
 
@@ -101,12 +102,13 @@ namespace BackEnd
             }
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseCors("AllowAll");
             app.UseMvc();
 
             app.UseHangfireServer();
             app.UseHangfireDashboard();
-            app.UseAuthentication();
+            
         }
     }
 }

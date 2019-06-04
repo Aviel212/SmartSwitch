@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BackEnd.Models
 {
-    public class SmartSwitchDbContext : IdentityDbContext<User>
+    public class SmartSwitchDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Plug> Plugs { get; set; }
