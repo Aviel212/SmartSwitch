@@ -6,7 +6,7 @@
     <script src="scripts/jquery.js"></script>
     <link href="styles/w3css.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <script src="scripts/SmartSwitchServerInterface.js"></script>
+    <script src="scripts/NewSmartSwitchServerInterface.js"></script>
 
     <style>
         .sidebar{
@@ -105,14 +105,14 @@
             if (sessionStorage.currentSmartSwitchUser != undefined) { //if someone is logged in show plugs page
                 openPage(sessionStorage.getItem("currentSmartSwitchPage"));
 
-                setSideBar(true); //true means logged in??????
+                setSideBar(true); //true means logged in
             } else { //else show the login form
                 openPage("loginForm");
 
                 /////////////////////////////////////////////////
                 //SET BACK TO FALSE WHEN SERVER IS BACK TO WORK//
                 /////////////////////////////////////////////////
-                setSideBar(true); 
+                setSideBar(false); 
             }
             
         });
