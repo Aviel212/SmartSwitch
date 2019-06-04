@@ -80,7 +80,7 @@ namespace BackEnd
             app.UseHangfireServer();
             app.UseHangfireDashboard();
 
-            mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            //mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
     }
 }

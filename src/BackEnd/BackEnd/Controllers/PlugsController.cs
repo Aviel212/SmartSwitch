@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
+using AutoMapper;
+using BackEnd.Models.Dto;
 
 namespace BackEnd.Controllers
 {
@@ -14,15 +16,17 @@ namespace BackEnd.Controllers
     public class PlugsController : ControllerBase
     {
         private readonly SmartSwitchDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PlugsController(SmartSwitchDbContext context)
+        public PlugsController(SmartSwitchDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Plugs/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPlug([FromRoute] string id)
+        public async Task<ActionResult<PlugDto>> GetPlug([FromRoute] string id)
         {
             if (!ModelState.IsValid)
             {
@@ -36,36 +40,23 @@ namespace BackEnd.Controllers
                 return NotFound();
             }
 
-            return Ok(plug);
+            return Ok(_mapper.Map<PlugDto>(plug));
         }
 
         // GET: api/Plugs/User/{user.id}
-        [HttpGet("user/{userName}")]
-        //[Route("")]
-        public async Task<ActionResult<IEnumerable<Plug>>> GetUserPlugs([FromRoute] string userName)
+        [HttpGet("user/{username}")]
+        public async Task<ActionResult<IEnumerable<PlugDto>>> GetUserPlugs([FromRoute] string username)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var plugs = await _context.Users.Where(u => u.Username == userName).Select(u => u.Plugs).FirstOrDefaultAsync();
-
-            if (plugs == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(plugs);
-            //return _context.Plugs.Include("Username").ToList();//.Where(p => p.Username);
-            //var plugs2 =  _context.Plugs.Where(
-            //    p => _context.Entry(p).CurrentValues["Username"].ToString() != userName)
-            //                                                                    .ToList();
-            //var plugs = _context.Plugs.ToList();
+            User user = await _context.Users.Include(u => u.Plugs).SingleOrDefaultAsync(u => u.Username == username);
+            if (user == null) return NotFound();
 
 
-            ////return Ok(plugs);
-            //return plugs2;
+            return Ok(_mapper.Map<List<PlugDto>>(user.Plugs));
         }
 
         // PUT: api/Plugs/5
