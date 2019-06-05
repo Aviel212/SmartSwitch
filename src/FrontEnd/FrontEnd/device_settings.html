@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -6,50 +7,91 @@
     <script src="scripts/jquery.js"></script>
     <link href="styles/w3css.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <style>
 
-        #main_div {
-            border: 1px solid black;
-            padding:5px;
-        }
-
-    </style>
 </head>
 <body>
-    <div id="main_div" class="w3-grey">
+    <div id="main-div">
+
+        <h4><u>Settings page of device:</u></h4>
         <table>
             <tr>
+                <td><p>NickName:   </p></td>
+                <td><input type="text" id="Nickname"></td>
+            </tr>
+            <tr>
+                <td><p>Macc Address:   </p></td>
+                <td><p id="mac-address"></p></td>
+            </tr>
+            <tr>
+                <td><p>Added at:   </p></td>
+                <td> <input type="date" name="date-added" disabled id="Date-Add"></td>
+            </tr>
+            <tr>
+                <td><p>Priority:   </p></td>
                 <td>
-                    <p>device Nickname:</p>
-                </td>
-                <td><p>placeholder</p></td>
-                <td>
-                    <input type="button" value="change" class="w3-button w3-black w3-round" />
+                    <table id="prio-table">
+                        <tr>
+                            <td><input type="radio" name="prio" value="essential">ess</td>
+                            <td><input type="radio" name="prio" value="nonessential">non-ess</td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <p>device Priority:</p>
+                    <input type="button" value="remove-device" class="w3-button w3-red w3-round" onclick="DeleteDevice()" />
                 </td>
-                <td><p>placeholder</p></td>
-                <td>
-                    <input type="button" value="change" class="w3-button w3-black w3-round" />
-                </td>
+                <td> <input type="button" value="approve" class="w3-button w3-blue w3-round" onclick="ChangeSettings()" /></td>
             </tr>
         </table>
-        <br />
-        <br />
-        <input type="button" value="Delete device" class="w3-button w3-red w3-round" />
-        <input type="button" value="Return" class="w3-button w3-blue w3-round" />
 
     </div>
 
 
-<script>
-    //this script is for comments
-    //need to add return function to last page and link it to "return" button
-    //need change function (linked to change button) that gets the current placeholder and offers the user the option to change it
-</script>
+    <script>
+        let USER, PLUG;
+        let url = new URL(window.parent.$("#mainFrame").attr("src"));
+        let deviceMac = url.searchParams.get("Mac");
+
+        $(document).ready(function () {
+
+            //USER = getUser("ron", "123123");//needed for testings
+            USER = JSON.parse(sessionStorage.currentSmartSwitchUser);
+            for (let i = 0; i < USER.Plugs.length; i++) {
+                if (USER.Plugs[i].Mac == deviceMac) {
+                    PLUG = USER.Plugs[i];
+                    break;
+                }
+
+            }
+
+            let $currentNickname = PLUG.Nickname;
+            $("#Nickname").attr("placeholder", $currentNickname)
+            $("#mac-address").text(deviceMac);
+            $("#Date-Add").valueAsDate = PLUG.AddedAt;
+        });
+        function DeleteDevice() {
+            //delete device from database with a call from interface!!! ->
+            if (removePlug(deviceMac)) {
+                USER.PLUG.remove();//delete device from user.plugs
+                parent.openPage("PlugMainViewer");
+            }
+        }
+        function ChangeSettings() {
+            let $nickName = $("#Nickname");
+            let $newNickName = $nickName.val();
+            //update database for plug nickname!!! ->
+            if (setPlugNickname(deviceMac, $newNickName)) {
+                PLUG.Nickname = $newNickName;
+                $nickName.attr("placeholder", $newNickName);
+            }
+            //update database for plug priority!!! ->
+            if (setPlugPriority(deviceMac, $("input[name='prio']:checked").val()))
+                PLUG.Priority = $("input[name='prio']:checked").val();
+
+        }
+
+    </script>
 
 </body>
 </html>
