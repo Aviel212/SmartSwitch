@@ -62,21 +62,20 @@ namespace BackEnd.Controllers
 
         // PUT: api/Plugs/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlug([FromRoute] string id, [FromBody] Plug plug)
+        public async Task<IActionResult> PutPlug([FromRoute] string id, [FromBody] PlugDtoIn plugDtoIn)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != plug.Mac)
+            if (id != plugDtoIn.Mac)
             {
                 return BadRequest();
             }
 
-            UpdatePowerState(id, plug.IsOn);
-
-            _context.Entry(plug).State = EntityState.Modified;
+            Plug plug = await _context.Plugs.FindAsync(plugDtoIn.Mac);
+            _mapper.Map(plugDtoIn, plug);
 
             try
             {
@@ -97,6 +96,7 @@ namespace BackEnd.Controllers
             return NoContent();
         }
 
+        // TODO - add IsDeleted?
         // DELETE: api/Plugs/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlug([FromRoute] string id)
@@ -121,23 +121,6 @@ namespace BackEnd.Controllers
         private bool PlugExists(string id)
         {
             return _context.Plugs.Any(e => e.Mac == id);
-        }
-
-        private async void UpdatePowerState(string mac, bool newStatus)
-        {
-            Plug plug = await _context.Plugs.FindAsync(mac);
-            if(plug == null)
-            {
-                return;             // exception
-            }
-
-            if (plug.IsOn != newStatus)
-            {
-                if (newStatus == true)
-                    plug.TurnOn();
-                else
-                    plug.TurnOff();
-            }
         }
     }
 }
