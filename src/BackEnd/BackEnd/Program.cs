@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using BackEnd.Models;
 using Autofac;
 using Microsoft.EntityFrameworkCore;
+using BackEnd.Models.Websockets;
 
 namespace BackEnd
 {

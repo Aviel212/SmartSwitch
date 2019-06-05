@@ -19,6 +19,7 @@ using BackEnd.Models.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using BackEnd.Models.Websockets;
 
 namespace BackEnd
 {

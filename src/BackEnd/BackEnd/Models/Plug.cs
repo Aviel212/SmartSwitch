@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using BackEnd.Models.Websockets;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

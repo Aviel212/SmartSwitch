@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace BackEnd.Models
+namespace BackEnd.Models.Websockets
 {
     public interface IWebsocketsServer
     {

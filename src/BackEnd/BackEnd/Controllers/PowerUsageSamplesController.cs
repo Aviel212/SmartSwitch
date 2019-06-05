@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
+using BackEnd.Models.Dto;
+using AutoMapper;
 
 namespace BackEnd.Controllers
 {
@@ -14,29 +16,28 @@ namespace BackEnd.Controllers
     public class PowerUsageSamplesController : ControllerBase
     {
         private readonly SmartSwitchDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PowerUsageSamplesController(SmartSwitchDbContext context)
+        public PowerUsageSamplesController(SmartSwitchDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        // GET: api/PowerUsageSamples/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPowerUsageSample([FromRoute] int id)
+        // GET: api/PowerUsageSamples/plug/DC:DD:C2:23:D6:60?amount=20
+        [HttpGet("plug/{mac}")]
+        public async Task<ActionResult<IEnumerable<PowerUsageSampleDto>>> GetPowerUsageSamples(string mac, [FromQuery]int amount)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var powerUsageSample = await _context.PowerUsageSamples.FindAsync(id);
+            Plug plug = await _context.Plugs.Include(p => p.Samples).SingleOrDefaultAsync(p => p.Mac == mac);
+            if (plug == null) return NotFound();
 
-            if (powerUsageSample == null)
-            {
-                return NotFound();
-            }
 
-            return Ok(powerUsageSample);
+            return Ok(_mapper.Map<List<PowerUsageSampleDto>>(plug.Samples.Skip(Math.Max(0, plug.Samples.Count - amount))));
         }
     }
 }

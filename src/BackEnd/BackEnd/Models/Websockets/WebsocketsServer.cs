@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Autofac;
 
-namespace BackEnd.Models
+namespace BackEnd.Models.Websockets
 {
     public class WebsocketsServer : IWebsocketsServer
     {
