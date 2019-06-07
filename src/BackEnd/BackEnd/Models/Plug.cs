@@ -73,16 +73,8 @@ namespace BackEnd.Models
 
         public async void AddTask(Task task)
         {
-            task.DeviceMac = Mac;
             Tasks.Add(task);
             task.Schedule();
-            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
-            {
-                SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
-                context.Entry(this).State = EntityState.Modified;
-                context.Entry(task).State = EntityState.Modified;
-                await context.SaveChangesAsync();
-            }
         }
     }
 }

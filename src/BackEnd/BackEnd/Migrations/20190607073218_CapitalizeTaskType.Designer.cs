@@ -4,14 +4,16 @@ using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackEnd.Migrations
 {
     [DbContext(typeof(SmartSwitchDbContext))]
-    partial class SmartSwitchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190607073218_CapitalizeTaskType")]
+    partial class CapitalizeTaskType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,13 +125,12 @@ namespace BackEnd.Migrations
 
                     b.Property<string>("DeviceMac");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.Property<int>("Operation");
 
                     b.Property<string>("PlugMac");
-
-                    b.Property<int>("RepeatEvery");
-
-                    b.Property<DateTime>("StartDate");
 
                     b.Property<int>("TaskType");
 
@@ -138,6 +139,8 @@ namespace BackEnd.Migrations
                     b.HasIndex("PlugMac");
 
                     b.ToTable("Tasks");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Task");
                 });
 
             modelBuilder.Entity("BackEnd.Models.User", b =>
@@ -260,6 +263,22 @@ namespace BackEnd.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.OneTimeTask", b =>
+                {
+                    b.HasBaseType("BackEnd.Models.Task");
+
+                    b.Property<DateTime>("DateToBeExecuted");
+
+                    b.HasDiscriminator().HasValue("OneTimeTask");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.RepeatedTask", b =>
+                {
+                    b.HasBaseType("BackEnd.Models.Task");
+
+                    b.HasDiscriminator().HasValue("RepeatedTask");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Plug", b =>

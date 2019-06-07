@@ -16,6 +16,8 @@ namespace BackEnd.Models.Dto
             CreateMap<PlugDto, Plug>();
             CreateMap<PlugDtoIn, Plug>();
             CreateMap<PowerUsageSample, PowerUsageSampleDto>();
+            CreateMap<Task, TaskDto>();
+            CreateMap<TaskDto, Task>();
         }
     }
 }

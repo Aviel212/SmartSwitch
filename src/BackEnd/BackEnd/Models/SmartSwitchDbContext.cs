@@ -17,13 +17,5 @@ namespace BackEnd.Models
         public SmartSwitchDbContext(DbContextOptions<SmartSwitchDbContext> options)
             : base(options)
         { }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<OneTimeTask>();
-            builder.Entity<RepeatedTask>();
-
-            base.OnModelCreating(builder);
-        }
     }
 }

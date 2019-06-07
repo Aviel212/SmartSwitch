@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Hangfire;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace BackEnd.Models
     /// <summary>
     /// Task class to execute some action at a certain time
     /// </summary>
-    public abstract class Task
+    public class Task
     {
         public enum Operations { TURNON, TURNOFF };
         public enum TaskTypes { ONETIME, REPEATED };
@@ -17,7 +18,9 @@ namespace BackEnd.Models
         public int TaskId { get; set; }
         public Operations Operation { get; set; }
         public string DeviceMac { get; set; }
-        public TaskTypes taskType { get; set; }
+        public TaskTypes TaskType { get; set; }
+        public int RepeatEvery { get; set; }
+        public DateTime StartDate { get; set; }
 
         public Task() { }
 
@@ -43,6 +46,23 @@ namespace BackEnd.Models
             }
         }
 
-        public abstract void Schedule();
+        public void Schedule()
+        {
+            switch (TaskType)
+            {
+                case TaskTypes.ONETIME:
+                    BackgroundJob.Schedule(() => Execute(Operation, DeviceMac), StartDate - DateTime.Now);
+                    break;
+                case TaskTypes.REPEATED:
+                    BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(Operation, DeviceMac, RepeatEvery), StartDate - DateTime.Now);
+                    break;
+            }
+        }
+
+        public static void ExecuteAndScheduleNextExecution(Operations operation, string mac, int repeatEvery)
+        {
+            Execute(operation, mac);
+            BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(operation, mac, repeatEvery), TimeSpan.FromMinutes(repeatEvery));
+        }
     }
 }
