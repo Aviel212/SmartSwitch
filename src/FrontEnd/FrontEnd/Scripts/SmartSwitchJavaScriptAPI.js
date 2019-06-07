@@ -147,7 +147,7 @@ function getUserPlugs(username, successFunction, errorFunction, completeFunction
 }
 
 /**
- * Gets an array of plug JSONs owned by a given user containing their mac, nickname, isOn, approved, priority and addedAt properties.
+ * Updates a given plug's nickname and priority properties.
  * 
  * All properties of the plug will be updated (nickname and priority).
  * @param {object}      plugProperties      A JSON containing the plug's properties to be updated.
