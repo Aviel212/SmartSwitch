@@ -36,8 +36,7 @@ namespace BackEnd.Controllers
             Plug plug = await _context.Plugs.Include(p => p.Samples).SingleOrDefaultAsync(p => p.Mac == mac);
             if (plug == null) return NotFound();
 
-
-            return Ok(_mapper.Map<List<PowerUsageSampleDto>>(plug.Samples.Skip(Math.Max(0, plug.Samples.Count - amount))));
+            return Ok(_mapper.Map<List<PowerUsageSampleDto>>(plug.Samples.OrderByDescending(x => x.SampleDate).Take(amount)));
         }
     }
 }
