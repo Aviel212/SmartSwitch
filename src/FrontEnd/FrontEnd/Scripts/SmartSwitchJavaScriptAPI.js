@@ -255,7 +255,7 @@ function denyPlug(mac, successFunction, errorFunction, completeFunction) {
 /**
  * Gets an array of powerUsageSample JSONs of the recent given number of samples of a given plug, containing their sampleDate, current and voltage properties.
  * 
- * The array will be ordered by date, most recent first. Each sample is for one minute following its date. The sampleDate property is represented as a string, to convert it to a Date object simply do the following: let actualDate = new Date(sample.sampleDate).
+ * The array will be ordered by date, most recent first. Each sample is for one minute following its date.
  * @param {string}      mac                 The plug's (whose samples are requested) mac address.
  * @param {integer}     amount              The amount of recent samples. A strictly positive number.
  * @param {function}    successFunction     Function to execute upon success.
@@ -264,7 +264,6 @@ function denyPlug(mac, successFunction, errorFunction, completeFunction) {
  * @example
  * getPlugSamples("BB:DD:C2:23:D6:60", 7, function (samples) {
  *     for (let i in samples) {
- *         samples[i].sampleDate = new Date(samples[i].sampleDate);
  *         console.log(samples[i]);
  *     }
  * })
@@ -275,7 +274,12 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
     let request = {
         url: samplesApi + "/plug/" + mac + "?amount=" + amount,
         method: "GET",
-        success: successFunction
+        success: function (data, textStatus, jqXHR) {
+            for (let i in data) {
+                data.sampleDate = new Date(data.sampleDate);
+            }
+            successFunction(data, textStatus, jqXHR);
+        }
     };
 
     if (errorFunction !== undefined) request.error = errorFunction;
