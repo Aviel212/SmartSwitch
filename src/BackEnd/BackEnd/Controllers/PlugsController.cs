@@ -60,18 +60,13 @@ namespace BackEnd.Controllers
             return Ok(_mapper.Map<List<PlugDto>>(user.Plugs));
         }
 
-        // PUT: api/Plugs/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlug([FromRoute] string id, [FromBody] PlugDtoIn plugDtoIn)
+        // PUT: api/Plugs
+        [HttpPut]
+        public async Task<IActionResult> PutPlug([FromBody] PlugDtoIn plugDtoIn)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (id != plugDtoIn.Mac)
-            {
-                return BadRequest();
             }
 
             Plug plug = await _context.Plugs.FindAsync(plugDtoIn.Mac);
@@ -83,7 +78,7 @@ namespace BackEnd.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PlugExists(id))
+                if (!PlugExists(plugDtoIn.Mac))
                 {
                     return NotFound();
                 }
@@ -93,6 +88,31 @@ namespace BackEnd.Controllers
                 }
             }
 
+            return NoContent();
+        }
+
+        [HttpPut("{mac}")]
+        public async Task<IActionResult> TurnApproveOrDenyPlug(string mac, [FromQuery]Models.Task.Operations? op, [FromQuery]bool? approved)
+        {
+            Plug plug = await _context.Plugs.FindAsync(mac);
+            if (plug == null) return NotFound();
+
+            if (approved != null) plug.Approved = (bool)approved;
+
+            await _context.SaveChangesAsync();
+
+            if (op != null)
+            {
+                try
+                {
+                    Models.Task.Execute((Models.Task.Operations)op, mac);
+                }
+                catch (PlugNotConnectedException)
+                {
+                    return BadRequest();
+                }
+            }
+            
             return NoContent();
         }
 
