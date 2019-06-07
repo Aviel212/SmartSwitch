@@ -49,7 +49,7 @@ namespace BackEnd.Controllers
             }
 
             Plug plug = await _context.Plugs.FindAsync(taskDto.DeviceMac);
-            if (plug == null) return BadRequest();
+            if (plug == null) return NotFound();
 
             Models.Task task = _mapper.Map<Models.Task>(taskDto);
             plug.AddTask(task);

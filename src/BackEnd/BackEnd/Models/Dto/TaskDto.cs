@@ -11,7 +11,7 @@ namespace BackEnd.Models.Dto
         public Operations Operation { get; set; }
         public string DeviceMac { get; set; }
         public TaskTypes TaskType { get; set; }
-        public int RepeatEvery { get; set; }
+        public int RepeatEvery { get; set; } // minutes
         public DateTime StartDate { get; set; }
     }
 }

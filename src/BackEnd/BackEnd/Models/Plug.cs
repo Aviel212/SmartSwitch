@@ -28,7 +28,11 @@ namespace BackEnd.Models
         public virtual List<Task> Tasks { get; set; }
         public virtual List<PowerUsageSample> Samples { get; set; }
 
-        public Plug() { }
+        public Plug()
+        {
+            Tasks = new List<Task>();
+            Samples = new List<PowerUsageSample>();
+        }
 
         public Plug(string mac)
         {
@@ -61,17 +65,21 @@ namespace BackEnd.Models
         {
             using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
             {
-                if (await scope.Resolve<IWebsocketsServer>().TurnOff(Mac))
+                try
                 {
-                    IsOn = false;
-                    SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
-                    context.Entry(this).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
+                    if (await scope.Resolve<IWebsocketsServer>().TurnOff(Mac))
+                    {
+                        IsOn = false;
+                        SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                        context.Entry(this).State = EntityState.Modified;
+                        await context.SaveChangesAsync();
+                    }
                 }
+                catch (PlugNotConnectedException) { }
             }
         }
 
-        public async void AddTask(Task task)
+        public void AddTask(Task task)
         {
             Tasks.Add(task);
             task.Schedule();

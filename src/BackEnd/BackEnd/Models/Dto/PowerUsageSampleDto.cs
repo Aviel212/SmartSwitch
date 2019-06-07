@@ -8,7 +8,7 @@ namespace BackEnd.Models.Dto
     public class PowerUsageSampleDto
     {
         public DateTime SampleDate { get; set; }
-        public double Current { get; set; } // [V]
-        public double Voltage { get; set; } // [A]
+        public double Current { get; set; } // [A]
+        public double Voltage { get; set; } // [V]
     }
 }

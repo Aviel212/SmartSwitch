@@ -29,11 +29,11 @@ namespace BackEnd.Models
             Operation = op;
         }
 
-        public async static void Execute(Operations op, string mac)
+        public static void Execute(Operations op, string mac)
         {
             // when entering this function we need to execute the task
             Plug device;
-            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope()) device = await scope.Resolve<SmartSwitchDbContext>().Plugs.FindAsync(mac);
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope()) device = scope.Resolve<SmartSwitchDbContext>().Plugs.Find(mac);
 
             switch (op)
             {
