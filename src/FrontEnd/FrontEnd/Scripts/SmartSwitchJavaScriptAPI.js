@@ -290,8 +290,6 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
 
 /**
  * Gets an array of task JSONs of all tasks of a given plug, containing their operation, deviceMac, taskType, repeatEvery and startDate.
- * 
- * The startDate property is represented as a string, to convert it to a Date object simply do the following: let actualDate = new Date(task.startDate).
  * @param {string}      mac                 The plug's (whose tasks are requested) mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -303,7 +301,12 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
     let request = {
         url: tasksApi + "/plug/" + mac,
         method: "GET",
-        success: successFunction
+        success: function (data, textStatus, jqXHR) {
+            for (let i in data) {
+                data.startDate = new Date(data.startDate);
+            }
+            successFunction(data, textStatus, jqXHR);
+        }
     };
 
     if (errorFunction !== undefined) request.error = errorFunction;
