@@ -115,7 +115,10 @@ function getPlug(mac, successFunction, errorFunction, completeFunction) {
     let request = {
         url: plugsApi + "/" + mac,
         method: "GET",
-        success: successFunction
+        success: function (data, textStatus, jqXHR) {
+            data.addedAt = new Date(data.addedAt);
+            successFunction(data, textStatus, jqXHR);
+        }
     };
 
     if (errorFunction !== undefined) request.error = errorFunction;
@@ -137,7 +140,12 @@ function getUserPlugs(username, successFunction, errorFunction, completeFunction
     let request = {
         url: plugsApi + "/user/" + username,
         method: "GET",
-        success: successFunction
+        success: function (data, textStatus, jqXHR) {
+            for (let i in data) {
+                data[i].addedAt = new Date(data[i].addedAt);
+            }
+            successFunction(data, textStatus, jqXHR);
+        }
     };
 
     if (errorFunction !== undefined) request.error = errorFunction;
@@ -276,7 +284,7 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
         method: "GET",
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
-                data.sampleDate = new Date(data.sampleDate);
+                data[i].sampleDate = new Date(data[i].sampleDate);
             }
             successFunction(data, textStatus, jqXHR);
         }
@@ -303,7 +311,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
         method: "GET",
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
-                data.startDate = new Date(data.startDate);
+                data[i].startDate = new Date(data[i].startDate);
             }
             successFunction(data, textStatus, jqXHR);
         }
