@@ -26,20 +26,17 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Plugs/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PlugDto>> GetPlug([FromRoute] string id)
+        [HttpGet("{mac}")]
+        public async Task<ActionResult<PlugDto>> GetPlug([FromRoute] string mac)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var plug = await _context.Plugs.FindAsync(id);
+            var plug = await _context.Plugs.FindAsync(mac);
 
-            if (plug == null)
-            {
-                return NotFound();
-            }
+            if (plug == null) return NotFound(Error.PlugDoesNotExist);
 
             return Ok(_mapper.Map<PlugDto>(plug));
         }
@@ -54,7 +51,7 @@ namespace BackEnd.Controllers
             }
 
             User user = await _context.Users.Include(u => u.Plugs).SingleOrDefaultAsync(u => u.Username == username);
-            if (user == null) return NotFound();
+            if (user == null) return NotFound(Error.UserDoesNotExist);
 
 
             return Ok(_mapper.Map<List<PlugDto>>(user.Plugs));
@@ -70,6 +67,8 @@ namespace BackEnd.Controllers
             }
 
             Plug plug = await _context.Plugs.FindAsync(plugDtoIn.Mac);
+            if (plug == null) return NotFound(Error.PlugDoesNotExist);
+
             _mapper.Map(plugDtoIn, plug);
 
             try
@@ -95,7 +94,7 @@ namespace BackEnd.Controllers
         public async Task<IActionResult> TurnApproveOrDenyPlug(string mac, [FromQuery]Models.Task.Operations? op, [FromQuery]bool? approved)
         {
             Plug plug = await _context.Plugs.FindAsync(mac);
-            if (plug == null) return NotFound();
+            if (plug == null) return NotFound(Error.PlugDoesNotExist);
 
             if (approved != null) plug.Approved = (bool)approved;
 
@@ -109,7 +108,7 @@ namespace BackEnd.Controllers
                 }
                 catch (PlugNotConnectedException)
                 {
-                    return BadRequest();
+                    return BadRequest(Error.PlugNotConnected);
                 }
             }
             

@@ -80,19 +80,20 @@ function addUser(username, password, successFunction, errorFunction, completeFun
 /**
  * Changes an existing user's password.
  * @param {string}      username            The existing user's username.
- * @param {string}      password            The existing user's password.
+ * @param {string}      oldPassword         The user's old password.
+ * @param {string}      newPassword         The user's new password.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function changePassword(username, password, successFunction, errorFunction, completeFunction) {
+function changePassword(username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
     if (username === undefined || password === undefined) return;
 
     let request = {
         url: usersApi + "/" + username + "/password",
         contentType: "application/json",
         method: "PUT",
-        data: JSON.stringify(password)
+        data: JSON.stringify({ "OldPassword": oldPassword, "NewPassword": newPassword })
     };
 
     if (successFunction !== undefined) request.success = successFunction;
