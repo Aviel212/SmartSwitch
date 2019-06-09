@@ -16,7 +16,7 @@ namespace BackEnd.Models
     /// </summary>
     public class Plug
     {
-        public enum Priorities { ESSENTIAL, NONESSENTIAL, IRRELEVANT };
+        public enum Priorities { Essential, Nonessential, Irrelevant };
 
         [Key]
         public string Mac { get; set; }
@@ -39,7 +39,7 @@ namespace BackEnd.Models
             Mac = mac;
             IsOn = false;
             Approved = false;
-            Priority = Priorities.IRRELEVANT;
+            Priority = Priorities.Irrelevant;
             AddedAt = DateTime.Now;
             Tasks = new List<Task>();
             Samples = new List<PowerUsageSample>();

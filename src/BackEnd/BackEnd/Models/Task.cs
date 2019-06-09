@@ -12,8 +12,8 @@ namespace BackEnd.Models
     /// </summary>
     public class Task
     {
-        public enum Operations { TURNON, TURNOFF };
-        public enum TaskTypes { ONETIME, REPEATED };
+        public enum Operations { TurnOn, TurnOff };
+        public enum TaskTypes { OneTime, Repeated };
 
         public int TaskId { get; set; }
         public Operations Operation { get; set; }
@@ -37,10 +37,10 @@ namespace BackEnd.Models
 
             switch (op)
             {
-                case Operations.TURNON:
+                case Operations.TurnOn:
                     device.TurnOn();
                     break;
-                case Operations.TURNOFF:
+                case Operations.TurnOff:
                     device.TurnOff();
                     break;
             }
@@ -50,10 +50,10 @@ namespace BackEnd.Models
         {
             switch (TaskType)
             {
-                case TaskTypes.ONETIME:
+                case TaskTypes.OneTime:
                     BackgroundJob.Schedule(() => Execute(Operation, DeviceMac), StartDate - DateTime.Now);
                     break;
-                case TaskTypes.REPEATED:
+                case TaskTypes.Repeated:
                     BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(Operation, DeviceMac, RepeatEvery), StartDate - DateTime.Now);
                     break;
             }
