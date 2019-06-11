@@ -75,6 +75,14 @@
         function print(data) {
             $("body").append($("<span>").html(JSON.stringify(data)));
         }
+
+        function testTurnOn() {
+            turnPlug('000', "BC:DD:C2:9E:0E:79", Operations.TurnOn);
+        }
+
+        function testTurnOff() {
+            turnPlug('000', "BC:DD:C2:9E:0E:79", Operations.TurnOff);
+        }
     </script>
     <title></title>
     <style>
@@ -95,5 +103,7 @@
     <input type="button" value="denyPlugTest()" onclick="denyPlugTest()" />
     <input type="button" value="getPlugSamplesTest()" onclick="getPlugSamplesTest()" />
     <input type="button" value="addTaskTest()" onclick="addTaskTest()" />
+    <input type="button" value="testTurnOn()" onclick="testTurnOn()" />
+    <input type="button" value="testTurnOff()" onclick="testTurnOff()" />
 </body>
 </html>
