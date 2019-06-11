@@ -1,6 +1,6 @@
-﻿<script src="scripts/jquery.js">
-    
-</script>
+﻿<script src="scripts/jquery.js"></script>
+
+
 <div id="loginForm" class="w3-border">
     <form action="/login.cs" class="w3-margin-left">
         <p id="paraForErrors"></p>
@@ -34,12 +34,21 @@
     function signIn() {
         userName = $("#UsernameInpt").val();
         pass = $("#passwordInpt").val();
-        //check if inputs are empty
+        //check if inputs are empty 
         if (userName === "" || pass === "") {
             alert("Please Enter Username and Password");
             return;
         }
-        let userFromServer = parent.getUser(userName, pass);
+        
+        let tokenFromServer = parent.loginUser(userName, pass, function () {
+            //success function
+
+        }, function (err) {
+            //error function
+            let errMsg = "Error Number - " + err.responseText;
+            $("#paraForErrors").html(errMsg).css("visibility", "visible");
+            //***************need to add error message for each error number******************
+        });
         console.log(userFromServer);
         //check if user exist
         if (userFromServer === "no such user" || userFromServer === "incorrect password") {
