@@ -40,22 +40,19 @@
             return;
         }
         
-        let tokenFromServer = parent.loginUser(userName, pass, function () {
+        let tokenFromServer = parent.loginUser(userName, pass, function (data) {
             //success function
             sessionStorage.setItem("currentSmartSwitchUser", JSON.stringify(userName)); //set Global User currently logged in
-            //add currentSmartSwitchUserToken to sessionStorage
+            sessionStorage.setItem("currentSmartSwitchUserToken", data.token); //set Global token for current user logged in
             parent.openPage("plugsMainViewer");
             parent.setSideBar(true);
+
         }, function (err) {
             //error function
             let errMsg = "Error Number - " + err.responseText;
             $("#paraForErrors").html(errMsg).css("visibility", "visible");
             //***************need to add error message for each error number******************
         });
-    }
-
-    function register() {
-
     }
 
 </script>

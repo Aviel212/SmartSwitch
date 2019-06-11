@@ -1,4 +1,5 @@
-﻿<div id="mainDiv">
+﻿<script src="scripts/jquery.js"></script>
+<div id="mainDiv">
     <h2>Register Here</h2>
     <table id="registerationTable">
         <tr>
@@ -14,7 +15,12 @@
             <td><input id="re_password" type="password" /></td>
         </tr>
         <tr>
-            <td><input type="button" value="Register" onclick="checkAndRegister()"/></td>
+            <td colspan="2">
+                <p id="paraForErrors"></p>
+            </td>
+        </tr>
+        <tr>
+            <td><input type="button" value="Register" onclick="register()"/></td>
             <td><input type="button" value="Back To Login" onclick="parent.openPage('loginForm')" /></td>
         </tr>
 
@@ -22,23 +28,30 @@
 </div>
 
 <script>
-    let $userName, $pass;
+    let $userName, $pass, $rePass;
 
-    function checkAndRegister() {
-        //check if username exist
-
-
-        //check for valid pass
-
-
-        //register the user if passed all tests
-        register($userName, $pass);
-
-    }
-
-    function register(un, pass) {
-        //save the new user in the database
-
+    function register() {
+        $userName = $("#userName").val();
+        $pass = $("#password").val();
+        $rePass = $("#re_password").val();
+        //if pass and re_pass not equal return error message
+        if ($pass !== $rePass) {
+            $("#paraForErrors").html("Error - You Typed Different Passwords");
+            return;
+        }
+        parent.registerUser($userName, $pass, function () {
+            parent.loginUser($userName, $pass, function (data) {
+                //success login
+                sessionStorage.setItem("currentSmartSwitchUser", JSON.stringify(userName));
+                sessionStorage.setItem("currentSmartSwitchUserToken", data.token);
+                parent.openPage("plugsMainViewer");
+                parent.setSideBar(true);
+            }, function () {
+                //error logging in
+            });
+        }, function (err) {
+            $("#paraForErrors").html(err.responseText);
+        });
     }
 </script>
 
