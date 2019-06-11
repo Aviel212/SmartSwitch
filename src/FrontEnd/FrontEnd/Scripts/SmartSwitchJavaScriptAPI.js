@@ -319,7 +319,7 @@ function denyPlug(token, mac, successFunction, errorFunction, completeFunction) 
  *     }
  * })
  */
-function getPlugSamples(mac, amount, successFunction, errorFunction, completeFunction) {
+function getPlugSamples(token, mac, amount, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || amount === undefined || successFunction === undefined || amount <= 0) return;
 
     let request = {
@@ -348,7 +348,7 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
+function getPlugTasks(token, mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || amount === undefined || successFunction === undefined || amount <= 0) return;
 
     let request = {
@@ -399,7 +399,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
  * 
  * addTask(newTask);
  */
-function addTask(task, successFunction, errorFunction, completeFunction) {
+function addTask(token, task, successFunction, errorFunction, completeFunction) {
     if (task === undefined) return;
 
     let taskToSend = {};
