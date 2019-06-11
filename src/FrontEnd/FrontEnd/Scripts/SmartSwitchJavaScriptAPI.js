@@ -57,28 +57,36 @@ function getUser(username, successFunction, errorFunction, completeFunction) {
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function addUser(username, password, successFunction, errorFunction, completeFunction) {
-    if (username === undefined || password === undefined) return;
+//function addUser(username, password, successFunction, errorFunction, completeFunction) {
+//    if (username === undefined || password === undefined) return;
 
-    let request = {
-        url: usersApi,
-        contentType: "application/json",
-        method: "POST",
-        data: JSON.stringify({
-            "Username": username,
-            "Password": password
-        })
-    };
+//    let request = {
+//        url: usersApi,
+//        contentType: "application/json",
+//        method: "POST",
+//        data: JSON.stringify({
+//            "Username": username,
+//            "Password": password
+//        })
+//    };
 
-    if (successFunction !== undefined) request.success = successFunction;
-    if (errorFunction !== undefined) request.error = errorFunction;
-    if (completeFunction !== undefined) request.complete = completeFunction;
+//    if (successFunction !== undefined) request.success = successFunction;
+//    if (errorFunction !== undefined) request.error = errorFunction;
+//    if (completeFunction !== undefined) request.complete = completeFunction;
 
-    $.ajax(request);
-}
+//    $.ajax(request);
+//}
 
+/**
+ * Register's a new user.
+ * @param {string}      username            The new user's username.
+ * @param {string}      password            The new user's password.
+ * @param {function=}   successFunction     Function to execute upon success.
+ * @param {function=}   errorFunction       Function to execute upon failure.
+ * @param {function=}   completeFunction    Function to execute upon completion.
+ */
 function loginUser(username, password, successFunction, errorFunction, completeFunction) {
-    if (loginModel.username === undefined || loginModel.password === undefined || successFunction === undefined) return;
+    if (username === undefined || password === undefined || successFunction === undefined) return;
 
     let request = {
         contentType: "application/json",
