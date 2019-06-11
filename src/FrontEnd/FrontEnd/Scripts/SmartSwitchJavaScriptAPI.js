@@ -28,56 +28,6 @@ let TaskTypes = Object.freeze({ OneTime: 0, Repeated: 1 });
  * */
 let Priorities = Object.freeze({ Essential: 0, Nonessential: 1, Irrelevant: 2 });
 
-///**
-// * Gets a user JSON containing its username and password.
-// * @param {string}      username            The user's username.
-// * @param {function}    successFunction     Function to execute upon success.
-// * @param {function=}   errorFunction       Function to execute upon failure.
-// * @param {function=}   completeFunction    Function to execute upon completion.
-// */
-//function getUser(username, successFunction, errorFunction, completeFunction) {
-//    if (username === undefined || successFunction === undefined) return;
-
-//    let request = {
-//        url: usersApi + "/" + username,
-//        method: "GET",
-//        success: successFunction
-//    };
-
-//    if (errorFunction !== undefined) request.error = errorFunction;
-//    if (completeFunction !== undefined) request.complete = completeFunction;
-
-//    $.ajax(request);
-//}
-
-/**
- * Adds a new user.
- * @param {string}      username            The new user's username.
- * @param {string}      password            The new user's password.
- * @param {function=}   successFunction     Function to execute upon success.
- * @param {function=}   errorFunction       Function to execute upon failure.
- * @param {function=}   completeFunction    Function to execute upon completion.
- */
-//function addUser(username, password, successFunction, errorFunction, completeFunction) {
-//    if (username === undefined || password === undefined) return;
-
-//    let request = {
-//        url: usersApi,
-//        contentType: "application/json",
-//        method: "POST",
-//        data: JSON.stringify({
-//            "Username": username,
-//            "Password": password
-//        })
-//    };
-
-//    if (successFunction !== undefined) request.success = successFunction;
-//    if (errorFunction !== undefined) request.error = errorFunction;
-//    if (completeFunction !== undefined) request.complete = completeFunction;
-
-//    $.ajax(request);
-//}
-
 /**
  * Registers a new user.
  * @param {string}      username            The new user's username.
@@ -91,7 +41,7 @@ function registerUser(username, password, successFunction, errorFunction, comple
 
     let request = {
         contentType: "application/json",
-        url: authApi + "/login",
+        url: authApi + "/register",
         method: "POST",
         data: JSON.stringify({
             Username: username,
