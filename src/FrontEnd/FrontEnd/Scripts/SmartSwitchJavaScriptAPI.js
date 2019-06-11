@@ -4,7 +4,7 @@ let usersApi = server +  "/users";
 let plugsApi = server + "/plugs";
 let samplesApi = server + "/powerusagesamples";
 let tasksApi = server + "/tasks";
-let authApi = serer + "/auth";
+let authApi = server + "/auth";
 
 /** Defines the possible operations we can call on a plug, either turn it on or off.
  * @enum Operations
