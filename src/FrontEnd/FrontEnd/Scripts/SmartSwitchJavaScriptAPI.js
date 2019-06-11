@@ -86,6 +86,26 @@ let Priorities = Object.freeze({ Essential: 0, Nonessential: 1, Irrelevant: 2 })
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
+function registerUser(username, password, successFunction, errorFunction, completeFunction) {
+    if (username === undefined || password === undefined || successFunction === undefined) return;
+
+    let request = {
+        contentType: "application/json",
+        url: authApi + "/login",
+        method: "POST",
+        data: JSON.stringify({
+            Username: username,
+            Password: password
+        }),
+        success: successFunction
+    };
+
+    if (errorFunction !== undefined) request.error = errorFunction;
+    if (completeFunction !== undefined) request.complete = completeFunction;
+
+    $.ajax(request);
+}
+
 function loginUser(username, password, successFunction, errorFunction, completeFunction) {
     if (username === undefined || password === undefined || successFunction === undefined) return;
 
