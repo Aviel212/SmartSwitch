@@ -77,6 +77,26 @@ function addUser(username, password, successFunction, errorFunction, completeFun
     $.ajax(request);
 }
 
+function loginUser(username, password, successFunction, errorFunction, completeFunction) {
+    if (loginModel.username === undefined || loginModel.password === undefined || successFunction === undefined) return;
+
+    let request = {
+        contentType: "application/json",
+        url: authApi + "/login",
+        method: "POST",
+        data: JSON.stringify({
+            Username: username,
+            Password: password
+        }),
+        success: successFunction
+    };
+
+    if (errorFunction !== undefined) request.error = errorFunction;
+    if (completeFunction !== undefined) request.complete = completeFunction;
+
+    $.ajax(request);
+}
+
 /**
  * Changes an existing user's password.
  * @param {string}      username            The existing user's username.

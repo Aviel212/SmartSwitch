@@ -17,6 +17,7 @@ namespace BackEnd.Controllers
     public class AuthController : Controller
     {
         private UserManager<ApplicationUser> _userManager;
+        private SmartSwitchDbContext _smartSwitchDbContext;
 
         public AuthController(UserManager<ApplicationUser> userManager)
         {
@@ -96,7 +97,10 @@ namespace BackEnd.Controllers
             };
             IdentityResult createResult = await _userManager.CreateAsync(user, model.Password);       //password requird P @ 1????
             if (createResult.Succeeded)
+            {
+                _smartSwitchDbContext.Users.Add(new Models.User(model.Username, model.Password));
                 return Ok("Account created"); // ObjectResult("Account created");
+            }
             else
                 return NotFound(createResult.Errors.ToString());
             
