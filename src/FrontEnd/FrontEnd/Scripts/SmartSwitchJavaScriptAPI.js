@@ -1,6 +1,6 @@
 ﻿// requires jQuery
 let server = "https://backend.conveyor.cloud/api";
-let usersApi = server +  "/users";
+let usersApi = server + "/users";
 let plugsApi = server + "/plugs";
 let samplesApi = server + "/powerusagesamples";
 let tasksApi = server + "/tasks";
@@ -28,27 +28,27 @@ let TaskTypes = Object.freeze({ OneTime: 0, Repeated: 1 });
  * */
 let Priorities = Object.freeze({ Essential: 0, Nonessential: 1, Irrelevant: 2 });
 
-/**
- * Gets a user JSON containing its username and password.
- * @param {string}      username            The user's username.
- * @param {function}    successFunction     Function to execute upon success.
- * @param {function=}   errorFunction       Function to execute upon failure.
- * @param {function=}   completeFunction    Function to execute upon completion.
- */
-function getUser(username, successFunction, errorFunction, completeFunction) {
-    if (username === undefined || successFunction === undefined) return;
+///**
+// * Gets a user JSON containing its username and password.
+// * @param {string}      username            The user's username.
+// * @param {function}    successFunction     Function to execute upon success.
+// * @param {function=}   errorFunction       Function to execute upon failure.
+// * @param {function=}   completeFunction    Function to execute upon completion.
+// */
+//function getUser(username, successFunction, errorFunction, completeFunction) {
+//    if (username === undefined || successFunction === undefined) return;
 
-    let request = {
-        url: usersApi + "/" + username,
-        method: "GET",
-        success: successFunction
-    };
+//    let request = {
+//        url: usersApi + "/" + username,
+//        method: "GET",
+//        success: successFunction
+//    };
 
-    if (errorFunction !== undefined) request.error = errorFunction;
-    if (completeFunction !== undefined) request.complete = completeFunction;
+//    if (errorFunction !== undefined) request.error = errorFunction;
+//    if (completeFunction !== undefined) request.complete = completeFunction;
 
-    $.ajax(request);
-}
+//    $.ajax(request);
+//}
 
 /**
  * Adds a new user.
@@ -79,7 +79,7 @@ function getUser(username, successFunction, errorFunction, completeFunction) {
 //}
 
 /**
- * Register's a new user.
+ * Registers a new user.
  * @param {string}      username            The new user's username.
  * @param {string}      password            The new user's password.
  * @param {function=}   successFunction     Function to execute upon success.
@@ -134,17 +134,19 @@ function changePassword(username, oldPassword, newPassword, successFunction, err
 
 /**
  * Gets a plug JSON containing its mac, nickname, isOn, approved, priority and addedAt properties.
+ * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function getPlug(mac, successFunction, errorFunction, completeFunction) {
+function getPlug(token, mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || successFunction === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac,
         method: "GET",
+        headers: { "Authorization": "bearer " + token },
         success: function (data, textStatus, jqXHR) {
             data.addedAt = new Date(data.addedAt);
             successFunction(data, textStatus, jqXHR);
@@ -159,17 +161,19 @@ function getPlug(mac, successFunction, errorFunction, completeFunction) {
 
 /**
  * Gets an array plug JSONs owned by a given user containing their mac, nickname, isOn, approved, priority and addedAt properties.
+ * @param {string}      token               An API token.
  * @param {string}      username            The username of the owner of the plugs.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function getUserPlugs(username, successFunction, errorFunction, completeFunction) {
+function getUserPlugs(token, username, successFunction, errorFunction, completeFunction) {
     if (username === undefined || successFunction === undefined) return;
 
     let request = {
         url: plugsApi + "/user/" + username,
         method: "GET",
+        headers: { "Authorization": "bearer " + token },
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
                 data[i].addedAt = new Date(data[i].addedAt);
@@ -188,6 +192,7 @@ function getUserPlugs(username, successFunction, errorFunction, completeFunction
  * Updates a given plug's nickname and priority properties.
  * 
  * All properties of the plug will be updated (nickname and priority).
+ * @param {string}      token               An API token.
  * @param {object}      plugProperties      A JSON containing the plug's properties to be updated.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -205,13 +210,14 @@ function getUserPlugs(username, successFunction, errorFunction, completeFunction
  * 
  * updatePlug(plugProperties, print);
  */
-function updatePlug(plugProperties, successFunction, errorFunction, completeFunction) {
+function updatePlug(token, plugProperties, successFunction, errorFunction, completeFunction) {
     if (plugProperties === undefined) return;
 
     let request = {
         url: plugsApi,
         method: "PUT",
         contentType: "application/json",
+        headers: { "Authorization": "bearer " + token },
         data: JSON.stringify(plugProperties)
     };
 
@@ -224,6 +230,7 @@ function updatePlug(plugProperties, successFunction, errorFunction, completeFunc
 
 /**
  * Turns a given plug on or off.
+ * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {integer}     _operation          The operation to perform, either Operations.TURNON or Operations.TURNOFF.
  * @param {function=}   successFunction     Function to execute upon success.
@@ -231,11 +238,12 @@ function updatePlug(plugProperties, successFunction, errorFunction, completeFunc
  * @param {function=}   completeFunction    Function to execute upon completion.
  * @example turnPlug("BC:DD:BD:23:D6:60", Operations.TurnOn);
  */
-function turnPlug(mac, _operation, successFunction, errorFunction, completeFunction) {
+function turnPlug(token, mac, _operation, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || _operation === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac + "?op=" + _operation,
+        headers: { "Authorization": "bearer " + token },
         method: "PUT"
     };
 
@@ -248,16 +256,18 @@ function turnPlug(mac, _operation, successFunction, errorFunction, completeFunct
 
 /**
  * Approves a given plug.
+ * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function approvePlug(mac, successFunction, errorFunction, completeFunction) {
+function approvePlug(token, mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac + "?approved=true",
+        headers: { "Authorization": "bearer " + token },
         method: "PUT"
     };
 
@@ -270,16 +280,18 @@ function approvePlug(mac, successFunction, errorFunction, completeFunction) {
 
 /**
  * Denies a given plug.
+ * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function denyPlug(mac, successFunction, errorFunction, completeFunction) {
+function denyPlug(token, mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac + "?approved=false",
+        headers: { "Authorization": "bearer " + token },
         method: "PUT"
     };
 
@@ -294,6 +306,7 @@ function denyPlug(mac, successFunction, errorFunction, completeFunction) {
  * Gets an array of powerUsageSample JSONs of the recent given number of samples of a given plug, containing their sampleDate, current and voltage properties.
  * 
  * The array will be ordered by date, most recent first. Each sample is for one minute following its date.
+ * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's (whose samples are requested) mac address.
  * @param {integer}     amount              The amount of recent samples. A strictly positive number.
  * @param {function}    successFunction     Function to execute upon success.
@@ -312,6 +325,7 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
     let request = {
         url: samplesApi + "/plug/" + mac + "?amount=" + amount,
         method: "GET",
+        headers: { "Authorization": "bearer " + token },
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
                 data[i].sampleDate = new Date(data[i].sampleDate);
@@ -328,6 +342,7 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
 
 /**
  * Gets an array of task JSONs of all tasks of a given plug, containing their operation, deviceMac, taskType, repeatEvery and startDate.
+ * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's (whose tasks are requested) mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -339,6 +354,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
     let request = {
         url: tasksApi + "/plug/" + mac,
         method: "GET",
+        headers: { "Authorization": "bearer " + token },
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
                 data[i].startDate = new Date(data[i].startDate);
@@ -356,6 +372,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
 
 /**
  * Adds a new task. Task is an object with the following properties: operation, deviceMac, taskType, repeatEvery and startDate.
+ * @param {string}      token               An API token.
  * @param {object}      task                The new task object.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -392,6 +409,7 @@ function addTask(task, successFunction, errorFunction, completeFunction) {
     let request = {
         url: tasksApi,
         method: "POST",
+        headers: { "Authorization": "bearer " + token },
         contentType: "application/json",
         data: JSON.stringify(taskToSend)
     };
@@ -409,7 +427,7 @@ function addTask(task, successFunction, errorFunction, completeFunction) {
  * @access private
  * @param       {Date}      date    A date object to convert to a dateString with time zone.
  * @returns     {string}            A dateString containg all information about the given date including time zone.
- * */ 
+ * */
 function correctToJSON(date) {
     var timezoneOffsetInHours = -(date.getTimezoneOffset() / 60); //UTC minus local time
     var sign = timezoneOffsetInHours >= 0 ? '+' : '-';
