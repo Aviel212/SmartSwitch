@@ -217,7 +217,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line14">line 14</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line15">line 15</a>
     </li></ul></dd>
     
 
@@ -322,7 +322,7 @@
 
         <tr>
             
-                <td class="name"><code>IRRELEVANT</code></td>
+                <td class="name"><code>Irrelevant</code></td>
             
 
             <td class="type">
@@ -377,7 +377,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line29">line 29</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -514,7 +514,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line21">line 21</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line23">line 23</a>
     </li></ul></dd>
     
 
@@ -783,7 +783,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line372">line 372</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line385">line 385</a>
     </li></ul></dd>
     
 
@@ -814,7 +814,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// a task that turns a plug on every daylet newTask = {    operation: Operations.TurnOn,    deviceMac: "BC:DD:C2:23:D6:69",    taskType: TaskTypes.Repeated,    repeatEvery: 60 * 24,    startDate: new Date()}// a task that will turn a plug off in 5 minuteslet d = new Date();d.setMinutes(d.getMinutes() + 5);let newTask = {    operation: Operations.TurnOff,    deviceMac: "BC:DD:C2:28:D6:60",    taskType: TaskTypes.OneTime,    startDate: d}addTask(newTask);</code></pre>
+    <pre class="prettyprint"><code>// a task that turns a plug on every daylet newTask = {    operation: Operations.TurnOn,    deviceMac: "BC:DD:C2:23:D6:69",    taskType: TaskTypes.Repeated,    repeatEvery: 60 * 24,    startDate: new Date()}// a task that will turn a plug off in 5 minuteslet d = new Date();d.setMinutes(d.getMinutes() + 5);let newTask = {    operation: Operations.TurnOff,    deviceMac: "BC:DD:C2:28:D6:60",    taskType: TaskTypes.OneTime,    startDate: d}addTask("myApiToken", newTask);</code></pre>
 
 
 
@@ -1065,7 +1065,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line235">line 235</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line248">line 248</a>
     </li></ul></dd>
     
 
@@ -1101,7 +1101,7 @@
     
 
     
-    <h4 class="name" id="changePassword"><span class="type-signature"></span>changePassword<span class="signature">(username, oldPassword, newPassword, successFunction<span class="signature-attributes">opt</span>, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="changePassword"><span class="type-signature"></span>changePassword<span class="signature">(token, username, oldPassword, newPassword, successFunction, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1143,6 +1143,37 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>token</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">An API token.</td>
+        </tr>
+
     
 
         <tr>
@@ -1254,8 +1285,6 @@
 
             
                 <td class="attributes">
-                
-                    &lt;optional><br>
                 
 
                 
@@ -1373,7 +1402,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line88">line 88</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line100">line 100</a>
     </li></ul></dd>
     
 
@@ -1650,7 +1679,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line259">line 259</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line272">line 272</a>
     </li></ul></dd>
     
 
@@ -1925,7 +1954,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line113">line 113</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line126">line 126</a>
     </li></ul></dd>
     
 
@@ -2231,7 +2260,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line292">line 292</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line305">line 305</a>
     </li></ul></dd>
     
 
@@ -2262,7 +2291,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>getPlugSamples("BB:DD:C2:23:D6:60", 7, function (samples) {    for (let i in samples) {        console.log(samples[i]);    }})</code></pre>
+    <pre class="prettyprint"><code>getPlugSamples("myApiToken", "BB:DD:C2:23:D6:60", 7, function (samples) {    for (let i in samples) {        console.log(samples[i]);    }})</code></pre>
 
 
 
@@ -2511,7 +2540,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line321">line 321</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line334">line 334</a>
     </li></ul></dd>
     
 
@@ -2786,7 +2815,282 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line140">line 140</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line153">line 153</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="loginUser"><span class="type-signature"></span>loginUser<span class="signature">(username, password, successFunction, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Logins a user. (Gets an API token).
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>username</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The new user's username.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>password</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The new user's password.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>successFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Function to execute upon success.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errorFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Function to execute upon failure.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>completeFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Function to execute upon completion.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -3063,7 +3367,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line39">line 39</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line42">line 42</a>
     </li></ul></dd>
     
 
@@ -3371,7 +3675,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line211">line 211</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line224">line 224</a>
     </li></ul></dd>
     
 
@@ -3402,7 +3706,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>turnPlug("BC:DD:BD:23:D6:60", Operations.TurnOn);</code></pre>
+    <pre class="prettyprint"><code>turnPlug("myApiToken", "BC:DD:BD:23:D6:60", Operations.TurnOn);</code></pre>
 
 
 
@@ -3653,7 +3957,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line183">line 183</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line196">line 196</a>
     </li></ul></dd>
     
 
@@ -3684,7 +3988,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>let plugProperties = {    "mac": "BC:DD:B2:23:D6:60",    "nickname": "Fan",    "priority": Priorities.Nonessential}function print(data) {    console.log(JSON.stringify(data));}updatePlug(plugProperties, print);</code></pre>
+    <pre class="prettyprint"><code>let plugProperties = {    "mac": "BC:DD:B2:23:D6:60",    "nickname": "Fan",    "priority": Priorities.Nonessential}function print(data) {    console.log(JSON.stringify(data));}updatePlug("myApiToken", plugProperties, print);</code></pre>
 
 
 
@@ -3704,13 +4008,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addTask">addTask</a></li><li><a href="global.html#approvePlug">approvePlug</a></li><li><a href="global.html#changePassword">changePassword</a></li><li><a href="global.html#denyPlug">denyPlug</a></li><li><a href="global.html#getPlug">getPlug</a></li><li><a href="global.html#getPlugSamples">getPlugSamples</a></li><li><a href="global.html#getPlugTasks">getPlugTasks</a></li><li><a href="global.html#getUserPlugs">getUserPlugs</a></li><li><a href="global.html#Operations">Operations</a></li><li><a href="global.html#Priorities">Priorities</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#TaskTypes">TaskTypes</a></li><li><a href="global.html#turnPlug">turnPlug</a></li><li><a href="global.html#updatePlug">updatePlug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addTask">addTask</a></li><li><a href="global.html#approvePlug">approvePlug</a></li><li><a href="global.html#changePassword">changePassword</a></li><li><a href="global.html#denyPlug">denyPlug</a></li><li><a href="global.html#getPlug">getPlug</a></li><li><a href="global.html#getPlugSamples">getPlugSamples</a></li><li><a href="global.html#getPlugTasks">getPlugTasks</a></li><li><a href="global.html#getUserPlugs">getUserPlugs</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#Operations">Operations</a></li><li><a href="global.html#Priorities">Priorities</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#TaskTypes">TaskTypes</a></li><li><a href="global.html#turnPlug">turnPlug</a></li><li><a href="global.html#updatePlug">updatePlug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 11 2019 12:59:16 GMT+0300 (Israel Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 11 2019 14:10:50 GMT+0300 (Israel Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

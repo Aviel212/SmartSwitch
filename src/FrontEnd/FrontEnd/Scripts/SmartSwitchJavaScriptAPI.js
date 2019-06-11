@@ -6,25 +6,28 @@ let samplesApi = server + "/powerusagesamples";
 let tasksApi = server + "/tasks";
 let authApi = server + "/auth";
 
-/** Defines the possible operations we can call on a plug, either turn it on or off.
+/**
+ * Defines the possible operations we can call on a plug, either turn it on or off.
  * @enum Operations
  * @property {integer} TurnOn   The operation that calls for a plug to turn on.
  * @property {integer} TurnOff  The operation that calls for a plug to turn off.
  * */
 let Operations = Object.freeze({ TurnOn: 0, TurnOff: 1 });
 
-/** Defines the possible types a task can, either repeating or activating just once.
+/**
+ * Defines the possible types a task can, either repeating or activating just once.
  * @enum TaskTypes
  * @property {integer} OneTime  The type of task that executes once.
  * @property {integer} Repeated The type of task that executes repeatedly.
  * */
 let TaskTypes = Object.freeze({ OneTime: 0, Repeated: 1 });
 
-/** Defines the possible priorities a plug can have, a plug can be essential, non-essential or neither (what we call irrelevant).
+/**
+ * Defines the possible priorities a plug can have, a plug can be essential, non-essential or neither (what we call irrelevant).
  * @enum Priorities
  * @property {integer} Essential        The priority that states a plug is essential.
  * @property {integer} Nonessential     The priority that states a plug is non-essential.
- * @property {integer} IRRELEVANT       The priority that states a plug's priority is irrelevant.
+ * @property {integer} Irrelevant       The priority that states a plug's priority is irrelevant.
  * */
 let Priorities = Object.freeze({ Essential: 0, Nonessential: 1, Irrelevant: 2 });
 
@@ -56,6 +59,14 @@ function registerUser(username, password, successFunction, errorFunction, comple
     $.ajax(request);
 }
 
+/**
+ * Logins a user. (Gets an API token).
+ * @param {string}      username            The new user's username.
+ * @param {string}      password            The new user's password.
+ * @param {function}    successFunction     Function to execute upon success.
+ * @param {function=}   errorFunction       Function to execute upon failure.
+ * @param {function=}   completeFunction    Function to execute upon completion.
+ */
 function loginUser(username, password, successFunction, errorFunction, completeFunction) {
     if (username === undefined || password === undefined || successFunction === undefined) return;
 
@@ -78,19 +89,21 @@ function loginUser(username, password, successFunction, errorFunction, completeF
 
 /**
  * Changes an existing user's password.
+ * @param {string}      token               An API token.
  * @param {string}      username            The existing user's username.
  * @param {string}      oldPassword         The user's old password.
  * @param {string}      newPassword         The user's new password.
- * @param {function=}   successFunction     Function to execute upon success.
+ * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function changePassword(username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
+function changePassword(token, username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
     if (username === undefined || password === undefined) return;
 
     let request = {
         url: usersApi + "/" + username + "/password",
         contentType: "application/json",
+        headers: { "Authorization": "bearer " + token },
         method: "PUT",
         data: JSON.stringify({ "OldPassword": oldPassword, "NewPassword": newPassword })
     };
@@ -178,7 +191,7 @@ function getUserPlugs(token, username, successFunction, errorFunction, completeF
  *     console.log(JSON.stringify(data));
  * }
  * 
- * updatePlug(plugProperties, print);
+ * updatePlug("myApiToken", plugProperties, print);
  */
 function updatePlug(token, plugProperties, successFunction, errorFunction, completeFunction) {
     if (plugProperties === undefined) return;
@@ -206,7 +219,7 @@ function updatePlug(token, plugProperties, successFunction, errorFunction, compl
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
- * @example turnPlug("BC:DD:BD:23:D6:60", Operations.TurnOn);
+ * @example turnPlug("myApiToken", "BC:DD:BD:23:D6:60", Operations.TurnOn);
  */
 function turnPlug(token, mac, _operation, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || _operation === undefined) return;
@@ -283,7 +296,7 @@ function denyPlug(token, mac, successFunction, errorFunction, completeFunction) 
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  * @example
- * getPlugSamples("BB:DD:C2:23:D6:60", 7, function (samples) {
+ * getPlugSamples("myApiToken", "BB:DD:C2:23:D6:60", 7, function (samples) {
  *     for (let i in samples) {
  *         console.log(samples[i]);
  *     }
@@ -367,7 +380,7 @@ function getPlugTasks(token, mac, successFunction, errorFunction, completeFuncti
  *     startDate: d
  * }
  * 
- * addTask(newTask);
+ * addTask("myApiToken", newTask);
  */
 function addTask(token, task, successFunction, errorFunction, completeFunction) {
     if (task === undefined) return;
