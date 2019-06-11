@@ -40,9 +40,11 @@
             return;
         }
         parent.registerUser($userName, $pass, function () {
+            console.log("reigster sababa");
             parent.loginUser($userName, $pass, function (data) {
                 //success login
-                sessionStorage.setItem("currentSmartSwitchUser", JSON.stringify(userName));
+                console.log("login sababa");
+                sessionStorage.setItem("currentSmartSwitchUser", $userName);
                 sessionStorage.setItem("currentSmartSwitchUserToken", data.token);
                 parent.openPage("plugsMainViewer");
                 parent.setSideBar(true);
