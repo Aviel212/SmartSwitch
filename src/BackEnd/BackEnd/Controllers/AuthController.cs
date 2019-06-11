@@ -86,7 +86,7 @@ namespace BackEnd.Controllers
 
             var userCheck = await _userManager.FindByNameAsync(model.Username);
             if (userCheck != null)
-                return BadRequest("user exists");
+                return BadRequest(Error.UserAlreadyExists);
 
             // need to chek if user exists
             ApplicationUser user = new ApplicationUser()
@@ -99,7 +99,7 @@ namespace BackEnd.Controllers
             if (createResult.Succeeded)
             {
                 _smartSwitchDbContext.Users.Add(new Models.User(model.Username, model.Password));
-                return Ok("Account created"); // ObjectResult("Account created");
+                return Ok(); // ObjectResult("Account created");
             }
             else
                 return NotFound(createResult.Errors.ToString());
