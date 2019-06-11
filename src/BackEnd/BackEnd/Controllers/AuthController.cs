@@ -17,10 +17,12 @@ namespace BackEnd.Controllers
     public class AuthController : Controller
     {
         private UserManager<ApplicationUser> _userManager;
+        private SmartSwitchDbContext _smartSwitchDbContext;
 
-        public AuthController(UserManager<ApplicationUser> userManager)
+        public AuthController(UserManager<ApplicationUser> userManager, SmartSwitchDbContext smartSwitchDbContext)
         {
-            this._userManager = userManager;
+            _userManager = userManager;
+            _smartSwitchDbContext = smartSwitchDbContext;
         }
 
         // POST api/Auth/login
@@ -85,7 +87,7 @@ namespace BackEnd.Controllers
 
             var userCheck = await _userManager.FindByNameAsync(model.Username);
             if (userCheck != null)
-                return BadRequest("user exists");
+                return BadRequest(Error.UserAlreadyExists);
 
             // need to chek if user exists
             ApplicationUser user = new ApplicationUser()
@@ -96,7 +98,11 @@ namespace BackEnd.Controllers
             };
             IdentityResult createResult = await _userManager.CreateAsync(user, model.Password);       //password requird P @ 1????
             if (createResult.Succeeded)
-                return Ok("Account created"); // ObjectResult("Account created");
+            {
+                _smartSwitchDbContext.Users.Add(new Models.User(model.Username, model.Password));
+                await _smartSwitchDbContext.SaveChangesAsync();
+                return Ok(); // ObjectResult("Account created");
+            }
             else
                 return NotFound(createResult.Errors.ToString());
             

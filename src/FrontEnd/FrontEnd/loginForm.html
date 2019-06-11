@@ -1,6 +1,6 @@
-﻿<script src="scripts/jquery.js">
-    
-</script>
+﻿<script src="scripts/jquery.js"></script>
+
+
 <div id="loginForm" class="w3-border">
     <form action="/login.cs" class="w3-margin-left">
         <p id="paraForErrors"></p>
@@ -34,23 +34,25 @@
     function signIn() {
         userName = $("#UsernameInpt").val();
         pass = $("#passwordInpt").val();
-        //check if inputs are empty
+        //check if inputs are empty 
         if (userName === "" || pass === "") {
             alert("Please Enter Username and Password");
             return;
         }
-        let userFromServer = parent.getUser(userName, pass);
-        console.log(userFromServer);
-        //check if user exist
-        if (userFromServer === "no such user" || userFromServer === "incorrect password") {
-            let errMsg = "Error - " + userFromServer;
-            $("#paraForErrors").html(errMsg).css("visibility", "visible");
-        } else if (userFromServer != null) { // //if exists sign in
-            sessionStorage.setItem("currentSmartSwitchUser", JSON.stringify(userFromServer)); //set Global User currently logged in
-            console.log(sessionStorage.currentSmartSwitchUser);
+        
+        let tokenFromServer = parent.loginUser(userName, pass, function (data) {
+            //success function
+            sessionStorage.setItem("currentSmartSwitchUser", userName); //set Global User currently logged in
+            sessionStorage.setItem("currentSmartSwitchUserToken", data.token); //set Global token for current user logged in
             parent.openPage("plugsMainViewer");
             parent.setSideBar(true);
-        }
+
+        }, function (err) {
+            //error function
+            let errMsg = "Error - " + err.responseText;
+            $("#paraForErrors").html(errMsg).css("visibility", "visible");
+            //***************need to add error message for each error number******************
+        });
     }
 
 </script>

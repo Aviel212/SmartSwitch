@@ -9,6 +9,7 @@ using BackEnd.Models;
 using AutoMapper;
 using BackEnd.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace BackEnd.Controllers
 {
@@ -16,6 +17,7 @@ namespace BackEnd.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private UserManager<ApplicationUser> _userManager;
         private readonly SmartSwitchDbContext _context;
         private readonly IMapper _mapper;
 
@@ -58,6 +60,9 @@ namespace BackEnd.Controllers
 
             if (user.Password != request.OldPassword) return BadRequest(Error.IncorrectOldPassword);
 
+
+            var appUser = await _userManager.FindByNameAsync(username);
+            await _userManager.ChangePasswordAsync(appUser, request.OldPassword, request.NewPassword);
             user.Password = request.NewPassword;
 
             try
