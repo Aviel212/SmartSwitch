@@ -139,7 +139,7 @@
 
         <tr>
             
-                <td class="name"><code>TURNON</code></td>
+                <td class="name"><code>TurnOn</code></td>
             
 
             <td class="type">
@@ -162,7 +162,7 @@
 
         <tr>
             
-                <td class="name"><code>TURNOFF</code></td>
+                <td class="name"><code>TurnOff</code></td>
             
 
             <td class="type">
@@ -276,7 +276,7 @@
 
         <tr>
             
-                <td class="name"><code>ESSENTIAL</code></td>
+                <td class="name"><code>Essential</code></td>
             
 
             <td class="type">
@@ -299,7 +299,7 @@
 
         <tr>
             
-                <td class="name"><code>NONESSENTIAL</code></td>
+                <td class="name"><code>Nonessential</code></td>
             
 
             <td class="type">
@@ -436,7 +436,7 @@
 
         <tr>
             
-                <td class="name"><code>ONETIME</code></td>
+                <td class="name"><code>OneTime</code></td>
             
 
             <td class="type">
@@ -459,7 +459,7 @@
 
         <tr>
             
-                <td class="name"><code>REPEATED</code></td>
+                <td class="name"><code>Repeated</code></td>
             
 
             <td class="type">
@@ -752,7 +752,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line355">line 355</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line356">line 356</a>
     </li></ul></dd>
     
 
@@ -783,7 +783,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// a task that turns a plug on every daylet newTask = {    operation: Operations.TURNON,    deviceMac: "BC:DD:C2:23:D6:69",    taskType: TaskTypes.REPEATED,    repeatEvery: 60 * 24,    startDate: new Date()}// a task that will turn a plug off in 5 minuteslet d = new Date();d.setMinutes(d.getMinutes() + 5);let newTask = {    operation: Operations.TURNOFF,    deviceMac: "BC:DD:C2:28:D6:60",    taskType: TaskTypes.ONETIME,    startDate: d}addTask(newTask);</code></pre>
+    <pre class="prettyprint"><code>// a task that turns a plug on every daylet newTask = {    operation: Operations.TurnOn,    deviceMac: "BC:DD:C2:23:D6:69",    taskType: TaskTypes.Repeated,    repeatEvery: 60 * 24,    startDate: new Date()}// a task that will turn a plug off in 5 minuteslet d = new Date();d.setMinutes(d.getMinutes() + 5);let newTask = {    operation: Operations.TurnOff,    deviceMac: "BC:DD:C2:28:D6:60",    taskType: TaskTypes.OneTime,    startDate: d}addTask(newTask);</code></pre>
 
 
 
@@ -1280,7 +1280,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line226">line 226</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line227">line 227</a>
     </li></ul></dd>
     
 
@@ -1316,7 +1316,7 @@
     
 
     
-    <h4 class="name" id="changePassword"><span class="type-signature"></span>changePassword<span class="signature">(username, password, successFunction<span class="signature-attributes">opt</span>, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="changePassword"><span class="type-signature"></span>changePassword<span class="signature">(username, oldPassword, newPassword, successFunction<span class="signature-attributes">opt</span>, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1393,7 +1393,7 @@
 
         <tr>
             
-                <td class="name"><code>password</code></td>
+                <td class="name"><code>oldPassword</code></td>
             
 
             <td class="type">
@@ -1417,7 +1417,38 @@
 
             
 
-            <td class="description last">The existing user's password.</td>
+            <td class="description last">The user's old password.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>newPassword</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The user's new password.</td>
         </tr>
 
     
@@ -1557,7 +1588,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line88">line 88</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line89">line 89</a>
     </li></ul></dd>
     
 
@@ -1803,7 +1834,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line248">line 248</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line249">line 249</a>
     </li></ul></dd>
     
 
@@ -2047,7 +2078,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line112">line 112</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line113">line 113</a>
     </li></ul></dd>
     
 
@@ -2322,7 +2353,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line279">line 279</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line280">line 280</a>
     </li></ul></dd>
     
 
@@ -2571,7 +2602,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line306">line 306</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line307">line 307</a>
     </li></ul></dd>
     
 
@@ -3059,7 +3090,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line137">line 137</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line138">line 138</a>
     </li></ul></dd>
     
 
@@ -3336,7 +3367,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line204">line 204</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line205">line 205</a>
     </li></ul></dd>
     
 
@@ -3367,7 +3398,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>turnPlug("BC:DD:BD:23:D6:60", Operations.TURNON);</code></pre>
+    <pre class="prettyprint"><code>turnPlug("BC:DD:BD:23:D6:60", Operations.TurnOn);</code></pre>
 
 
 
@@ -3587,7 +3618,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line178">line 178</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line179">line 179</a>
     </li></ul></dd>
     
 
@@ -3618,7 +3649,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>let plugProperties = {    "mac": "BC:DD:B2:23:D6:60",    "nickname": "Fan",    "priority": Priorities.NONESSENTIAL}function print(data) {    console.log(JSON.stringify(data));}updatePlug(plugProperties, print);</code></pre>
+    <pre class="prettyprint"><code>let plugProperties = {    "mac": "BC:DD:B2:23:D6:60",    "nickname": "Fan",    "priority": Priorities.Nonessential}function print(data) {    console.log(JSON.stringify(data));}updatePlug(plugProperties, print);</code></pre>
 
 
 
@@ -3644,7 +3675,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Sat Jun 08 2019 13:23:05 GMT+0300 (Israel Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Sun Jun 09 2019 21:20:46 GMT+0300 (Israel Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

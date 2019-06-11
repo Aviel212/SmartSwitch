@@ -34,7 +34,7 @@ namespace BackEnd.Controllers
             }
 
             Plug plug = await _context.Plugs.Include(p => p.Tasks).SingleOrDefaultAsync(p => p.Mac == mac);
-            if (plug == null) return NotFound();
+            if (plug == null) return NotFound(Error.PlugDoesNotExist);
 
             return Ok(_mapper.Map<List<TaskDto>>(plug.Tasks));
         }
@@ -49,7 +49,7 @@ namespace BackEnd.Controllers
             }
 
             Plug plug = await _context.Plugs.FindAsync(taskDto.DeviceMac);
-            if (plug == null) return NotFound();
+            if (plug == null) return NotFound(Error.PlugDoesNotExist);
 
             Models.Task task = _mapper.Map<Models.Task>(taskDto);
             plug.AddTask(task);
@@ -79,11 +79,6 @@ namespace BackEnd.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(task);
-        }
-
-        private bool TaskExists(int id)
-        {
-            return _context.Tasks.Any(e => e.TaskId == id);
         }
     }
 }

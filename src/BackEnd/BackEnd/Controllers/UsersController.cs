@@ -38,7 +38,7 @@ namespace BackEnd.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(Error.UserDoesNotExist);
             }
 
             return Ok(_mapper.Map<UserDto>(user));
@@ -46,7 +46,7 @@ namespace BackEnd.Controllers
 
         // PUT: api/Users/{username}/password
         [HttpPut("{username}/password")]
-        public async Task<IActionResult> ChangePassword(string username, [FromBody] string password)
+        public async Task<IActionResult> ChangePassword(string username, [FromBody] PasswordChangeRequestDto request)
         {
             if (!ModelState.IsValid)
             {
@@ -54,8 +54,11 @@ namespace BackEnd.Controllers
             }
 
             User user = await _context.Users.FindAsync(username);
-            if (user == null) return BadRequest();
-            user.Password = password;
+            if (user == null) return NotFound(Error.UserDoesNotExist);
+
+            if (user.Password != request.OldPassword) return BadRequest(Error.IncorrectOldPassword);
+
+            user.Password = request.NewPassword;
 
             try
             {
@@ -85,7 +88,7 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (UserExists(userDto.Username)) return BadRequest();
+            if (UserExists(userDto.Username)) return BadRequest(Error.UserAlreadyExists);
 
             _context.Users.Add(_mapper.Map<User>(userDto));
             await _context.SaveChangesAsync();

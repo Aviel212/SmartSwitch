@@ -11,7 +11,11 @@
         }
 
         function getUserTest() {
-            getUser("testUser", print);
+            getUser("bbbbbbg", print, function (a, b, c) {
+                console.log(a.responseText);
+                console.log(b);
+                console.log(c);
+            });
         }
 
         function changePasswordTest() {
@@ -30,7 +34,7 @@
             let plugProperties = {
                 "mac": "BC:DD:C2:23:D6:60",
                 "nickname": "Fan",
-                "priority": Priorities.NONESSENTIAL
+                "priority": Priorities.Nonessential
             }
             console.log(JSON.stringify(plugProperties));
             updatePlug(plugProperties, print);
@@ -59,9 +63,9 @@
             let d = new Date();
             d.setMinutes(d.getMinutes() + 5);
             let newTask = {
-                operation: Operations.TURNOFF,
+                operation: Operations.TurnOff,
                 deviceMac: "BC:DD:C2:23:D6:60",
-                taskType: TaskTypes.ONETIME,
+                taskType: TaskTypes.OneTime,
                 startDate: d
             }
             

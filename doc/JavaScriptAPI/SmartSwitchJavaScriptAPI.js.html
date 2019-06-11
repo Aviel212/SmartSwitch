@@ -35,25 +35,25 @@ let tasksApi = server + "/tasks";
 
 /** Defines the possible operations we can call on a plug, either turn it on or off.
  * @enum Operations
- * @property {integer} TURNON   The operation that calls for a plug to turn on.
- * @property {integer} TURNOFF  The operation that calls for a plug to turn off.
+ * @property {integer} TurnOn   The operation that calls for a plug to turn on.
+ * @property {integer} TurnOff  The operation that calls for a plug to turn off.
  * */
-let Operations = Object.freeze({ TURNON: 0, TURNOFF: 1 });
+let Operations = Object.freeze({ TurnOn: 0, TurnOff: 1 });
 
 /** Defines the possible types a task can, either repeating or activating just once.
  * @enum TaskTypes
- * @property {integer} ONETIME  The type of task that executes once.
- * @property {integer} REPEATED The type of task that executes repeatedly.
+ * @property {integer} OneTime  The type of task that executes once.
+ * @property {integer} Repeated The type of task that executes repeatedly.
  * */
-let TaskTypes = Object.freeze({ ONETIME: 0, REPEATED: 1 });
+let TaskTypes = Object.freeze({ OneTime: 0, Repeated: 1 });
 
 /** Defines the possible priorities a plug can have, a plug can be essential, non-essential or neither (what we call irrelevant).
  * @enum Priorities
- * @property {integer} ESSENTIAL        The priority that states a plug is essential.
- * @property {integer} NONESSENTIAL     The priority that states a plug is non-essential.
+ * @property {integer} Essential        The priority that states a plug is essential.
+ * @property {integer} Nonessential     The priority that states a plug is non-essential.
  * @property {integer} IRRELEVANT       The priority that states a plug's priority is irrelevant.
  * */
-let Priorities = Object.freeze({ ESSENTIAL: 0, NONESSENTIAL: 1, IRRELEVANT: 2 });
+let Priorities = Object.freeze({ Essential: 0, Nonessential: 1, Irrelevant: 2 });
 
 /**
  * Gets a user JSON containing its username and password.
@@ -108,19 +108,20 @@ function addUser(username, password, successFunction, errorFunction, completeFun
 /**
  * Changes an existing user's password.
  * @param {string}      username            The existing user's username.
- * @param {string}      password            The existing user's password.
+ * @param {string}      oldPassword         The user's old password.
+ * @param {string}      newPassword         The user's new password.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function changePassword(username, password, successFunction, errorFunction, completeFunction) {
+function changePassword(username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
     if (username === undefined || password === undefined) return;
 
     let request = {
         url: usersApi + "/" + username + "/password",
         contentType: "application/json",
         method: "PUT",
-        data: JSON.stringify(password)
+        data: JSON.stringify({ "OldPassword": oldPassword, "NewPassword": newPassword })
     };
 
     if (successFunction !== undefined) request.success = successFunction;
@@ -194,7 +195,7 @@ function getUserPlugs(username, successFunction, errorFunction, completeFunction
  * let plugProperties = {
  *     "mac": "BC:DD:B2:23:D6:60",
  *     "nickname": "Fan",
- *     "priority": Priorities.NONESSENTIAL
+ *     "priority": Priorities.Nonessential
  * }
  * 
  * function print(data) {
@@ -227,7 +228,7 @@ function updatePlug(plugProperties, successFunction, errorFunction, completeFunc
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
- * @example turnPlug("BC:DD:BD:23:D6:60", Operations.TURNON);
+ * @example turnPlug("BC:DD:BD:23:D6:60", Operations.TurnOn);
  */
 function turnPlug(mac, _operation, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || _operation === undefined) return;
@@ -361,9 +362,9 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
  * @example
  * // a task that turns a plug on every day
  * let newTask = {
- *     operation: Operations.TURNON,
+ *     operation: Operations.TurnOn,
  *     deviceMac: "BC:DD:C2:23:D6:69",
- *     taskType: TaskTypes.REPEATED,
+ *     taskType: TaskTypes.Repeated,
  *     repeatEvery: 60 * 24,
  *     startDate: new Date()
  * }
@@ -372,9 +373,9 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
  * let d = new Date();
  * d.setMinutes(d.getMinutes() + 5);
  * let newTask = {
- *     operation: Operations.TURNOFF,
+ *     operation: Operations.TurnOff,
  *     deviceMac: "BC:DD:C2:28:D6:60",
- *     taskType: TaskTypes.ONETIME,
+ *     taskType: TaskTypes.OneTime,
  *     startDate: d
  * }
  * 
@@ -438,7 +439,7 @@ function correctToJSON(date) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Sat Jun 08 2019 13:23:05 GMT+0300 (Israel Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Sun Jun 09 2019 21:20:46 GMT+0300 (Israel Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
