@@ -58,6 +58,8 @@ namespace BackEnd.Controllers
 
             if (user.Password != request.OldPassword) return BadRequest(Error.IncorrectOldPassword);
 
+
+
             user.Password = request.NewPassword;
 
             try
