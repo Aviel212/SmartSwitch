@@ -42,24 +42,20 @@
         
         let tokenFromServer = parent.loginUser(userName, pass, function () {
             //success function
-
+            sessionStorage.setItem("currentSmartSwitchUser", JSON.stringify(userName)); //set Global User currently logged in
+            //add currentSmartSwitchUserToken to sessionStorage
+            parent.openPage("plugsMainViewer");
+            parent.setSideBar(true);
         }, function (err) {
             //error function
             let errMsg = "Error Number - " + err.responseText;
             $("#paraForErrors").html(errMsg).css("visibility", "visible");
             //***************need to add error message for each error number******************
         });
-        console.log(userFromServer);
-        //check if user exist
-        if (userFromServer === "no such user" || userFromServer === "incorrect password") {
-            let errMsg = "Error - " + userFromServer;
-            $("#paraForErrors").html(errMsg).css("visibility", "visible");
-        } else if (userFromServer != null) { // //if exists sign in
-            sessionStorage.setItem("currentSmartSwitchUser", JSON.stringify(userFromServer)); //set Global User currently logged in
-            console.log(sessionStorage.currentSmartSwitchUser);
-            parent.openPage("plugsMainViewer");
-            parent.setSideBar(true);
-        }
+    }
+
+    function register() {
+
     }
 
 </script>
