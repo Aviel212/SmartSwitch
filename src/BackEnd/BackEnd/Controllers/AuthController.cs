@@ -19,9 +19,10 @@ namespace BackEnd.Controllers
         private UserManager<ApplicationUser> _userManager;
         private SmartSwitchDbContext _smartSwitchDbContext;
 
-        public AuthController(UserManager<ApplicationUser> userManager)
+        public AuthController(UserManager<ApplicationUser> userManager, SmartSwitchDbContext smartSwitchDbContext)
         {
-            this._userManager = userManager;
+            _userManager = userManager;
+            _smartSwitchDbContext = smartSwitchDbContext;
         }
 
         // POST api/Auth/login
@@ -99,6 +100,7 @@ namespace BackEnd.Controllers
             if (createResult.Succeeded)
             {
                 _smartSwitchDbContext.Users.Add(new Models.User(model.Username, model.Password));
+                await _smartSwitchDbContext.SaveChangesAsync();
                 return Ok(); // ObjectResult("Account created");
             }
             else
