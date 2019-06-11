@@ -4,6 +4,7 @@ let usersApi = server +  "/users";
 let plugsApi = server + "/plugs";
 let samplesApi = server + "/powerusagesamples";
 let tasksApi = server + "/tasks";
+let authApi = server + "/auth";
 
 /** Defines the possible operations we can call on a plug, either turn it on or off.
  * @enum Operations
@@ -27,27 +28,27 @@ let TaskTypes = Object.freeze({ OneTime: 0, Repeated: 1 });
  * */
 let Priorities = Object.freeze({ Essential: 0, Nonessential: 1, Irrelevant: 2 });
 
-/**
- * Gets a user JSON containing its username and password.
- * @param {string}      username            The user's username.
- * @param {function}    successFunction     Function to execute upon success.
- * @param {function=}   errorFunction       Function to execute upon failure.
- * @param {function=}   completeFunction    Function to execute upon completion.
- */
-function getUser(username, successFunction, errorFunction, completeFunction) {
-    if (username === undefined || successFunction === undefined) return;
+///**
+// * Gets a user JSON containing its username and password.
+// * @param {string}      username            The user's username.
+// * @param {function}    successFunction     Function to execute upon success.
+// * @param {function=}   errorFunction       Function to execute upon failure.
+// * @param {function=}   completeFunction    Function to execute upon completion.
+// */
+//function getUser(username, successFunction, errorFunction, completeFunction) {
+//    if (username === undefined || successFunction === undefined) return;
 
-    let request = {
-        url: usersApi + "/" + username,
-        method: "GET",
-        success: successFunction
-    };
+//    let request = {
+//        url: usersApi + "/" + username,
+//        method: "GET",
+//        success: successFunction
+//    };
 
-    if (errorFunction !== undefined) request.error = errorFunction;
-    if (completeFunction !== undefined) request.complete = completeFunction;
+//    if (errorFunction !== undefined) request.error = errorFunction;
+//    if (completeFunction !== undefined) request.complete = completeFunction;
 
-    $.ajax(request);
-}
+//    $.ajax(request);
+//}
 
 /**
  * Adds a new user.
@@ -133,17 +134,19 @@ function changePassword(username, oldPassword, newPassword, successFunction, err
 
 /**
  * Gets a plug JSON containing its mac, nickname, isOn, approved, priority and addedAt properties.
+ * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function getPlug(mac, successFunction, errorFunction, completeFunction) {
+function getPlug(token, mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || successFunction === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac,
         method: "GET",
+        headers: { "Authorization": "bearer " + token },
         success: function (data, textStatus, jqXHR) {
             data.addedAt = new Date(data.addedAt);
             successFunction(data, textStatus, jqXHR);
@@ -158,17 +161,19 @@ function getPlug(mac, successFunction, errorFunction, completeFunction) {
 
 /**
  * Gets an array plug JSONs owned by a given user containing their mac, nickname, isOn, approved, priority and addedAt properties.
+ * @param {string}      token               An API token.
  * @param {string}      username            The username of the owner of the plugs.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function getUserPlugs(username, successFunction, errorFunction, completeFunction) {
+function getUserPlugs(token, username, successFunction, errorFunction, completeFunction) {
     if (username === undefined || successFunction === undefined) return;
 
     let request = {
         url: plugsApi + "/user/" + username,
         method: "GET",
+        headers: { "Authorization": "bearer " + token },
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
                 data[i].addedAt = new Date(data[i].addedAt);
@@ -187,6 +192,7 @@ function getUserPlugs(username, successFunction, errorFunction, completeFunction
  * Updates a given plug's nickname and priority properties.
  * 
  * All properties of the plug will be updated (nickname and priority).
+ * @param {string}      token               An API token.
  * @param {object}      plugProperties      A JSON containing the plug's properties to be updated.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -204,7 +210,7 @@ function getUserPlugs(username, successFunction, errorFunction, completeFunction
  * 
  * updatePlug(plugProperties, print);
  */
-function updatePlug(plugProperties, successFunction, errorFunction, completeFunction) {
+function updatePlug(token, plugProperties, successFunction, errorFunction, completeFunction) {
     if (plugProperties === undefined) return;
 
     let request = {
