@@ -6,18 +6,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="SmartSwitchJavaScriptAPI.js"></script>
     <script>
-        function addUserTest() {
-            addUser("testUser", "112233", print);
-        }
-
-        function getUserTest() {
-            getUser("bbbbbbg", print, function (a, b, c) {
-                console.log(a.responseText);
-                console.log(b);
-                console.log(c);
-            });
-        }
-
         function changePasswordTest() {
             changePassword("testUser", "123", print)
         }
@@ -27,7 +15,9 @@
         }
 
         function getUserPlugsTest() {
-            getUserPlugs("yarden", print);
+            getUserPlugs("avi", function () {
+        		// body...
+        	});
         }
 
         function updatePlugTest() {
@@ -77,11 +67,17 @@
         }
 
         function testTurnOn() {
-            turnPlug('000', "BC:DD:C2:9E:0E:79", Operations.TurnOn);
+            turnPlug("BC:DD:C2:9E:0E:79", Operations.TurnOn);
         }
 
         function testTurnOff() {
-            turnPlug('000', "BC:DD:C2:9E:0E:79", Operations.TurnOff);
+            turnPlug("BC:DD:C2:9E:0E:79", Operations.TurnOff);
+        }
+
+        function loginUserTest() {
+        	loginUser("avi", "123", function () {
+        		// body...
+        	});
         }
     </script>
     <title></title>
@@ -93,8 +89,6 @@
     </style>
 </head>
 <body>
-    <input type="button" value="addUserTest()" onclick="addUserTest()" />
-    <input type="button" value="getUserTest()" onclick="getUserTest()" />
     <input type="button" value="changePasswordTest()" onclick="changePasswordTest()" />
     <input type="button" value="getPlugTest()" onclick="getPlugTest()" />
     <input type="button" value="getUserPlugsTest()" onclick="getUserPlugsTest()" />
@@ -105,5 +99,6 @@
     <input type="button" value="addTaskTest()" onclick="addTaskTest()" />
     <input type="button" value="testTurnOn()" onclick="testTurnOn()" />
     <input type="button" value="testTurnOff()" onclick="testTurnOff()" />
+    <input type="button" value="loginUserTest()" onclick="loginUserTest()" />
 </body>
 </html>

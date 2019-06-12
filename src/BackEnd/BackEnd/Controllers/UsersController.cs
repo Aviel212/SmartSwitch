@@ -17,12 +17,13 @@ namespace BackEnd.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SmartSwitchDbContext _context;
         private readonly IMapper _mapper;
 
-        public UsersController(SmartSwitchDbContext context, IMapper mapper)
+        public UsersController(UserManager<ApplicationUser> userManager, SmartSwitchDbContext context, IMapper mapper)
         {
+            _userManager = userManager;
             _context = context;
             _mapper = mapper;
         }
