@@ -7,6 +7,6 @@ namespace BackEnd.Models.Websockets
         void Start();
         Task<bool> TurnOff(string mac);
         Task<bool> TurnOn(string mac);
-        public void NotifyUserAdded(User newUser);
+        void NotifyUserAdded(User newUser);
     }
 }
