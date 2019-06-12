@@ -6,6 +6,7 @@ using Fleck;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Autofac;
+using System.Collections.Concurrent;
 
 namespace BackEnd.Models.Websockets
 {
@@ -13,11 +14,13 @@ namespace BackEnd.Models.Websockets
     {
         private WebSocketServer _server;
         private SynchronizedCollection<MacConnectionPair> _macConnectionPairs;
+        private ConcurrentDictionary<string, List<string>> _unownedMacs;
 
         public WebsocketsServer()
         {
             _server = new WebSocketServer("ws://0.0.0.0:8181");
             _macConnectionPairs = new SynchronizedCollection<MacConnectionPair>();
+            _unownedMacs = new ConcurrentDictionary<string, List<string>>();
         }
 
         // Turns the plug with mac MAC address on or off, on if op is "on" or off if op is "off".
@@ -84,23 +87,34 @@ namespace BackEnd.Models.Websockets
         {
             string currentMac = messageWords[1];
             string ownerUsername = messageWords[2];
+
             _macConnectionPairs.Add(new MacConnectionPair()
             {
                 Mac = currentMac,
                 Socket = socket
             });
 
-            // TODO - add error handling in case user doesn't exist
             using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
             {
                 SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
 
                 Plug currentPlug = await context.Plugs.FindAsync(currentMac);
-                if (currentPlug == null) // if the plug is brand new (not in the system), we'll add it to the owner
+                if (currentPlug == null) // if the plug is brand new (not in the system)
                 {
                     User owner = await context.Users.FindAsync(ownerUsername);
-                    owner.Plugs.Add(new Plug(currentMac));
-                    await context.SaveChangesAsync();
+
+                    // if the user is not in the system we'll save the connection and wait for the user to register
+                    if (owner == null)
+                    {
+                        if (_unownedMacs.ContainsKey(ownerUsername)) _unownedMacs[ownerUsername].Add(currentMac);
+                        else _unownedMacs.TryAdd(ownerUsername, new List<string> { currentMac });
+                    }
+                    else // we'll add it to the owner
+                    {
+                        Plug newPlug = new Plug(currentMac);
+                        owner.Plugs.Add(newPlug);
+                        await context.SaveChangesAsync();
+                    }
                 }
                 else // otherwise, if the plug belongs to another user -- we'll transfer ownership
                 {
@@ -123,8 +137,11 @@ namespace BackEnd.Models.Websockets
                 SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
                 // get plug by mac and update its IsOn property
                 Plug currentPlug = await context.Plugs.FindAsync(GetMac(socket));
-                currentPlug.IsOn = messageWords[1] == "yes";
-                await context.SaveChangesAsync();
+                if (currentPlug != null) // if the plug is owned
+                {
+                    currentPlug.IsOn = messageWords[1] == "yes";
+                    await context.SaveChangesAsync();
+                }
             }
         }
 
@@ -137,8 +154,23 @@ namespace BackEnd.Models.Websockets
             {
                 SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
                 Plug currentPlug = await context.Plugs.FindAsync(GetMac(socket));
-                currentPlug.Samples.Add(newSample);
-                await context.SaveChangesAsync();
+                if (currentPlug != null) // if the plug is owned
+                {
+                    currentPlug.Samples.Add(newSample);
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public void NotifyUserAdded(User newUser)
+        {
+            if (_unownedMacs.ContainsKey(newUser.Username))
+            {
+                _unownedMacs.TryRemove(newUser.Username, out List<string> macs);
+                foreach (string mac in macs)
+                {
+                    newUser.Plugs.Add(new Plug(mac));
+                }
             }
         }
     }

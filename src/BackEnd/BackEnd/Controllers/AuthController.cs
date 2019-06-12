@@ -10,6 +10,8 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using BackEnd.Models;
 using BackEnd.Models.Auth;
+using Autofac;
+using BackEnd.Models.Websockets;
 
 namespace BackEnd.Controllers
 {
@@ -99,7 +101,9 @@ namespace BackEnd.Controllers
             IdentityResult createResult = await _userManager.CreateAsync(user, model.Password);       //password requird P @ 1????
             if (createResult.Succeeded)
             {
-                _smartSwitchDbContext.Users.Add(new Models.User(model.Username, model.Password));
+                User newUser = new Models.User(model.Username, model.Password);
+                _smartSwitchDbContext.Users.Add(newUser);
+                using (ILifetimeScope scope = Program.Container.BeginLifetimeScope()) scope.Resolve<IWebsocketsServer>().NotifyUserAdded(newUser);
                 await _smartSwitchDbContext.SaveChangesAsync();
                 return Ok(); // ObjectResult("Account created");
             }
