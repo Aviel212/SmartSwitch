@@ -35,6 +35,11 @@ namespace BackEnd.Models
             Plug device;
             using (ILifetimeScope scope = Program.Container.BeginLifetimeScope()) device = scope.Resolve<SmartSwitchDbContext>().Plugs.Find(mac);
 
+            Execute(op, device);
+        }
+
+        public static void Execute(Operations op, Plug device)
+        {
             switch (op)
             {
                 case Operations.TurnOn:

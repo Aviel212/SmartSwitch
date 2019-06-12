@@ -104,7 +104,7 @@ namespace BackEnd.Controllers
             {
                 try
                 {
-                    Models.Task.Execute((Models.Task.Operations)op, mac);
+                    Models.Task.Execute((Models.Task.Operations)op, plug);
                 }
                 catch (PlugNotConnectedException)
                 {
