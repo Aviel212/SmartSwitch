@@ -1,10 +1,12 @@
 ﻿// requires jQuery
-let server = "https://backend.conveyor.cloud/api";
-let usersApi = server + "/users";
-let plugsApi = server + "/plugs";
-let samplesApi = server + "/powerusagesamples";
-let tasksApi = server + "/tasks";
-let authApi = server + "/auth";
+const server = "https://backend.conveyor.cloud/api";
+const usersApi = server + "/users";
+const plugsApi = server + "/plugs";
+const samplesApi = server + "/powerusagesamples";
+const tasksApi = server + "/tasks";
+const authApi = server + "/auth";
+
+const tokenStorageKeyString = "smart-switch-api-token";
 
 /**
  * Defines the possible operations we can call on a plug, either turn it on or off.
@@ -12,7 +14,7 @@ let authApi = server + "/auth";
  * @property {integer} TurnOn   The operation that calls for a plug to turn on.
  * @property {integer} TurnOff  The operation that calls for a plug to turn off.
  * */
-let Operations = Object.freeze({ TurnOn: 0, TurnOff: 1 });
+const Operations = { TurnOn: 0, TurnOff: 1 };
 
 /**
  * Defines the possible types a task can, either repeating or activating just once.
@@ -20,7 +22,7 @@ let Operations = Object.freeze({ TurnOn: 0, TurnOff: 1 });
  * @property {integer} OneTime  The type of task that executes once.
  * @property {integer} Repeated The type of task that executes repeatedly.
  * */
-let TaskTypes = Object.freeze({ OneTime: 0, Repeated: 1 });
+const TaskTypes = { OneTime: 0, Repeated: 1 };
 
 /**
  * Defines the possible priorities a plug can have, a plug can be essential, non-essential or neither (what we call irrelevant).
@@ -29,7 +31,7 @@ let TaskTypes = Object.freeze({ OneTime: 0, Repeated: 1 });
  * @property {integer} Nonessential     The priority that states a plug is non-essential.
  * @property {integer} Irrelevant       The priority that states a plug's priority is irrelevant.
  * */
-let Priorities = Object.freeze({ Essential: 0, Nonessential: 1, Irrelevant: 2 });
+const Priorities = { Essential: 0, Nonessential: 1, Irrelevant: 2 };
 
 /**
  * Registers a new user.
@@ -78,7 +80,10 @@ function loginUser(username, password, successFunction, errorFunction, completeF
             Username: username,
             Password: password
         }),
-        success: successFunction
+        success: function (data, textStatus, jqXHR) {
+            sessionStorage.setItem(tokenStorageKeyString, data.token);
+            successFunction(data, textStatus, jqXHR);
+        }
     };
 
     if (errorFunction !== undefined) request.error = errorFunction;
@@ -89,7 +94,6 @@ function loginUser(username, password, successFunction, errorFunction, completeF
 
 /**
  * Changes an existing user's password.
- * @param {string}      token               An API token.
  * @param {string}      username            The existing user's username.
  * @param {string}      oldPassword         The user's old password.
  * @param {string}      newPassword         The user's new password.
@@ -97,13 +101,13 @@ function loginUser(username, password, successFunction, errorFunction, completeF
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function changePassword(token, username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
+function changePassword(username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
     if (username === undefined || password === undefined) return;
 
     let request = {
         url: usersApi + "/" + username + "/password",
         contentType: "application/json",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         method: "PUT",
         data: JSON.stringify({ "OldPassword": oldPassword, "NewPassword": newPassword })
     };
@@ -117,19 +121,18 @@ function changePassword(token, username, oldPassword, newPassword, successFuncti
 
 /**
  * Gets a plug JSON containing its mac, nickname, isOn, approved, priority and addedAt properties.
- * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function getPlug(token, mac, successFunction, errorFunction, completeFunction) {
+function getPlug(mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || successFunction === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac,
         method: "GET",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         success: function (data, textStatus, jqXHR) {
             data.addedAt = new Date(data.addedAt);
             successFunction(data, textStatus, jqXHR);
@@ -144,19 +147,18 @@ function getPlug(token, mac, successFunction, errorFunction, completeFunction) {
 
 /**
  * Gets an array plug JSONs owned by a given user containing their mac, nickname, isOn, approved, priority and addedAt properties.
- * @param {string}      token               An API token.
  * @param {string}      username            The username of the owner of the plugs.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function getUserPlugs(token, username, successFunction, errorFunction, completeFunction) {
+function getUserPlugs(username, successFunction, errorFunction, completeFunction) {
     if (username === undefined || successFunction === undefined) return;
 
     let request = {
         url: plugsApi + "/user/" + username,
         method: "GET",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
                 data[i].addedAt = new Date(data[i].addedAt);
@@ -175,7 +177,6 @@ function getUserPlugs(token, username, successFunction, errorFunction, completeF
  * Updates a given plug's nickname and priority properties.
  * 
  * All properties of the plug will be updated (nickname and priority).
- * @param {string}      token               An API token.
  * @param {object}      plugProperties      A JSON containing the plug's properties to be updated.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -191,16 +192,16 @@ function getUserPlugs(token, username, successFunction, errorFunction, completeF
  *     console.log(JSON.stringify(data));
  * }
  * 
- * updatePlug("myApiToken", plugProperties, print);
+ * updatePlug(plugProperties, print);
  */
-function updatePlug(token, plugProperties, successFunction, errorFunction, completeFunction) {
+function updatePlug(plugProperties, successFunction, errorFunction, completeFunction) {
     if (plugProperties === undefined) return;
 
     let request = {
         url: plugsApi,
         method: "PUT",
         contentType: "application/json",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         data: JSON.stringify(plugProperties)
     };
 
@@ -213,20 +214,19 @@ function updatePlug(token, plugProperties, successFunction, errorFunction, compl
 
 /**
  * Turns a given plug on or off.
- * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {integer}     _operation          The operation to perform, either Operations.TURNON or Operations.TURNOFF.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
- * @example turnPlug("myApiToken", "BC:DD:BD:23:D6:60", Operations.TurnOn);
+ * @example turnPlug("BC:DD:BD:23:D6:60", Operations.TurnOn);
  */
-function turnPlug(token, mac, _operation, successFunction, errorFunction, completeFunction) {
+function turnPlug(mac, _operation, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || _operation === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac + "?op=" + _operation,
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         method: "PUT"
     };
 
@@ -239,18 +239,17 @@ function turnPlug(token, mac, _operation, successFunction, errorFunction, comple
 
 /**
  * Approves a given plug.
- * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function approvePlug(token, mac, successFunction, errorFunction, completeFunction) {
+function approvePlug(mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac + "?approved=true",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         method: "PUT"
     };
 
@@ -263,18 +262,17 @@ function approvePlug(token, mac, successFunction, errorFunction, completeFunctio
 
 /**
  * Denies a given plug.
- * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's mac address.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function denyPlug(token, mac, successFunction, errorFunction, completeFunction) {
+function denyPlug(mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined) return;
 
     let request = {
         url: plugsApi + "/" + mac + "?approved=false",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         method: "PUT"
     };
 
@@ -289,26 +287,25 @@ function denyPlug(token, mac, successFunction, errorFunction, completeFunction) 
  * Gets an array of powerUsageSample JSONs of the recent given number of samples of a given plug, containing their sampleDate, current and voltage properties.
  * 
  * The array will be ordered by date, most recent first. Each sample is for one minute following its date.
- * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's (whose samples are requested) mac address.
  * @param {integer}     amount              The amount of recent samples. A strictly positive number.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  * @example
- * getPlugSamples("myApiToken", "BB:DD:C2:23:D6:60", 7, function (samples) {
+ * getPlugSamples("BB:DD:C2:23:D6:60", 7, function (samples) {
  *     for (let i in samples) {
  *         console.log(samples[i]);
  *     }
  * })
  */
-function getPlugSamples(token, mac, amount, successFunction, errorFunction, completeFunction) {
+function getPlugSamples(mac, amount, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || amount === undefined || successFunction === undefined || amount <= 0) return;
 
     let request = {
         url: samplesApi + "/plug/" + mac + "?amount=" + amount,
         method: "GET",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
                 data[i].sampleDate = new Date(data[i].sampleDate);
@@ -325,19 +322,18 @@ function getPlugSamples(token, mac, amount, successFunction, errorFunction, comp
 
 /**
  * Gets an array of task JSONs of all tasks of a given plug, containing their operation, deviceMac, taskType, repeatEvery and startDate.
- * @param {string}      token               An API token.
  * @param {string}      mac                 The plug's (whose tasks are requested) mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
-function getPlugTasks(token, mac, successFunction, errorFunction, completeFunction) {
+function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
     if (mac === undefined || amount === undefined || successFunction === undefined || amount <= 0) return;
 
     let request = {
         url: tasksApi + "/plug/" + mac,
         method: "GET",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
                 data[i].startDate = new Date(data[i].startDate);
@@ -355,7 +351,6 @@ function getPlugTasks(token, mac, successFunction, errorFunction, completeFuncti
 
 /**
  * Adds a new task. Task is an object with the following properties: operation, deviceMac, taskType, repeatEvery and startDate.
- * @param {string}      token               An API token.
  * @param {object}      task                The new task object.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -380,9 +375,9 @@ function getPlugTasks(token, mac, successFunction, errorFunction, completeFuncti
  *     startDate: d
  * }
  * 
- * addTask("myApiToken", newTask);
+ * addTask(newTask);
  */
-function addTask(token, task, successFunction, errorFunction, completeFunction) {
+function addTask(task, successFunction, errorFunction, completeFunction) {
     if (task === undefined) return;
 
     let taskToSend = {};
@@ -392,7 +387,7 @@ function addTask(token, task, successFunction, errorFunction, completeFunction) 
     let request = {
         url: tasksApi,
         method: "POST",
-        headers: { "Authorization": "bearer " + token },
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         contentType: "application/json",
         data: JSON.stringify(taskToSend)
     };
