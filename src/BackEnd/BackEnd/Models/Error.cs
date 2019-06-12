@@ -11,6 +11,7 @@ namespace BackEnd.Models
         UserAlreadyExists,
         PlugDoesNotExist,
         PlugNotConnected,
-        IncorrectOldPassword
+        IncorrectOldPassword,
+        IncorrectPassword
     }
 }

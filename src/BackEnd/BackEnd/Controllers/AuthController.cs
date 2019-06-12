@@ -37,7 +37,7 @@ namespace BackEnd.Controllers
 
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
-                return BadRequest("no such user");
+                return BadRequest(Error.UserDoesNotExist);
 
             if (await _userManager.CheckPasswordAsync(user, model.Password))
             {
@@ -51,7 +51,7 @@ namespace BackEnd.Controllers
                     });
 
             }
-            return Unauthorized();
+            return Unauthorized(Error.IncorrectPassword);
         }
 
         private JwtSecurityToken GenerateToken(ApplicationUser user)
