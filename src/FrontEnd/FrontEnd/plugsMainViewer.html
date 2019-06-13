@@ -122,20 +122,27 @@
             $("tr").css("border", "2px solid #ff9980");
         }
 
-        function updatePlug(newName, newPriority, newApproved, newIsOn) {
-            let mac = plugs[rowInChange - 1].Mac;
-            let plug = plugs[rowInChange - 1];
-            if (!(newName === plug.Nickname))
-                setPlugNickname(mac, newName);
-            if (!(newPriority.toLowerCase() === priorityText(plug.Priority).toLowerCase()))
-                setPlugPriority(mac, newPriority);
-            if (!(plug.Approved === newApproved))
-                approvePlug(mac);
-            if (!(newIsOn === plug.IsOn)) {
+        function updateP(newName, newPriority, newApproved, newIsOn) {
+            let mac = plugs[rowInChange - 1].mac;
+            //let plug = plugs[rowInChange - 1];
+
+            let plug = {
+                "mac": mac,
+                "nickname": newName,
+                "priority": newPriority
+            };
+
+            // if (!(newName === plug.nickname))
+                updatePlug(plug,refresh);
+           // if (!(newPriority.toLowerCase() === priorityText(plug.Priority).toLowerCase()))
+          //      setPlugPriority(mac, newPriority);
+          //  if (!(plug.Approved === newApproved))
+          //      approvePlug(mac);
+            if (!(newIsOn === plug.isOn)) {
                 if (newIsOn)
-                    turnPlugOn(mac);
+                    turnPlug(mac, Operations.TurnOn, refresh)
                 else
-                    turnPlugOff(mac);
+                    turnPlug(mac, Operations.TurnOff, refresh)
             }
         }
 
@@ -152,9 +159,9 @@
                 //let newApproved = $tdApproved.children("input").eq(0).attr("checked") === "checked" ? true : false;
                 let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
                 //alert(newApproved);
-                updatePlug(newName, newPriority, newApproved, newIsOn);
+                updateP(newName, newPriority, newApproved, newIsOn);
 
-                refresh();
+                //refresh();
                 $maniRow.css("backgroundColor", "");
 
             }
@@ -218,11 +225,11 @@
         
         function refresh() {
             init();
-            plugs = getUserPlugs(sessionStorage.getItem("currentSmartSwitchUserToken"), "avi", reloadPlugsIntoTable);// getUser("yarden", "12345678").Plugs;     //read from server
-            reloadPlugsIntoTable();
-            fadeRows();
-            sortByTabe();
+            plugs = getUserPlugs("avi", reloadPlugsIntoTable);// getUser("yarden", "12345678").Plugs;     //read from server
+            //reloadPlugsIntoTable();
         }
+
+
 
         function reloadPlugsIntoTable(data) {
             // init table
@@ -262,6 +269,9 @@
                 $tr.click(trClicked);
                 $table.append($tr);
             }
+
+            fadeRows();
+            sortByTabe();
         }
 
         function moreOptionsColumn(rowIndex) {
@@ -269,15 +279,18 @@
                 $("#myPopup" + (rowIndex)).toggleClass("show");
             })
             let $span = $("<span>", { class: "popuptext", id: "myPopup" + (rowIndex) }).appendTo($div);
-            let pages = ["device_Timing_Summary.html", "showPowerConsumption.html", "device_settings.html"];
+            let pages = ["device_Timing_Summary", "showPowerConsumption", "device_settings"];
             let btnNames = ["Timing Settings", "Power Usage", "Settings"];
             let plug = plugs[rowIndex - 1];
             for (let i = 1; i < 4; i++) {
                 $("<input>", {
                     type: "button", class: "btn" + i + " w3-button w3-teal w3-ripple" , value: btnNames[i-1], style: "display:inline-block;margin:3px;"
                 }).appendTo($span).on("click", function () {
-                    if (plug.mac)
-                        window.parent.$("#mainFrame").attr("src", "./" + pages[i-1] + "?mac=" + plug.mac);
+                    if (plug.mac) {
+                        sessionStorage.setItem("currentMac", plug.mac);
+                        parent.openPage(pages[i - 1]);
+                        //window.parent.$("#mainFrame").attr("src", "./" + pages[i - 1] + "?mac=" + plug.mac);
+                    }
                 });
             }
             return $div;
