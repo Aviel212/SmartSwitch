@@ -126,6 +126,7 @@
     <Content Include="DeviceMethods.html" />
     <Content Include="device_Timing_Summary.html" />
     <Content Include="ExamplePage.html" />
+    <Content Include="images\team.jpeg" />
     <Content Include="loginForm.html" />
     <Content Include="manual.html" />
     <Content Include="obj\Debug\FrontEnd.csproj.FileListAbsolute.txt" />
