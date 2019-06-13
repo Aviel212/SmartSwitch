@@ -218,42 +218,44 @@
         
         function refresh() {
             init();
-            //plugs = getUser("yarden", "12345678").Plugs;     //read from server
+            plugs = getUserPlugs(sessionStorage.getItem("currentSmartSwitchUserToken"), "avi", reloadPlugsIntoTable);// getUser("yarden", "12345678").Plugs;     //read from server
             reloadPlugsIntoTable();
             fadeRows();
             sortByTabe();
         }
 
-        function reloadPlugsIntoTable() {
+        function reloadPlugsIntoTable(data) {
             // init table
             $table = $("#plugs_tbl tbody");
             $table.empty();
+            plugs = data;
+            console.log(plugs);
             // ###################################to check#############################
-            plugs = [{
-                Mac: "aa:bb",
-                Nickname: "TV",
-                Priority: 0,
-                Approved: true,
-                IsOn:true
-            },
-                {
-                    Mac: "qq:yy",
-                    Nickname: "Fridge",
-                    Priority: 1,
-                    Approved: false,
-                    IsOn: false
-                }]
+            //plugs = [{
+            //    Mac: "aa:bb",
+            //    Nickname: "TV",
+            //    Priority: 0,
+            //    Approved: true,
+            //    IsOn:true
+            //},
+            //    {
+            //        Mac: "qq:yy",
+            //        Nickname: "Fridge",
+            //        Priority: 1,
+            //        Approved: false,
+            //        IsOn: false
+            //    }]
             // #########################################################################
             for (i in plugs) {
                 let $tr = $("<tr>");
                 let plug = plugs[i];
                 
                 let $td1 = $("<td>").html(++i);
-                let $td2 = $("<td>").html(loadIcon(plug.Nickname));
-                let $td3 = $("<td>").html(plug.Nickname);
-                let $td4 = $("<td>").html(priorityText(plug.Priority));
-                let $td5 = $("<td>").html(approvedText(plug.Approved));
-                let $td6 = $("<td>").html(isOnText(plug.IsOn));
+                let $td2 = $("<td>").html(loadIcon(plug.nickname));
+                let $td3 = $("<td>").html(plug.nickname);
+                let $td4 = $("<td>").html(priorityText(plug.priority));
+                let $td5 = $("<td>").html(approvedText(plug.approved));
+                let $td6 = $("<td>").html(isOnText(plug.isOn));
                 let $td7 = $("<td>").append(moreOptionsColumn(i));
 
                 $tr.append($td1, $td2, $td3, $td4, $td5, $td6, $td7);
@@ -274,8 +276,8 @@
                 $("<input>", {
                     type: "button", class: "btn" + i + " w3-button w3-teal w3-ripple" , value: btnNames[i-1], style: "display:inline-block;margin:3px;"
                 }).appendTo($span).on("click", function () {
-                    if (plug.Mac)
-                        window.parent.$("#mainFrame").attr("src", "./" + pages[i-1] + "?mac=" + plug.Mac);
+                    if (plug.mac)
+                        window.parent.$("#mainFrame").attr("src", "./" + pages[i-1] + "?mac=" + plug.mac);
                 });
             }
             return $div;
