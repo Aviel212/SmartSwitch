@@ -1,4 +1,5 @@
 ﻿
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +8,7 @@
     <script src="scripts/jquery.js"></script>
     <link href="styles/w3css.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-
+    <script src="scripts/SmartSwitchJavaScriptAPI.js"></script>
 </head>
 <body>
     <div id="main-div">
@@ -31,8 +32,8 @@
                 <td>
                     <table id="prio-table">
                         <tr>
-                            <td><input type="radio" name="prio" value="essential">ess</td>
-                            <td><input type="radio" name="prio" value="nonessential">non-ess</td>
+                            <td><input type="radio" name="prio" value="Essential">ess</td>
+                            <td><input type="radio" name="prio" value="Nonessential">non-ess</td>
                         </tr>
                     </table>
                 </td>
@@ -49,45 +50,64 @@
 
 
     <script>
-        let USER, PLUG;
-        let url = new URL(window.parent.$("#mainFrame").attr("src"));
-        let deviceMac = url.searchParams.get("Mac");
-
+        let username, PLUG;
+        //let url = new URL(window.parent.$("#mainFrame").attr("src"));
+        //let deviceMac = url.searchParams.get("mac");//BC:DD:C2:23:D6:60
+        let deviceMac = "testPlugForRon";
         $(document).ready(function () {
 
             //USER = getUser("ron", "123123");//needed for testings
-            USER = JSON.parse(sessionStorage.currentSmartSwitchUser);
-            for (let i = 0; i < USER.Plugs.length; i++) {
-                if (USER.Plugs[i].Mac == deviceMac) {
-                    PLUG = USER.Plugs[i];
-                    break;
+            //username = JSON.parse(sessionStorage.currentSmartSwitchUser);
+            username = "avi";//sessionStorage.currentSmartSwitchUser
+            getUserPlugs(username, function (plugs) {
+                for (let i = 0; i < plugs.length; i++) {
+                    if (plugs[i].mac == deviceMac) {
+                        PLUG = plugs[i];//linking the plug we are working on
+                        break;
+                    }
                 }
 
-            }
+                let $currentNickname = PLUG.nickname;
+                $("#Nickname").attr("placeholder", $currentNickname)
+                $("#mac-address").text(deviceMac);               
+                $("#Date-Add").val(formatDate(PLUG.addedAt));
+            })
 
-            let $currentNickname = PLUG.Nickname;
-            $("#Nickname").attr("placeholder", $currentNickname)
-            $("#mac-address").text(deviceMac);
-            $("#Date-Add").valueAsDate = PLUG.AddedAt;
         });
-        function DeleteDevice() {
-            //delete device from database with a call from interface!!! ->
-            if (removePlug(deviceMac)) {
-                USER.PLUG.remove();//delete device from user.plugs
-                parent.openPage("PlugMainViewer");
-            }
+
+        function formatDate(date) {
+            let month = (date.getMonth() + 1) <= 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+            let day = date.getDay() <= 9 ? '0' + date.getDay() : date.getDay();
+            return date.getFullYear() + '-' + month + '-' + day;
         }
-        function ChangeSettings() {
-            let $nickName = $("#Nickname");
-            let $newNickName = $nickName.val();
-            //update database for plug nickname!!! ->
-            if (setPlugNickname(deviceMac, $newNickName)) {
-                PLUG.Nickname = $newNickName;
-                $nickName.attr("placeholder", $newNickName);
-            }
-            //update database for plug priority!!! ->
-            if (setPlugPriority(deviceMac, $("input[name='prio']:checked").val()))
-                PLUG.Priority = $("input[name='prio']:checked").val();
+
+        function DeleteDevice() {
+            denyPlug(PLUG.mac, function () {
+                PLUG.remove();//delete device from user.plugs
+                parent.openPage("PlugMainViewer");//go to PlugMainViewer page after deleting
+            })
+
+           
+        }
+        function ChangeSettings() {           
+
+            let priorityString = $("input[name='prio']:checked").val();
+            let priorityToSend;
+            if (priorityString === "Essential") priorityToSend = Priorities.Essential;
+            else priorityToSend = Priorities.Nonessential;
+
+            let plugProperties = {
+                "mac": PLUG.mac,
+                "nickname": $("#Nickname").val(),
+                "priority": priorityToSend
+            };
+
+
+            updatePlug(plugProperties, function () {
+                PLUG.nickname = $("#Nickname").val();
+                $("#Nickname").attr("placeholder", $("#Nickname").val())
+                PLUG.priority = $("input[name='prio']:checked").val();
+            })  
 
         }
 
