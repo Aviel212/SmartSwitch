@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title></title>
     <link href="styles/w3css.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="scripts/jquery.js"></script>
     <script src="scripts/SmartSwitchJavaScriptAPI.js"></script>
@@ -22,6 +22,7 @@
 
             </tr>
         </table>
+        
         <div id="myPopUp-div" style="display:none">
             <table>
                 <tr>
@@ -31,17 +32,18 @@
                 <tr>
                     <td><p>priority:</p></td>
                     <td>
-                        <input type="radio" name="prio" value="Essential">ess<br>
-                        <input type="radio" name="prio" value="Nonessential">non-ess<br>
+                        <input type="radio" name="prio" value="Essential">Essential<br>
+                        <input type="radio" name="prio" value="Nonessential">Nonessential<br>
                     </td>
                 </tr>
             </table>
             <input type="button" id="answeryes" value="next" onclick="approveContent()" />
             <input type="button" id="answerno" value="cancel" onclick="cancelPopUp()" />
+
         </div>
     </div>
     <script>
-        let PLUGS;
+        let myPlugs;
         let $myPopUp;
         let $main;
         let notApproved = [];
@@ -52,9 +54,15 @@
         $(document).ready(function () {
             
       
-            let username = sessionStorage.currentSmartSwitchUser ; //"avi";
+            let username = sessionStorage.currentSmartSwitchUser; //"avi";
+            let $loadingGif = $("<img>").prop({
+                'src': 'images/loadingGif.gif',
+                'width': parseInt($("#main-div").css("width")) / 25
+            });
+            $("#main-div").append($loadingGif);
             getUserPlugs(username, function (plugs) {
-                PLUGS = plugs;
+                $loadingGif.remove();
+                myPlugs = plugs;
                 $main = $("#main-div");
                 $main.css("position", "relative");
                 $myPopUp = $("#myPopUp-div");
@@ -71,15 +79,13 @@
             })
            
             
-
-
         });
 
         function drawMacAddress() {
-            for (let i = 0; i < PLUGS.length; i++) {
-                if (PLUGS[i].approved == false) {
-                    notApproved.push(PLUGS[i]);
-                    insertnotApproved(PLUGS[i]);
+            for (let i = 0; i < myPlugs.length; i++) {
+                if (myPlugs[i].approved == false) {
+                    notApproved.push(myPlugs[i]);
+                    insertnotApproved(myPlugs[i]);
                 }
 
             }
@@ -100,6 +106,14 @@
 
             $accept.prop("value", "accept");
             $reject.prop("value", "reject");
+
+            $accept.addClass('w3-button');
+            $accept.addClass('w3-blue');
+            $accept.addClass('w3-round');
+
+            $reject.addClass('w3-button');
+            $reject.addClass('w3-red');
+            $reject.addClass('w3-round');
 
             $accept.on('click', function (e) {//my pop up shows up to let user enter nickname and priority
                 $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed

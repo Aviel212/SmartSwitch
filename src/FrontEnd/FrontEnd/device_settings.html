@@ -16,11 +16,11 @@
         <h4><u>Settings page of device:</u></h4>
         <table>
             <tr>
-                <td><p>NickName:   </p></td>
+                <td><p>Nickname:   </p></td>
                 <td><input type="text" id="Nickname"></td>
             </tr>
             <tr>
-                <td><p>Macc Address:   </p></td>
+                <td><p>Mac Address:   </p></td>
                 <td><p id="mac-address"></p></td>
             </tr>
             <tr>
@@ -32,8 +32,8 @@
                 <td>
                     <table id="prio-table">
                         <tr>
-                            <td><input type="radio" name="prio" value="Essential">ess</td>
-                            <td><input type="radio" name="prio" value="Nonessential">non-ess</td>
+                            <td><input type="radio" name="prio" value="Essential" id="ess">Essential</td>
+                            <td><input type="radio" name="prio" value="Nonessential" id="noness">Nonessential</td>
                         </tr>
                     </table>
                 </td>
@@ -50,28 +50,30 @@
 
 
     <script>
-        let username, PLUG;
-        //let url = new URL(window.parent.$("#mainFrame").attr("src"));
-        //let deviceMac = url.searchParams.get("mac");//BC:DD:C2:23:D6:60
-        let deviceMac = "testPlugForRon";
-        $(document).ready(function () {
+        let username, myPlugMac,myPlug;
+        $(document).ready(function () {           
+            username = sessionStorage.currentSmartSwitchUser;//sessionStorage.currentSmartSwitchUser
+            myPlugMac = sessionStorage.currentMac;
 
-            //USER = getUser("ron", "123123");//needed for testings
-            //username = JSON.parse(sessionStorage.currentSmartSwitchUser);
-            username = "avi";//sessionStorage.currentSmartSwitchUser
-            getUserPlugs(username, function (plugs) {
-                for (let i = 0; i < plugs.length; i++) {
-                    if (plugs[i].mac == deviceMac) {
-                        PLUG = plugs[i];//linking the plug we are working on
-                        break;
-                    }
-                }
-
-                let $currentNickname = PLUG.nickname;
+            getPlug(myPlugMac, function (plug) {
+                myPlug = plug;
+                let $currentNickname = myPlug.nickname;
                 $("#Nickname").attr("placeholder", $currentNickname)
-                $("#mac-address").text(deviceMac);               
-                $("#Date-Add").val(formatDate(PLUG.addedAt));
+                $("#mac-address").text(myPlugMac);
+                $("#Date-Add").val(formatDate(myPlug.addedAt));
+
+                if (myPlug.priority == Priorities.Essential)
+                    $("input[type='radio'][id='ess']").attr("checked", true);
+                else
+                    $("input[type='radio'][id='noness']").attr("checked", true);
+
+
+
             })
+
+
+
+          
 
         });
 
@@ -82,8 +84,8 @@
         }
 
         function DeleteDevice() {
-            denyPlug(PLUG.mac, function () {
-                PLUG.remove();//delete device from user.plugs
+            denyPlug(myPlug.mac, function () {
+                myPlug.remove();//delete device from user.plugs
                 parent.openPage("PlugMainViewer");//go to PlugMainViewer page after deleting
             })
 
@@ -97,16 +99,16 @@
             else priorityToSend = Priorities.Nonessential;
 
             let plugProperties = {
-                "mac": PLUG.mac,
+                "mac": myPlug.mac,
                 "nickname": $("#Nickname").val(),
                 "priority": priorityToSend
             };
 
 
             updatePlug(plugProperties, function () {
-                PLUG.nickname = $("#Nickname").val();
+                myPlug.nickname = $("#Nickname").val();
                 $("#Nickname").attr("placeholder", $("#Nickname").val())
-                PLUG.priority = $("input[name='prio']:checked").val();
+                myPlug.priority = $("input[name='prio']:checked").val();
             })  
 
         }
