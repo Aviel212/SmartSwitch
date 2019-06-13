@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BackEnd.Models.Websockets;
+using Microsoft.AspNetCore.Http;
 
 namespace BackEnd
 {
@@ -94,6 +95,9 @@ namespace BackEnd
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             });
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
             services.AddAutoMapper(typeof(Startup));
         }

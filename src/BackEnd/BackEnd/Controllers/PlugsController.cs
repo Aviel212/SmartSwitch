@@ -9,20 +9,25 @@ using BackEnd.Models;
 using AutoMapper;
 using BackEnd.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
+using BackEnd.Models.Auth;
+using System.Security.Claims;
 
 namespace BackEnd.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PlugsController : ControllerBase
     {
         private readonly SmartSwitchDbContext _context;
         private readonly IMapper _mapper;
+        private readonly string _currentUsername;
 
-        public PlugsController(SmartSwitchDbContext context, IMapper mapper)
+        public PlugsController(SmartSwitchDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _currentUsername = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         // GET: api/Plugs/5
@@ -35,8 +40,9 @@ namespace BackEnd.Controllers
             }
 
             var plug = await _context.Plugs.FindAsync(mac);
-
             if (plug == null) return NotFound(Error.PlugDoesNotExist);
+
+            if (UserOwnershipValidator.IsNotValidated(_currentUsername, plug, _context)) return Unauthorized(Error.UnauthorizedOwner);
 
             return Ok(_mapper.Map<PlugDto>(plug));
         }
@@ -53,6 +59,7 @@ namespace BackEnd.Controllers
             User user = await _context.Users.Include(u => u.Plugs).SingleOrDefaultAsync(u => u.Username == username);
             if (user == null) return NotFound(Error.UserDoesNotExist);
 
+            if (UserOwnershipValidator.IsNotValidated(_currentUsername, user)) return Unauthorized(Error.UnauthorizedOwner);
 
             return Ok(_mapper.Map<List<PlugDto>>(user.Plugs));
         }
@@ -68,6 +75,8 @@ namespace BackEnd.Controllers
 
             Plug plug = await _context.Plugs.FindAsync(plugDtoIn.Mac);
             if (plug == null) return NotFound(Error.PlugDoesNotExist);
+
+            if (UserOwnershipValidator.IsNotValidated(_currentUsername, plug, _context)) return Unauthorized(Error.UnauthorizedOwner);
 
             _mapper.Map(plugDtoIn, plug);
 
@@ -95,6 +104,8 @@ namespace BackEnd.Controllers
         {
             Plug plug = await _context.Plugs.FindAsync(mac);
             if (plug == null) return NotFound(Error.PlugDoesNotExist);
+
+            if (UserOwnershipValidator.IsNotValidated(_currentUsername, plug, _context)) return Unauthorized(Error.UnauthorizedOwner);
 
             if (approved != null) plug.Approved = (bool)approved;
 

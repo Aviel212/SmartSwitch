@@ -39,7 +39,7 @@
         }
 
         function getPlugSamplesTest() {
-            getPlugSamples("BC:DD:C2:23:D6:60", 7, function (samples) {
+            getPlugSamples("BC:DD:C2:9E:0E:79", 7, function (samples) {
                 for (let i in samples) {
                     samples[i].sampleDate = new Date(samples[i].sampleDate);
                     $("body").append($("<span>").html(JSON.stringify(samples[i])));

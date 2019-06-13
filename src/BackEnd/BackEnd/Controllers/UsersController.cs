@@ -10,9 +10,12 @@ using AutoMapper;
 using BackEnd.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using BackEnd.Models.Auth;
 
 namespace BackEnd.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -20,31 +23,14 @@ namespace BackEnd.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SmartSwitchDbContext _context;
         private readonly IMapper _mapper;
+        private readonly string _currentUsername;
 
-        public UsersController(UserManager<ApplicationUser> userManager, SmartSwitchDbContext context, IMapper mapper)
+        public UsersController(UserManager<ApplicationUser> userManager, SmartSwitchDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{username}")]
-        public async Task<ActionResult<UserDto>> GetUser([FromRoute] string username)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user = await _context.Users.FindAsync(username);
-
-            if (user == null)
-            {
-                return NotFound(Error.UserDoesNotExist);
-            }
-
-            return Ok(_mapper.Map<UserDto>(user));
+            _currentUsername = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         // PUT: api/Users/{username}/password
@@ -58,6 +44,8 @@ namespace BackEnd.Controllers
 
             User user = await _context.Users.FindAsync(username);
             if (user == null) return NotFound(Error.UserDoesNotExist);
+
+            if (UserOwnershipValidator.IsNotValidated(_currentUsername, user)) return Unauthorized(Error.UnauthorizedUser);
 
             if (user.Password != request.OldPassword) return BadRequest(Error.IncorrectOldPassword);
 
