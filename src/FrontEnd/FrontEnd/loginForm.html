@@ -28,6 +28,10 @@
 
     $(document).ready(function () {
         paraForErrors = $("#paraForErrors");
+
+        if (sessionStorage.getItem("currentSmartSwitchUser") != null) {
+            parent.openPage("plugsMainViewer");
+        }
         
     });
 
