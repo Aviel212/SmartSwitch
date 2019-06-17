@@ -58,7 +58,7 @@
     <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:100px">
         <button onclick="refresh()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:20%">Refresh</button>
         <button onclick="modifyMode()" class="w3-bar-item w3-button w3-teal w3-ripple" style="width:20%">Edit Device</button>
-        <button onclick="forTesting()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">For Testing</button>
+        <!--<button onclick="forTesting()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">For Testing</button>-->
         <button onclick="saveChanges()" class="w3-bar-item w3-button w3-gray w3-ripple" style="width:20%">Save</button>
     </div>
 
@@ -72,7 +72,7 @@
                     <th>Icon</th>
                     <th>Name</th>
                     <th>Priority</th>
-                    <th>Approval</th>
+                    <!--<th>Approval</th>-->
                     <th>IsOn</th>
                     <th>Options</th>
                 </tr>
@@ -86,13 +86,6 @@
 
     <script>
         function forTesting() {
-            //addUser("Dudi", "1122");
-            //turnPlugOn("qq:ww");
-            //approvePlug("qq:ww");
-            let plugs = getPlugs("yarden");
-            for (i in plugs)
-                $("<p>").html(plugs[i].mac + ", " + plugs[i].isOn + ", " + plugs[i].approved + "<br />").appendTo("#test");
-            //alert(users);
         }
 
         $(document).ready(refresh());
@@ -122,7 +115,7 @@
             $("tr").css("border", "2px solid #ff9980");
         }
 
-        function updateP(newName, newPriority, newApproved, newIsOn) {
+        function updateP(newName, newPriority, newIsOn) {
             let mac = plugs[rowInChange - 1].mac;
             //let plug = plugs[rowInChange - 1];
 
@@ -150,16 +143,16 @@
             if (inChanging) {
                 let $tdName = $maniRow.children("td").eq(2);
                 let $tdPriority = $maniRow.children("td").eq(3);
-                let $tdApproved = $maniRow.children("td").eq(4);
-                let $tdIsOn = $maniRow.children("td").eq(5);
+                //let $tdApproved = $maniRow.children("td").eq(4);
+                let $tdIsOn = $maniRow.children("td").eq(4);
 
                 let newName = $tdName.children("input").eq(0).val();
                 let newPriority = $tdPriority.children("select").children("option:selected").text();
-                let newApproved = $tdApproved.children("input").eq(0).is(":checked") ? true : false;
+                //let newApproved = $tdApproved.children("input").eq(0).is(":checked") ? true : false;
                 //let newApproved = $tdApproved.children("input").eq(0).attr("checked") === "checked" ? true : false;
                 let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
                 //alert(newApproved);
-                updateP(newName, newPriority, newApproved, newIsOn);
+                updateP(newName, newPriority, /*newApproved,*/ newIsOn);
 
                 //refresh();
                 $maniRow.css("backgroundColor", "");
@@ -205,10 +198,10 @@
                 $select.append($op);
             });
 
-            let $tdApproved = $maniRow.children("td").eq(4);
-            $tdApproved.children("input").eq(0).removeAttr("disabled");
+            //let $tdApproved = $maniRow.children("td").eq(4);
+            //$tdApproved.children("input").eq(0).removeAttr("disabled");
 
-            let $tdIsOn = $maniRow.children("td").eq(5);
+            let $tdIsOn = $maniRow.children("td").eq(4);
             $tdIsOn.children("div").eq(0).click(function () {
                 if ($(this).hasClass("w3-green"))
                     $(this).removeClass("w3-green").addClass("w3-red");
@@ -254,18 +247,20 @@
             //    }]
             // #########################################################################
             for (i in plugs) {
-                let $tr = $("<tr>");
                 let plug = plugs[i];
+                if (!plug.approved)
+                    continue;
+                let $tr = $("<tr>");
                 
                 let $td1 = $("<td>").html(++i);
                 let $td2 = $("<td>").html(loadIcon(plug.nickname));
                 let $td3 = $("<td>").html(plug.nickname);
                 let $td4 = $("<td>").html(priorityText(plug.priority));
-                let $td5 = $("<td>").html(approvedText(plug.approved));
+                //let $td5 = $("<td>").html(approvedText(plug.approved));
                 let $td6 = $("<td>").html(isOnText(plug.isOn));
                 let $td7 = $("<td>").append(moreOptionsColumn(i));
 
-                $tr.append($td1, $td2, $td3, $td4, $td5, $td6, $td7);
+                $tr.append($td1, $td2, $td3, $td4, /*$td5,*/ $td6, $td7);
                 $tr.click(trClicked);
                 $table.append($tr);
             }
