@@ -28,6 +28,10 @@
 
     $(document).ready(function () {
         paraForErrors = $("#paraForErrors");
+
+        if (sessionStorage.getItem("currentSmartSwitchUser") != null) {
+            parent.openPage("plugsMainViewer");
+        }
         
     });
 
@@ -42,6 +46,8 @@
         
         let tokenFromServer = parent.loginUser(userName, pass, function (data) {
             //success function
+            parent.$("#loginReminder").hide();
+            parent.updateFrameTopHeight();
             sessionStorage.setItem("currentSmartSwitchUser", userName); //set Global User currently logged in
             parent.openPage("plugsMainViewer");
             parent.setSideBar(true);
