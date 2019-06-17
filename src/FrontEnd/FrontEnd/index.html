@@ -52,7 +52,7 @@
     <div id="topDiv">
         <div id="headerDiv" class="w3-container w3-red w3-blue-gray w3-padding" >
             <h1>Welcome to SmartSwitch</h1>
-            <h3 class="w3-medium">Login to your account to modify your plugs</h3>
+            <h3 id ="loginReminder" class="w3-medium">Login to your account to modify your plugs</h3>
         </div>
         <div id="menuPanel" class="w3-bar w3-gray">
             <div id="Account" class="w3-bar-item" onclick="w3_openSidebar()"><i class="fas fa-user"></i></div>
@@ -65,10 +65,7 @@
 
     <!--if not logged in the sidebar needs to show only Login-->
     <div id="mySidebar" class="sidebar w3-bar-block w3-card">
-        <!--<a href="#" class="w3-bar-item w3-button" onclick="openPage('plugsMainViewer')">Plugs</a>
-        <a href="#" class="w3-bar-item w3-button" onclick="openPage('addNewDevice')">Add New Device</a>
-        <a href="#" class="w3-bar-item w3-button" onclick="openPage('userSettings')">User Settings</a>
-        <a href="#" class="w3-bar-item w3-button" onclick="logout()">Logout</a>-->
+        
     </div>
 
     <!--the main Div conctent is what changing with every page loading-->
@@ -95,6 +92,11 @@
         //if its the first time opening the website we will save the pages name as 'index'
         if (sessionStorage.getItem("currentSmartSwitchPage") === null) {
             sessionStorage.setItem("currentSmartSwitchPage", "index");
+        }
+
+        function updateFrameTopHeight(){
+            let frameTopHeight = parseInt($headerDiv.css("height")) + parseInt($menuDiv.css("height"));
+            $("#mainFrame").css("top", frameTopHeight + "px");
         }
 
         $(document).ready(function () {
@@ -166,6 +168,8 @@
         }
 
         function logout() {
+            $("#loginReminder").show();
+            updateFrameTopHeight();
             sessionStorage.clear();
             setSideBar(false);
             openPage("loginForm");
