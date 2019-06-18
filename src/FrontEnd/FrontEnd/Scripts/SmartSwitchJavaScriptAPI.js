@@ -94,7 +94,7 @@ function registerUser(username, password, successFunction, errorFunction, comple
 }
 
 /**
- * Logins a user. (Gets an API token).
+ * Signs a user in. (Gets an API token).
  * @param {string}      username            The new user's username.
  * @param {string}      password            The new user's password.
  * @param {function}    successFunction     Function to execute upon success.
@@ -152,7 +152,7 @@ function changePassword(username, oldPassword, newPassword, successFunction, err
 }
 
 /**
- * Gets a plug JSON containing its mac, nickname, isOn, approved, priority and addedAt properties.
+ * Gets a plug JSON containing its mac, nickname, isOn, approved, priority, addedAt and iconUrl properties.
  * @param {string}      mac                 The plug's mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -178,7 +178,7 @@ function getPlug(mac, successFunction, errorFunction, completeFunction) {
 }
 
 /**
- * Gets an array plug JSONs owned by a given user containing their mac, nickname, isOn, approved, priority and addedAt properties.
+ * Gets an array plug JSONs owned by a given user containing their mac, nickname, isOn, approved, priority, addedAt and iconUrl properties.
  * @param {string}      username            The username of the owner of the plugs.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -217,6 +217,7 @@ function getUserPlugs(username, successFunction, errorFunction, completeFunction
  * let plugProperties = {
  *     "mac": "BC:DD:B2:23:D6:60",
  *     "nickname": "Fan",
+ *     "iconUrl": "https://images-na.ssl-images-amazon.com/images/I/51zLZbEVSTL._SX679_.jpg",
  *     "priority": Priorities.Nonessential
  * }
  * 

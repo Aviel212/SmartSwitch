@@ -14,5 +14,6 @@ namespace BackEnd.Models.Dto
         public bool Approved { get; set; }
         public Priorities Priority { get; set; }
         public DateTime AddedAt { get; set; }
+        public string IconUrl { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace BackEnd.Models
         public bool Approved { get; set; }
         public Priorities Priority { get; set; }
         public DateTime AddedAt { get; set; }
+        public string IconUrl { get; set; }
         public virtual List<Task> Tasks { get; set; }
         public virtual List<PowerUsageSample> Samples { get; set; }
 

@@ -46,7 +46,6 @@
         let myPlugs;
         let $myPopUp;
         let $main;
-        let notApproved = [];
         let $notifier;
         let $rowToDelete;
         let locationHref = $('#reloader').attr("href");
@@ -73,7 +72,7 @@
                 $myPopUp.css({ top: 40, left: 50, position: 'absolute' });
                 $myPopUp.hide();
 
-                //getting all available mac addressess and appending them to main div
+                //getting all available mac addresses and appending them to main div
                 drawMacAddress();
 
             })
@@ -84,7 +83,7 @@
         function drawMacAddress() {
             for (let i = 0; i < myPlugs.length; i++) {
                 if (myPlugs[i].approved == false) {
-                    notApproved.push(myPlugs[i]);
+                    
                     insertnotApproved(myPlugs[i]);
                 }
 
@@ -92,14 +91,15 @@
 
 
         }
-        function insertnotApproved(plugg) {
+        function insertnotApproved(currentPlug) {
             let $currentTR = $("<tr>");
-            let $macTD = $("<td>");
+            let $dateTD = $("<td>");
             let $buttonsTD = $("<td>");
 
-            let $macText = $("<p>");
-            $macText.text(plugg.mac);//gets the mac address from the current plug
-            $macTD.append($macText);
+            let $dateText = $("<p>");
+
+            $dateText.text(formatDate(currentPlug.addedAt));//gets the date for the current plug
+            $dateTD.append($dateText);
 
             let $accept = $("<input>").prop({ "type": "button", "value": "accept" });
             let $reject = $("<input>").prop({ "type": "button", "value": "reject" });
@@ -120,7 +120,7 @@
           
                 $("input[type='button']").prop("disabled", true); //disable all buttons
                 $("#myPopUp-div input[type='button']").prop("disabled", false);//leave the buttons in the hidden div working
-                $notifier = plugg//copying the current chosen mac address
+                $notifier = currentPlug//copying the current chosen mac address
                 $rowToDelete = $currentTR;
                 
                 $("#reloader").removeAttr('href');
@@ -133,7 +133,7 @@
            
             });
             $reject.on('click', function () {
-                denyPlug(plugg.mac, function () {
+                denyPlug(currentPlug.mac, function () {
                     $currentTR.remove();
                 })
 
@@ -151,12 +151,22 @@
 
             $buttonsTD.append($buttonTable);
 
-            $currentTR.append($macTD);
+            $currentTR.append($dateTD);
             $currentTR.append($buttonsTD);
             $("#main-table").append($currentTR);
 
 
         }
+        function formatDate(date) {
+            let month = (date.getMonth() + 1) <= 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+            let day = date.getDay() <= 9 ? '0' + date.getDay() : date.getDay();
+            let hour = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours();
+            let minute = date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes();
+            return day + '/' + month + '/' + date.getFullYear() + ' ' + hour + ':' + minute;
+        }
+
+
+
         function cancelPopUp() {
             $myPopUp.hide();
             $("input[type='button']").prop("disabled", false);
