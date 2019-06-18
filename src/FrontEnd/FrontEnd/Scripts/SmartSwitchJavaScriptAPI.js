@@ -377,7 +377,7 @@ function getPlugSamples(mac, beginDate, endDate, successFunction, errorFunction,
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
 function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
-    if (mac === undefined || amount === undefined || successFunction === undefined) return;
+    if (mac === undefined || successFunction === undefined) return;
 
     let request = {
         url: tasksApi + "/plug/" + mac,
