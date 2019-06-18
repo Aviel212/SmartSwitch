@@ -550,7 +550,7 @@
 
 
 <div class="description">
-    Adds a new task. Task is an object with the following properties: taskId, operation, deviceMac, taskType, repeatEvery and startDate.
+    Adds a new task. Task is an object with the following properties: taskId, description, operation, deviceMac, taskType, repeatEvery and startDate.
 </div>
 
 
@@ -752,7 +752,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line421">line 421</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line429">line 429</a>
     </li></ul></dd>
     
 
@@ -1003,7 +1003,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line280">line 280</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line288">line 288</a>
     </li></ul></dd>
     
 
@@ -1309,7 +1309,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line136">line 136</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line144">line 144</a>
     </li></ul></dd>
     
 
@@ -1555,7 +1555,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line303">line 303</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line311">line 311</a>
     </li></ul></dd>
     
 
@@ -1799,7 +1799,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line161">line 161</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line169">line 169</a>
     </li></ul></dd>
     
 
@@ -2105,7 +2105,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line338">line 338</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line346">line 346</a>
     </li></ul></dd>
     
 
@@ -2136,7 +2136,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>let d = new Date();d.setMinutes(d.getMinutes() + 5);getPlugSamples("BB:DD:C2:23:D6:60", d, new Date(), function (samples) {    for (let i in samples) {        console.log(samples[i]);    }})</code></pre>
+    <pre class="prettyprint"><code>let d = new Date();d.setMinutes(d.getMinutes() - 5);getPlugSamples("BB:DD:C2:23:D6:60", d, new Date(), function (samples) {    for (let i in samples) {        console.log(samples[i]);    }})</code></pre>
 
 
 
@@ -2154,7 +2154,7 @@
 
 
 <div class="description">
-    Gets an array of task JSONs of all tasks of a given plug, containing their taskId, operation, deviceMac, taskType, repeatEvery and startDate.
+    Gets an array of task JSONs of all tasks of a given plug, containing their taskId, description, operation, deviceMac, taskType, repeatEvery and startDate.
 </div>
 
 
@@ -2354,7 +2354,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line371">line 371</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line379">line 379</a>
     </li></ul></dd>
     
 
@@ -2598,7 +2598,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line187">line 187</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line195">line 195</a>
     </li></ul></dd>
     
 
@@ -2873,7 +2873,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line104">line 104</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line112">line 112</a>
     </li></ul></dd>
     
 
@@ -3150,7 +3150,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line76">line 76</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line84">line 84</a>
     </li></ul></dd>
     
 
@@ -3396,7 +3396,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line450">line 450</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line458">line 458</a>
     </li></ul></dd>
     
 
@@ -3673,7 +3673,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line257">line 257</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line265">line 265</a>
     </li></ul></dd>
     
 
@@ -3924,7 +3924,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line230">line 230</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line238">line 238</a>
     </li></ul></dd>
     
 
@@ -3981,7 +3981,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 12:20:43 GMT+0300 (Israel Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 22:46:27 GMT+0300 (Israel Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

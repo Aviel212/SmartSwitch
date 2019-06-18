@@ -370,7 +370,7 @@ function getPlugSamples(mac, beginDate, endDate, successFunction, errorFunction,
 }
 
 /**
- * Gets an array of task JSONs of all tasks of a given plug, containing their taskId, operation, deviceMac, taskType, repeatEvery and startDate.
+ * Gets an array of task JSONs of all tasks of a given plug, containing their taskId, description, operation, deviceMac, taskType, repeatEvery and startDate.
  * @param {string}      mac                 The plug's (whose tasks are requested) mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -399,7 +399,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
 
 
 /**
- * Adds a new task. Task is an object with the following properties: taskId, operation, deviceMac, taskType, repeatEvery and startDate.
+ * Adds a new task. Task is an object with the following properties: taskId, description, operation, deviceMac, taskType, repeatEvery and startDate.
  * @param {object}      task                The new task object.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.

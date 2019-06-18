@@ -16,6 +16,7 @@ namespace BackEnd.Models
         public enum TaskTypes { OneTime, Repeated };
 
         public int TaskId { get; set; }
+        public string Description { get; set; }
         public Operations Operation { get; set; }
         public string DeviceMac { get; set; }
         public TaskTypes TaskType { get; set; }
