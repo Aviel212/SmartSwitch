@@ -1,6 +1,5 @@
 ﻿// requires jQuery
-//const server = "https://backend.conveyor.cloud/api";
-const server = "http://localhost:56460/api";
+const server = "https://backend.conveyor.cloud/api";
 const usersApi = server + "/users";
 const plugsApi = server + "/plugs";
 const samplesApi = server + "/powerusagesamples";
