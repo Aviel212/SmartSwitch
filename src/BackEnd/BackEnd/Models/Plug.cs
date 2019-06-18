@@ -47,36 +47,40 @@ namespace BackEnd.Models
         }
 
         // turn the device on
-        public async void TurnOn()
+        public void TurnOn()
         {
-            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            try
             {
-                if (await scope.Resolve<IWebsocketsServer>().TurnOn(Mac))
+                using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
                 {
-                    IsOn = true;
-                    SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
-                    context.Entry(this).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
+                    if (scope.Resolve<IWebsocketsServer>().TurnOn(Mac))
+                    {
+                        IsOn = true;
+                        SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                        context.Entry(this).State = EntityState.Modified;
+                        context.SaveChangesAsync();
+                    }
                 }
             }
+            catch (PlugNotConnectedException e) { throw e; }
         }
 
         // turn the device off
-        public async void TurnOff()
+        public void TurnOff()
         {
             using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
             {
                 try
                 {
-                    if (await scope.Resolve<IWebsocketsServer>().TurnOff(Mac))
+                    if (scope.Resolve<IWebsocketsServer>().TurnOff(Mac))
                     {
                         IsOn = false;
                         SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
                         context.Entry(this).State = EntityState.Modified;
-                        await context.SaveChangesAsync();
+                        context.SaveChangesAsync();
                     }
                 }
-                catch (PlugNotConnectedException) { }
+                catch (PlugNotConnectedException e) { throw e; }
             }
         }
 

@@ -25,11 +25,11 @@ namespace BackEnd.Models.Websockets
 
         // Turns the plug with mac MAC address on or off, on if op is "on" or off if op is "off".
         // Returns true is successful, false otherwise
-        private async Task<bool> Turn(string op, string mac)
+        private bool Turn(string op, string mac)
         {
             try
             {
-                await GetSocket(mac).Send("turn-load-" + op);
+                GetSocket(mac).Send("turn-load-" + op);
             }
             catch (NullReferenceException)
             {
@@ -39,10 +39,10 @@ namespace BackEnd.Models.Websockets
         }
 
         // Turns the plug with mac MAC address on; returns true is successful, false otherwise
-        public async Task<bool> TurnOn(string mac) => await Turn("on", mac);
+        public bool TurnOn(string mac) => Turn("on", mac);
 
         // Turns the plug with mac MAC address off; returns true is successful, false otherwise
-        public async Task<bool> TurnOff(string mac) => await Turn("off", mac);
+        public bool TurnOff(string mac) => Turn("off", mac);
 
         public void Start()
         {
