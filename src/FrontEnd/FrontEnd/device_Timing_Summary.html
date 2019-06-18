@@ -1,57 +1,286 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <script src="scripts/jquery.js"></script>
     <link href="styles/w3css.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <style>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="scripts/jquery.js"></script>
+    <script src="scripts/SmartSwitchJavaScriptAPI.js"></script>
 
-        #main_div {
-            border: 1px solid black;
-            padding: 5px;
-        }
-    </style>
 </head>
 <body>
-    <div id="main_div" class="w3-grey">
-        <table>
+    <div id="main-div">
+        <h4><u>Timing Settings of device:</u></h4>
+        <table id="main-table">
             <tr>
-                <td><p>one time ON:</p></td>
-                <td>  <input type="date" name="dateON" disabled></td>
-                <td><time>10:00</time></td>
+                <td><p>Description</p></td>
+                <td><p>Status</p></td>
+                <td><p>start date</p></td>
+                <td><p>Cycle</p></td>
+                <td><p>Remove button</p></td>
             </tr>
-            <tr>
-                <td><p>one time OFF:</p></td>
-                <td>  <input type="date" name="dateOFF" disabled></td>
-                <td><time>10:00</time></td>
-            </tr>
-            <tr>
-                <td><p>periodic ON:</p></td>
-                <td><time>10:00</time></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><p>periodic OFF:</p></td>
-                <td><time>10:00</time></td>
-                <td></td>
-            </tr>
-
         </table>
-        <br />
-        <br />
-        <input type="button" value="Return" class="w3-button w3-blue w3-round" />
 
+        <input type="button" value="Add New Time Setting" class="w3-button w3-blue w3-round" onclick="showPopUp()" />
+        <div id="myPopUp-div" style="display:none">
+            <table>
+                
+                <tr>
+                    <td><p>description:</p></td>
+                    <td><input type="text" id="description"></td>
+                </tr>
+                <tr>
+                    <td><p>status:</p></td>
+                    <td>
+                        <input type="radio" name="op" value="TurnOn">on<br>
+                        <input type="radio" name="op" value="TurnOff">off<br>
+                    </td>
+                </tr>
+                <tr>
+                    <td><p>start date-time:</p></td>
+                    <td><input type="datetime-local" id="dateTime"></td>
+                </tr>
+                <tr>
+                    <td><p>make periodic:</p></td>
+                    <td>
+                        <input type="checkbox"name="cycleBox" id="cycle" value="Repeated" onclick="allowTime()">periodic<br>
 
-        <script>
-            //this script is for comments
-            //add return function to last page and link it to return button
-            //add check if the user defined a one time on/off or periodic on/off and disables if they do not exist( disable will be discussed )
-            //add get date function that on load page gets the users already chosen date (assuming line is not disabled) 
-            //add get time function that on page gets the users already chosen time (assuming line is not disabled)
-            //get function result is a display of useres chosen timings (if not disabled)
-        </script>
+                    </td>
+                </tr>
+                <tr id="timeTr" style="display:none">
+                    <td><p>repeat time:</p></td>
+                    <td>
+                        <input type="number" name="time-added" disabled id="timeCycle" />
+                    </td>
+                </tr>
+            </table>
+            <input type="button" id="answeryes" value="ok" onclick="approveContent()" />
+            <input type="button" id="answerno" value="cancel" onclick="cancelPopUp()" />
+
+        </div>
     </div>
+    <script>
+        let $myPlugMac, $myPlug;
+        let $plugName;
+        let $taskStatus;
+        let $taskTime;
+        let $taskCycle;
+        let $myPopUp;
+        let $table;
+        let $main;
+
+        $(document).ready(function () {
+            $myPlugMac = sessionStorage.currentMac;//getting the plugs mac address
+            $table = $("#main-table");
+
+            $myPopUp = $("#myPopUp-div");
+            $myPopUp.css("z-index", "2000");
+            $myPopUp.css('border', '3px solid black');
+            $myPopUp.css("background-color", "yellow");
+            $main = $("#main-div");
+            $main.css("position", "relative");
+            //creating and inserting loading gif for page
+            let $loadingGif = $("<img>").prop({
+                'src': 'images/loadingGif.gif',
+                'width': parseInt($("#main-div").css("width")) / 25
+            });
+            $("#main-div").append($loadingGif);//adding gif while page is being loaded
+            getPlugTasks($myPlugMac, function (tasks) {
+                $loadingGif.remove();
+                //loop for adding all valid tasks to client side
+                for (let i = 0; i < tasks.length; i++) {
+                    getPlug($myPlugMac, function (plug) {//maybe dont need
+                        $myPlug = plug;
+                    })
+
+                    createRow(tasks[i]);//creating each task in client side
+
+                }
+
+            })
+
+        })
+        //creating each task in client side 
+        function createRow($currentTask) {
+            let $currentTR = $("<tr>");
+            let $nameTD = $("<td>");
+            let $statusTD = $("<td>");
+            let $timeTD = $("<td>");
+            let $cycleTD = $("<td>");
+            let $buttonTD = $("<td>");
+
+            let $nameText = $("<p>");
+            let $statusText = $("<p>");
+            let $timetext = $("<p>");
+            let $cycleText = $("<p>");
+            let $removeBtn = $("<input>").prop({ "type": "button", "value": "remove" });
+            
+            $removeBtn.addClass('w3-button');
+            $removeBtn.addClass('w3-red');
+            $removeBtn.addClass('w3-round');
+
+            $nameText.text($("#description").val());//problem name is nickname or description?
+            $nameTD.append($nameText);//
+
+            if ($currentTask.operation == Operations.TurnOn)
+                $statusText.text('on');
+
+            else
+                $statusText.text('off');
+
+            $statusTD.append($statusText);
+
+
+
+            if ($currentTask.taskType == TaskTypes.Repeated) {
+                $cycleText.text('periodic');
+                $timetext.text(formatDate($("#time-Add")));//need to decide what it is
+                $timeTD.append($timetext);///
+            }
+            else {
+                $cycleText.text('one time');
+                $timetext.text('----');//need to check
+                $timeTD.append($timetext);///
+            }
+
+            $cycleTD.append($cycleText);
+
+            $buttonTD.append($removeBtn);
+            $currentTR.append($nameTD);
+            $currentTR.append($statusTD);
+            $currentTR.append($timeTD);
+            $currentTR.append($cycleTD);
+            $currentTR.append($buttonTD);
+            $table.append($currentTR);
+            //$table.append(`<tr>             will fuck up 
+            //        <td>${$nameText}</td>
+            //        <td>${$statusText}</td>
+            //        <td>${$cycleText}</td>
+            //        <td>${$timetext}</td>
+            //        <td>${$removeBtn}</td>
+            //    </tr>`);
+
+            //getting popup ready for next use
+            cleanSlatePopUp();
+
+
+            $removeBtn.on('click', function () {
+                removeTask($currentTask, function () {//check if its according to interface
+                    $currentTR.remove();//need to check if it knows the right row
+                })
+
+            })
+        }
+        //return time string
+        function formatDate(date) {
+
+            let hour = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours();
+            let minute = date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes();
+            return hour + ':' + minute;
+        }
+        //creates a new task according to popUp results 
+        function addSetting() {
+
+            let operationString = $("input[name='op']:checked").val();
+            let operationToSend;
+            if (operationString === "TurnOn") operationToSend = Operations.TurnOn;
+            else operationToSend = Operations.TurnOff;
+
+            let taskTypeString = $("input[name='cycle']:checked").val();
+            let taskTypeToSend;
+            if (taskTypeString === "Repeated") taskTypeToSend = taskTypes.Repeated;
+            else taskTypeToSend = taskTypes.OneTime;
+
+            let newTask;
+            //if the new task is a periodic type
+            if ($("input[name='cycle']:checked")) {
+                let time = $("#time-Add");
+                let hour = time.getHours() <= 9 ? '0' + time.getHours() : time.getHours();
+                let minute = time.getMinutes() <= 9 ? '0' + time.getMinutes() : time.getMinutes();
+                //creating the new task with information gathered from popUp
+                newTask = {
+                    operation: operationToSend,
+                    deviceMac: $myPlugMac,
+                    taskType: taskTypeToSend,
+                    repeatEvery: parseInt(minute) * parseInt(hour),//need to check
+                    startDate: new Date()
+                }
+            }
+            //else the new task is a one time type
+            else
+                newTask = {
+                    operation: operationToSend,
+                    deviceMac: $myPlugMac,
+                    taskType: taskTypeToSend,
+                    startDate: new Date()
+                }
+
+
+            //adds the new task to database and adds it to client side
+            addTask(newTask, function () {
+                createRow(newTask);
+            });
+
+        }
+        function cancelPopUp() {
+            $myPopUp.hide();
+            $("input[type='button']").prop("disabled", false);
+            cleanSlatePopUp();
+        }
+
+        function showPopUp() {
+            //reseting all?
+            $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
+
+            $("input[type='button']").prop("disabled", true); //disable all buttons
+            $("#myPopUp-div input[type='button']").prop("disabled", false);//leave the buttons in the hidden div workin
+
+            //let offset = $main.offset();
+            //let y = $myPopUp.pageY - offset.top;
+           // y -= 30;
+            let y = $myPopUp.css('top');
+            $myPopUp.css('top', y + 'px');
+            $myPopUp.show();
+
+        }
+        //hides popUp after client used it and start the procces of creating a new task and adding it to the database
+        function approveContent() {
+            $myPopUp.hide()
+            $("input[type='button']").prop("disabled", false);
+            addSetting();
+        }
+
+        function allowTime() {
+           // if ($("input[name='cycleBox']:checked")) {
+            if ($('#cycle').is(':checked')) {
+                $("#timeCycle").prop("disabled", false);
+                $("#timeTr").show();
+            }
+
+            else {
+                $("#timeCycle").prop("disabled", true);
+                $("#timeTr").hide();
+            }
+
+        }
+
+        function cleanSlatePopUp() {
+            $("#description").val('');
+            $("input[type='radio']").prop("checked", false);
+            $("#cycle").prop("checked", false);
+            $("#timeTr").hide();
+        }
+        //return a date-time string 
+        function formatDateTime(date) {
+            let month = (date.getMonth() + 1) <= 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+            let day = date.getDay() <= 9 ? '0' + date.getDay() : date.getDay();
+            let hour = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours();
+            let minute = date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes();
+            return day + '/' + month + '/' + date.getFullYear() + ' ' + hour + ':' + minute;
+        }
+    </script>
 </body>
 </html>
