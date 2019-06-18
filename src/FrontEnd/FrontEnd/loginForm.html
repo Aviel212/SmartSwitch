@@ -21,6 +21,7 @@
     }
     #paraForErrors {
         visibility:hidden;
+        
     }
 </style>
 <script>
@@ -36,6 +37,13 @@
     });
 
     function signIn() {
+
+        let $loadingGif = $("<img>").attr({
+            'src': 'images/loadingGif.gif',
+            'width': parseInt($("#loginForm").css("width")) / 25
+        });
+        $("#loginForm").append($loadingGif);
+
         userName = $("#UsernameInpt").val();
         pass = $("#passwordInpt").val();
         //check if inputs are empty 
@@ -46,6 +54,8 @@
         
         let tokenFromServer = parent.loginUser(userName, pass, function (data) {
             //success function
+            $loadingGif.remove();
+
             parent.$("#loginReminder").hide();
             parent.updateFrameTopHeight();
             sessionStorage.setItem("currentSmartSwitchUser", userName); //set Global User currently logged in

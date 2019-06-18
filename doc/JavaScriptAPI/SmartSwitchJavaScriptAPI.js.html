@@ -162,7 +162,7 @@ function loginUser(username, password, successFunction, errorFunction, completeF
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
 function changePassword(username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
-    if (username === undefined || password === undefined) return;
+    if (username === undefined || oldPassword === undefined || newPassword === undefined) return;
 
     let request = {
         url: usersApi + "/" + username + "/password",
@@ -382,7 +382,7 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
 }
 
 /**
- * Gets an array of task JSONs of all tasks of a given plug, containing their operation, deviceMac, taskType, repeatEvery and startDate.
+ * Gets an array of task JSONs of all tasks of a given plug, containing their taskId, operation, deviceMac, taskType, repeatEvery and startDate.
  * @param {string}      mac                 The plug's (whose tasks are requested) mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -411,7 +411,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
 
 
 /**
- * Adds a new task. Task is an object with the following properties: operation, deviceMac, taskType, repeatEvery and startDate.
+ * Adds a new task. Task is an object with the following properties: taskId, operation, deviceMac, taskType, repeatEvery and startDate.
  * @param {object}      task                The new task object.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -460,6 +460,29 @@ function addTask(task, successFunction, errorFunction, completeFunction) {
     $.ajax(request);
 }
 
+/**
+ * Deletes a task.
+ * @param {object}      task                The task object to delete.
+ * @param {function=}   successFunction     Function to execute upon success.
+ * @param {function=}   errorFunction       Function to execute upon failure.
+ * @param {function=}   completeFunction    Function to execute upon completion.
+ */
+function removeTask(task, successFunction, errorFunction, completeFunction) {
+    if (task === undefined) return;
+
+    let request = {
+        url: tasksApi + "/" + task.taskId,
+        method: "DELETE",
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
+    };
+
+    if (successFunction !== undefined) request.success = successFunction;
+    if (errorFunction !== undefined) request.error = errorFunction;
+    if (completeFunction !== undefined) request.complete = completeFunction;
+
+    $.ajax(request);
+}
+
 /** Calculates a correct dateString including time zone.
  * 
  * Private function for date calculation, taken from: https://stackoverflow.com/a/36643588/7414734.
@@ -491,13 +514,13 @@ function correctToJSON(date) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addTask">addTask</a></li><li><a href="global.html#approvePlug">approvePlug</a></li><li><a href="global.html#changePassword">changePassword</a></li><li><a href="global.html#denyPlug">denyPlug</a></li><li><a href="global.html#getPlug">getPlug</a></li><li><a href="global.html#getPlugSamples">getPlugSamples</a></li><li><a href="global.html#getPlugTasks">getPlugTasks</a></li><li><a href="global.html#getUserPlugs">getUserPlugs</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#Operations">Operations</a></li><li><a href="global.html#Priorities">Priorities</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#TaskTypes">TaskTypes</a></li><li><a href="global.html#turnPlug">turnPlug</a></li><li><a href="global.html#updatePlug">updatePlug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addTask">addTask</a></li><li><a href="global.html#approvePlug">approvePlug</a></li><li><a href="global.html#changePassword">changePassword</a></li><li><a href="global.html#denyPlug">denyPlug</a></li><li><a href="global.html#getPlug">getPlug</a></li><li><a href="global.html#getPlugSamples">getPlugSamples</a></li><li><a href="global.html#getPlugTasks">getPlugTasks</a></li><li><a href="global.html#getUserPlugs">getUserPlugs</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#Operations">Operations</a></li><li><a href="global.html#Priorities">Priorities</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#TaskTypes">TaskTypes</a></li><li><a href="global.html#turnPlug">turnPlug</a></li><li><a href="global.html#updatePlug">updatePlug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jun 17 2019 18:59:04 GMT+0300 (Israel Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 12:00:21 GMT+0300 (Israel Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

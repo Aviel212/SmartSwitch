@@ -143,7 +143,7 @@ function loginUser(username, password, successFunction, errorFunction, completeF
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
 function changePassword(username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
-    if (username === undefined || password === undefined) return;
+    if (username === undefined || oldPassword === undefined || newPassword === undefined) return;
 
     let request = {
         url: usersApi + "/" + username + "/password",
@@ -363,7 +363,7 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
 }
 
 /**
- * Gets an array of task JSONs of all tasks of a given plug, containing their operation, deviceMac, taskType, repeatEvery and startDate.
+ * Gets an array of task JSONs of all tasks of a given plug, containing their taskId, operation, deviceMac, taskType, repeatEvery and startDate.
  * @param {string}      mac                 The plug's (whose tasks are requested) mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -392,7 +392,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
 
 
 /**
- * Adds a new task. Task is an object with the following properties: operation, deviceMac, taskType, repeatEvery and startDate.
+ * Adds a new task. Task is an object with the following properties: taskId, operation, deviceMac, taskType, repeatEvery and startDate.
  * @param {object}      task                The new task object.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -432,6 +432,29 @@ function addTask(task, successFunction, errorFunction, completeFunction) {
         headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         contentType: "application/json",
         data: JSON.stringify(taskToSend)
+    };
+
+    if (successFunction !== undefined) request.success = successFunction;
+    if (errorFunction !== undefined) request.error = errorFunction;
+    if (completeFunction !== undefined) request.complete = completeFunction;
+
+    $.ajax(request);
+}
+
+/**
+ * Deletes a task.
+ * @param {object}      task                The task object to delete.
+ * @param {function=}   successFunction     Function to execute upon success.
+ * @param {function=}   errorFunction       Function to execute upon failure.
+ * @param {function=}   completeFunction    Function to execute upon completion.
+ */
+function removeTask(task, successFunction, errorFunction, completeFunction) {
+    if (task === undefined) return;
+
+    let request = {
+        url: tasksApi + "/" + task.taskId,
+        method: "DELETE",
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
     };
 
     if (successFunction !== undefined) request.success = successFunction;
