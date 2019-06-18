@@ -1,8 +1,10 @@
 avi:
-2. במקום תוקף של 5 דק' יש לשנות לטוקן של session.
-12. אם אין טוקן צריך לשלוח ל login.
 6.  שהכפתור הדלקה וכיבוי של הפלאגים בדף plugsMainViewer יבצע כיבוי והדלקה.
 
 ron:
 9. טיפול בדף device_timing_settings.
 
+alaa:
+1. במקום גרף ע"פ כמות samples, לעשות גרף ע"פ fromDateToDate.
+
+yarden:
