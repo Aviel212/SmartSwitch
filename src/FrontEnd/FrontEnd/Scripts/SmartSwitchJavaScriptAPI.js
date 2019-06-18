@@ -134,7 +134,7 @@ function loginUser(username, password, successFunction, errorFunction, completeF
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
 function changePassword(username, oldPassword, newPassword, successFunction, errorFunction, completeFunction) {
-    if (username === undefined || password === undefined) return;
+    if (username === undefined || oldPassword === undefined || newPassword === undefined) return;
 
     let request = {
         url: usersApi + "/" + username + "/password",

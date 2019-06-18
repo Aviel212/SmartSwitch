@@ -96,7 +96,11 @@
 
         function updateFrameTopHeight(){
             let frameTopHeight = parseInt($headerDiv.css("height")) + parseInt($menuDiv.css("height"));
-            $("#mainFrame").css("top", frameTopHeight + "px");
+            $("#mainFrame").css("top", frameTopHeight-1 + "px");
+            $("#mySidebar").css("top", frameTopHeight + "px");
+            //update the height of the iframe and the height of the sidebar
+            $("#mainFrame").css("height", getMainFrameHeight());
+            $("#mySidebar").css("height", getMainFrameHeight());
         }
 
         $(document).ready(function () {
@@ -111,10 +115,6 @@
                 setSideBar(true); //true means logged in
             } else { //else show the login form
                 openPage("loginForm");
-
-                /////////////////////////////////////////////////
-                //SET BACK TO FALSE WHEN SERVER IS BACK TO WORK//
-                /////////////////////////////////////////////////
                 setSideBar(false); 
             }
             
