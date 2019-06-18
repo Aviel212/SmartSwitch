@@ -98,7 +98,7 @@
 
             let $dateText = $("<p>");
 
-            $dateText.text(formatDate(currentPlug.addedAt));//gets the date for the current plug
+            $dateText.text(formatDateTime(currentPlug.addedAt));//gets the date for the current plug
             $dateTD.append($dateText);
 
             let $accept = $("<input>").prop({ "type": "button", "value": "accept" });
@@ -157,7 +157,7 @@
 
 
         }
-        function formatDate(date) {
+        function formatDateTime(date) {
             let month = (date.getMonth() + 1) <= 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
             let day = date.getDay() <= 9 ? '0' + date.getDay() : date.getDay();
             let hour = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours();
@@ -166,7 +166,7 @@
         }
 
 
-
+        //removing PopUp if the client regrets opening it
         function cancelPopUp() {
             $myPopUp.hide();
             $("input[type='button']").prop("disabled", false);
