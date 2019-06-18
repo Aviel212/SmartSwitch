@@ -69,7 +69,6 @@ namespace BackEnd.Controllers
             return CreatedAtAction("GetTasks", new { mac = task.DeviceMac }, task);
         }
 
-        // TODO
         // DELETE: api/Tasks/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask([FromRoute] int id)
@@ -84,6 +83,8 @@ namespace BackEnd.Controllers
             {
                 return NotFound();
             }
+
+            if (UserOwnershipValidator.IsNotValidated(_currentUsername, task, _context)) return Unauthorized(Error.UnauthorizedOwner);
 
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
