@@ -344,7 +344,7 @@ function denyPlug(mac, successFunction, errorFunction, completeFunction) {
  * })
  */
 function getPlugSamples(mac, beginDate, endDate, successFunction, errorFunction, completeFunction) {
-    if (mac === undefined || beginDate === undefined || endDate === undefined || successFunction === undefined || endDate < startDate) return;
+    if (mac === undefined || beginDate === undefined || endDate === undefined || successFunction === undefined || endDate < beginDate) return;
 
     let request = {
         url: samplesApi + "/plug/" + mac,
