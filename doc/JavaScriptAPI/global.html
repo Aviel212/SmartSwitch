@@ -550,7 +550,7 @@
 
 
 <div class="description">
-    Adds a new task. Task is an object with the following properties: operation, deviceMac, taskType, repeatEvery and startDate.
+    Adds a new task. Task is an object with the following properties: taskId, operation, deviceMac, taskType, repeatEvery and startDate.
 </div>
 
 
@@ -752,7 +752,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line413">line 413</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line421">line 421</a>
     </li></ul></dd>
     
 
@@ -1835,7 +1835,7 @@
     
 
     
-    <h4 class="name" id="getPlugSamples"><span class="type-signature"></span>getPlugSamples<span class="signature">(mac, amount, successFunction, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getPlugSamples"><span class="type-signature"></span>getPlugSamples<span class="signature">(mac, beginDate, endDate, successFunction, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1843,7 +1843,7 @@
 
 
 <div class="description">
-    Gets an array of powerUsageSample JSONs of the recent given number of samples of a given plug, containing their sampleDate, current and voltage properties.The array will be ordered by date, most recent first. Each sample is for one minute following its date.
+    Gets an array of powerUsageSample JSONs of samples between the given dates of a given plug, containing their sampleDate, current and voltage properties.The array will be ordered by date, most recent last. Each sample is for one minute following its date.
 </div>
 
 
@@ -1912,13 +1912,13 @@
 
         <tr>
             
-                <td class="name"><code>amount</code></td>
+                <td class="name"><code>beginDate</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">integer</span>
+<span class="param-type">Date</span>
 
 
             
@@ -1936,7 +1936,38 @@
 
             
 
-            <td class="description last">The amount of recent samples. A strictly positive number.</td>
+            <td class="description last">The date from which to start getting samples.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>endDate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Date</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The date from which to stop getting samples.</td>
         </tr>
 
     
@@ -2074,7 +2105,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line335">line 335</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line338">line 338</a>
     </li></ul></dd>
     
 
@@ -2105,7 +2136,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>getPlugSamples("BB:DD:C2:23:D6:60", 7, function (samples) {    for (let i in samples) {        console.log(samples[i]);    }})</code></pre>
+    <pre class="prettyprint"><code>let d = new Date();d.setMinutes(d.getMinutes() + 5);getPlugSamples("BB:DD:C2:23:D6:60", d, new Date(), function (samples) {    for (let i in samples) {        console.log(samples[i]);    }})</code></pre>
 
 
 
@@ -2123,7 +2154,7 @@
 
 
 <div class="description">
-    Gets an array of task JSONs of all tasks of a given plug, containing their operation, deviceMac, taskType, repeatEvery and startDate.
+    Gets an array of task JSONs of all tasks of a given plug, containing their taskId, operation, deviceMac, taskType, repeatEvery and startDate.
 </div>
 
 
@@ -2323,7 +2354,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line363">line 363</a>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line371">line 371</a>
     </li></ul></dd>
     
 
@@ -3155,6 +3186,252 @@
     
 
     
+    <h4 class="name" id="removeTask"><span class="type-signature"></span>removeTask<span class="signature">(task, successFunction<span class="signature-attributes">opt</span>, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Deletes a task.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>task</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The task object to delete.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>successFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Function to execute upon success.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errorFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Function to execute upon failure.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>completeFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Function to execute upon completion.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SmartSwitchJavaScriptAPI.js.html">SmartSwitchJavaScriptAPI.js</a>, <a href="SmartSwitchJavaScriptAPI.js.html#line450">line 450</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="turnPlug"><span class="type-signature"></span>turnPlug<span class="signature">(mac, _operation, successFunction<span class="signature-attributes">opt</span>, errorFunction<span class="signature-attributes">opt</span>, completeFunction<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
@@ -3698,13 +3975,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addTask">addTask</a></li><li><a href="global.html#approvePlug">approvePlug</a></li><li><a href="global.html#changePassword">changePassword</a></li><li><a href="global.html#denyPlug">denyPlug</a></li><li><a href="global.html#getPlug">getPlug</a></li><li><a href="global.html#getPlugSamples">getPlugSamples</a></li><li><a href="global.html#getPlugTasks">getPlugTasks</a></li><li><a href="global.html#getUserPlugs">getUserPlugs</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#Operations">Operations</a></li><li><a href="global.html#Priorities">Priorities</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#TaskTypes">TaskTypes</a></li><li><a href="global.html#turnPlug">turnPlug</a></li><li><a href="global.html#updatePlug">updatePlug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addTask">addTask</a></li><li><a href="global.html#approvePlug">approvePlug</a></li><li><a href="global.html#changePassword">changePassword</a></li><li><a href="global.html#denyPlug">denyPlug</a></li><li><a href="global.html#getPlug">getPlug</a></li><li><a href="global.html#getPlugSamples">getPlugSamples</a></li><li><a href="global.html#getPlugTasks">getPlugTasks</a></li><li><a href="global.html#getUserPlugs">getUserPlugs</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#Operations">Operations</a></li><li><a href="global.html#Priorities">Priorities</a></li><li><a href="global.html#registerUser">registerUser</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#TaskTypes">TaskTypes</a></li><li><a href="global.html#turnPlug">turnPlug</a></li><li><a href="global.html#updatePlug">updatePlug</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Mon Jun 17 2019 18:59:04 GMT+0300 (Israel Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 18 2019 12:20:43 GMT+0300 (Israel Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

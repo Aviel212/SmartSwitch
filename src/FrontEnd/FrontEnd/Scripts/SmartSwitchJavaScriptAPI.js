@@ -65,6 +65,14 @@ const Priorities = {
     Irrelevant: 2
 };
 
+$.ajaxSetup({
+    statusCode: {
+        401: function (jqXHR, textStatus, errorThrown) {
+            parent.logout();
+        }
+    }
+});
+
 /**
  * Registers a new user.
  * @param {string}      username            The new user's username.
@@ -317,26 +325,29 @@ function denyPlug(mac, successFunction, errorFunction, completeFunction) {
 }
 
 /**
- * Gets an array of powerUsageSample JSONs of the recent given number of samples of a given plug, containing their sampleDate, current and voltage properties.
+ * Gets an array of powerUsageSample JSONs of samples between the given dates of a given plug, containing their sampleDate, current and voltage properties.
  * 
- * The array will be ordered by date, most recent first. Each sample is for one minute following its date.
+ * The array will be ordered by date, most recent last. Each sample is for one minute following its date.
  * @param {string}      mac                 The plug's (whose samples are requested) mac address.
- * @param {integer}     amount              The amount of recent samples. A strictly positive number.
+ * @param {Date}        beginDate           The date from which to start getting samples.
+ * @param {Date}        endDate             The date from which to stop getting samples.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  * @example
- * getPlugSamples("BB:DD:C2:23:D6:60", 7, function (samples) {
+ * let d = new Date();
+ * d.setMinutes(d.getMinutes() - 5);
+ * getPlugSamples("BB:DD:C2:23:D6:60", d, new Date(), function (samples) {
  *     for (let i in samples) {
  *         console.log(samples[i]);
  *     }
  * })
  */
-function getPlugSamples(mac, amount, successFunction, errorFunction, completeFunction) {
-    if (mac === undefined || amount === undefined || successFunction === undefined || amount <= 0) return;
+function getPlugSamples(mac, beginDate, endDate, successFunction, errorFunction, completeFunction) {
+    if (mac === undefined || beginDate === undefined || endDate === undefined || successFunction === undefined || endDate < beginDate) return;
 
     let request = {
-        url: samplesApi + "/plug/" + mac + "?amount=" + amount,
+        url: samplesApi + "/plug/" + mac,
         method: "GET",
         headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         success: function (data, textStatus, jqXHR) {
@@ -344,7 +355,12 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
                 data[i].sampleDate = new Date(data[i].sampleDate);
             }
             successFunction(data, textStatus, jqXHR);
-        }
+        },
+        contentType: "application/json",
+        data: JSON.stringify({
+            earlierDate: correctToJSON(beginDate),
+            laterDate: correctToJSON(endDate)
+        })
     };
 
     if (errorFunction !== undefined) request.error = errorFunction;
@@ -354,14 +370,14 @@ function getPlugSamples(mac, amount, successFunction, errorFunction, completeFun
 }
 
 /**
- * Gets an array of task JSONs of all tasks of a given plug, containing their operation, deviceMac, taskType, repeatEvery and startDate.
+ * Gets an array of task JSONs of all tasks of a given plug, containing their taskId, operation, deviceMac, taskType, repeatEvery and startDate.
  * @param {string}      mac                 The plug's (whose tasks are requested) mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
  */
 function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
-    if (mac === undefined || amount === undefined || successFunction === undefined || amount <= 0) return;
+    if (mac === undefined || successFunction === undefined) return;
 
     let request = {
         url: tasksApi + "/plug/" + mac,
@@ -383,7 +399,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
 
 
 /**
- * Adds a new task. Task is an object with the following properties: operation, deviceMac, taskType, repeatEvery and startDate.
+ * Adds a new task. Task is an object with the following properties: taskId, operation, deviceMac, taskType, repeatEvery and startDate.
  * @param {object}      task                The new task object.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -423,6 +439,29 @@ function addTask(task, successFunction, errorFunction, completeFunction) {
         headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         contentType: "application/json",
         data: JSON.stringify(taskToSend)
+    };
+
+    if (successFunction !== undefined) request.success = successFunction;
+    if (errorFunction !== undefined) request.error = errorFunction;
+    if (completeFunction !== undefined) request.complete = completeFunction;
+
+    $.ajax(request);
+}
+
+/**
+ * Deletes a task.
+ * @param {object}      task                The task object to delete.
+ * @param {function=}   successFunction     Function to execute upon success.
+ * @param {function=}   errorFunction       Function to execute upon failure.
+ * @param {function=}   completeFunction    Function to execute upon completion.
+ */
+function removeTask(task, successFunction, errorFunction, completeFunction) {
+    if (task === undefined) return;
+
+    let request = {
+        url: tasksApi + "/" + task.taskId,
+        method: "DELETE",
+        headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
     };
 
     if (successFunction !== undefined) request.success = successFunction;

@@ -253,6 +253,7 @@ void handlePost() {
 
   // query server for available wifi
   if (server.hasArg("give-wifi-networks")) {
+    readyToConnectToWebsocketsServer = false;
     Serial.println("giving wifi networks (scanning)");
     int networksAmount = WiFi.scanNetworks();
     String str = "[\"";
@@ -275,8 +276,6 @@ void handlePost() {
 
   // tell the device to connect to a given wifi
   if (server.hasArg("connect-to-network")) {
-    WiFi.disconnect();
-    Serial.println("Disconnected");
     WiFi.mode(WIFI_AP_STA);
     Serial.print("received ssid: ");
     Serial.println(server.arg("ssid"));

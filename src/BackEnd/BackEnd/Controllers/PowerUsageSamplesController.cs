@@ -30,9 +30,9 @@ namespace BackEnd.Controllers
             _currentUsername = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        // GET: api/PowerUsageSamples/plug/DC:DD:C2:23:D6:60?amount=20
+        // GET: api/PowerUsageSamples/plug/DC:DD:C2:23:D6:60
         [HttpGet("plug/{mac}")]
-        public async Task<ActionResult<IEnumerable<PowerUsageSampleDto>>> GetPowerUsageSamples(string mac, [FromQuery]int amount)
+        public async Task<ActionResult<IEnumerable<PowerUsageSampleDto>>> GetPowerUsageSamples(string mac, [FromBody] DateRangeDto dateRange)
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +44,9 @@ namespace BackEnd.Controllers
 
             if (UserOwnershipValidator.IsNotValidated(_currentUsername, plug, _context)) return Unauthorized(Error.UnauthorizedOwner);
 
-            return Ok(_mapper.Map<List<PowerUsageSampleDto>>(plug.Samples.OrderByDescending(x => x.SampleDate).Take(amount)));
+            return Ok(_mapper.Map<List<PowerUsageSampleDto>>(plug.Samples
+                .Where(s => s.SampleDate >= dateRange.EarlierDate && s.SampleDate <= dateRange.LaterDate)
+                .OrderBy(s => s.SampleDate)));
         }
     }
 }
