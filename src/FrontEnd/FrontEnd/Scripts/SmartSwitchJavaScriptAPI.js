@@ -66,8 +66,8 @@ const Priorities = {
 };
 
 $.ajaxSetup({
-    error: function (jqXHR, textStatus, errorThrown) {
-        if (jqXHR.status == 401) {
+    statusCode: {
+        401: function (jqXHR, textStatus, errorThrown) {
             parent.logout();
         }
     }
@@ -336,7 +336,7 @@ function denyPlug(mac, successFunction, errorFunction, completeFunction) {
  * @param {function=}   completeFunction    Function to execute upon completion.
  * @example
  * let d = new Date();
- * d.setMinutes(d.getMinutes() + 5);
+ * d.setMinutes(d.getMinutes() - 5);
  * getPlugSamples("BB:DD:C2:23:D6:60", d, new Date(), function (samples) {
  *     for (let i in samples) {
  *         console.log(samples[i]);
