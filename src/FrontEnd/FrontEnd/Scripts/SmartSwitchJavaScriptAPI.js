@@ -1,5 +1,6 @@
 ﻿// requires jQuery
-const server = "https://backend.conveyor.cloud/api";
+//const server = "https://backend.conveyor.cloud/api";
+const server = "http://localhost:56460/api";
 const usersApi = server + "/users";
 const plugsApi = server + "/plugs";
 const samplesApi = server + "/powerusagesamples";
@@ -64,6 +65,14 @@ const Priorities = {
     * */
     Irrelevant: 2
 };
+
+$.ajaxSetup({
+    error: function (jqXHR, textStatus, errorThrown) {
+        if (jqXHR.status == 401) {
+            parent.logout();
+        }
+    }
+});
 
 /**
  * Registers a new user.
