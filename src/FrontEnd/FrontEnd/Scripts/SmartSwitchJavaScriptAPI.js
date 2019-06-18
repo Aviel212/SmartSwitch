@@ -65,6 +65,14 @@ const Priorities = {
     Irrelevant: 2
 };
 
+$.ajaxSetup({
+    error: function (jqXHR, textStatus, errorThrown) {
+        if (jqXHR.status == 401) {
+            parent.logout();
+        }
+    }
+});
+
 /**
  * Registers a new user.
  * @param {string}      username            The new user's username.

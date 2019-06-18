@@ -83,7 +83,8 @@ namespace BackEnd
                     ValidateAudience = false,
                     //ValidAudience = "http://oec.com",
                     //ValidIssuer = "http://oec.com",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey")),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
