@@ -16,10 +16,10 @@
         <h4><u>Timing Settings of device:</u></h4>
         <table id="main-table">
             <tr>
-                <td><p>Description</p></td>
-                <td><p>Status</p></td>
-                <td><p>start date</p></td>
-                <td><p>Cycle</p></td>
+                <td><p>Description   </p></td>
+                <td><p>Status   </p></td>
+                <td><p>start date   </p></td>
+                <td><p>Cycle   </p></td>
                 <td><p>Remove button</p></td>
             </tr>
         </table>
@@ -54,6 +54,10 @@
                     <td><p>repeat time:</p></td>
                     <td>
                         <input type="number" name="time-added" disabled id="timeCycle" />
+                    </td>
+                    <td>
+                        <input type="checkbox" name="minuteChoiceA"id="daychoice" value="day" onclick="decideMinuteA()">day<br>
+                        <input type="checkbox" name="minuteChoiceB"id="hourchoice" value="hour" onclick="decideMinuteB()">hour<br>
                     </td>
                 </tr>
             </table>
@@ -114,7 +118,7 @@
 
             let $nameText = $("<p>");
             let $statusText = $("<p>");
-            let $timetext = $("<p>");
+            let $timeText = $("<p>");
             let $cycleText = $("<p>");
             let $removeBtn = $("<input>").prop({ "type": "button", "value": "remove" });
             
@@ -122,7 +126,7 @@
             $removeBtn.addClass('w3-red');
             $removeBtn.addClass('w3-round');
 
-            $nameText.text($("#description").val());//problem name is nickname or description?
+            $nameText.text($currentTask.description);//?!!!!!!
             $nameTD.append($nameText);//
 
             if ($currentTask.operation == Operations.TurnOn)
@@ -133,17 +137,18 @@
 
             $statusTD.append($statusText);
 
-
+            $timeText.text(formatDateTime($currentTask.startDate));//getting the start date from current task
+            $timeTD.append($timeText);
 
             if ($currentTask.taskType == TaskTypes.Repeated) {
                 $cycleText.text('periodic');
-                $timetext.text(formatDate($("#time-Add")));//need to decide what it is
-                $timeTD.append($timetext);///
+               // $timetext.text(formatDate($("#time-Add")));//need to decide what it is
+               // $timeTD.append($timetext);///
             }
             else {
                 $cycleText.text('one time');
-                $timetext.text('----');//need to check
-                $timeTD.append($timetext);///
+               // $timetext.text('----');//need to check
+               // $timeTD.append($timetext);///
             }
 
             $cycleTD.append($cycleText);
@@ -155,15 +160,7 @@
             $currentTR.append($cycleTD);
             $currentTR.append($buttonTD);
             $table.append($currentTR);
-            //$table.append(`<tr>             will fuck up 
-            //        <td>${$nameText}</td>
-            //        <td>${$statusText}</td>
-            //        <td>${$cycleText}</td>
-            //        <td>${$timetext}</td>
-            //        <td>${$removeBtn}</td>
-            //    </tr>`);
-
-            //getting popup ready for next use
+            
             cleanSlatePopUp();
 
 
@@ -183,30 +180,41 @@
         }
         //creates a new task according to popUp results 
         function addSetting() {
-
+            let repeatMinute;//var for knowing repeated time of task
             let operationString = $("input[name='op']:checked").val();
             let operationToSend;
             if (operationString === "TurnOn") operationToSend = Operations.TurnOn;
             else operationToSend = Operations.TurnOff;
 
-            let taskTypeString = $("input[name='cycle']:checked").val();
+            let desc = $("#description").val();
+
+            let taskTypeString = $("input[name='cycleBox']:checked").val();
             let taskTypeToSend;
-            if (taskTypeString === "Repeated") taskTypeToSend = taskTypes.Repeated;
-            else taskTypeToSend = taskTypes.OneTime;
+            if (taskTypeString === "Repeated") taskTypeToSend = TaskTypes.Repeated;
+            else taskTypeToSend = TaskTypes.OneTime;
 
             let newTask;
             //if the new task is a periodic type
-            if ($("input[name='cycle']:checked")) {
-                let time = $("#time-Add");
-                let hour = time.getHours() <= 9 ? '0' + time.getHours() : time.getHours();
-                let minute = time.getMinutes() <= 9 ? '0' + time.getMinutes() : time.getMinutes();
+            if ($("input[name='cycleBox']:checked").length > 0) {
+                if ($('#hourchoice').is(':checked'))
+                    repeatMinute = 60;
+                else
+                    if ($('#daychoice').is(':checked'))
+                        repeatMinute = 24*60;
+                    else
+                        repeatMinute = $("#timeCycle").val();
+
+                let temp = new Date($("#dateTime").val());
+                console.log($("#dateTime").val());
+
                 //creating the new task with information gathered from popUp
                 newTask = {
                     operation: operationToSend,
                     deviceMac: $myPlugMac,
+                    description: desc,
                     taskType: taskTypeToSend,
-                    repeatEvery: parseInt(minute) * parseInt(hour),//need to check
-                    startDate: new Date()
+                    repeatEvery: repeatMinute,//!!!!!!!!!
+                    startDate: new Date($("#dateTime").val())//problem- need to transfer data from #dateTime
                 }
             }
             //else the new task is a one time type
@@ -214,11 +222,13 @@
                 newTask = {
                     operation: operationToSend,
                     deviceMac: $myPlugMac,
+                    description: desc,
                     taskType: taskTypeToSend,
-                    startDate: new Date()
+                    repeatEvery: 0,
+                    startDate: new Date($("#dateTime").val())//problem
                 }
 
-
+            console.log(newTask);
             //adds the new task to database and adds it to client side
             addTask(newTask, function () {
                 createRow(newTask);
@@ -263,15 +273,42 @@
             else {
                 $("#timeCycle").prop("disabled", true);
                 $("#timeTr").hide();
+                $('#daychoice').prop('checked', false);
+                $('#hourchoice').prop('checked', false);
+                $("#timeCycle").prop('disabled', false);
             }
 
         }
+        function decideMinuteA() {
+            if ($('#daychoice').is(':checked') && $('#hourchoice').is(':checked'))
+                $('#daychoice').prop('checked', false);
+            else
+                if ($('#daychoice').is(':checked')) {
+                $("#timeCycle").prop('disabled', true);
+            }
+                else
+                    $("#timeCycle").prop('disabled', false);
+            
+        }
+        function decideMinuteB() {
+            if ($('#daychoice').is(':checked') && $('#hourchoice').is(':checked'))
+                $('#daychoice').prop('checked', false);
+            else
+                if ($('#hourchoice').is(':checked')) {
+                    $("#timeCycle").prop('disabled', true);
+                }
+                else
+                    $("#timeCycle").prop('disabled', false);
+        }
+
 
         function cleanSlatePopUp() {
             $("#description").val('');
             $("input[type='radio']").prop("checked", false);
             $("#cycle").prop("checked", false);
             $("#timeTr").hide();
+            $('#daychoice').prop('checked', false);
+            $('#hourchoice').prop('checked', false);
         }
         //return a date-time string 
         function formatDateTime(date) {
