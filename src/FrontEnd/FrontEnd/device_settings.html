@@ -50,11 +50,14 @@
 
 
     <script>
-        let username, myPlugMac,myPlug;
+        let username, myPlugMac, myPlug;/* variables for easy use during functions*/
+
+
         $(document).ready(function () {           
-            username = sessionStorage.currentSmartSwitchUser;//sessionStorage.currentSmartSwitchUser
+            username = sessionStorage.currentSmartSwitchUser;  //linking the variables to the client
             myPlugMac = sessionStorage.currentMac;
 
+            /*getting the current plug information and displaying it for the client*/
             getPlug(myPlugMac, function (plug) {
                 myPlug = plug;
                 let $currentNickname = myPlug.nickname;
@@ -67,30 +70,25 @@
                 else
                     $("input[type='radio'][id='noness']").attr("checked", true);
 
-
-
             })
 
-
-
-          
-
         });
-
+        /*function returns a date string*/
         function formatDate(date) {
             let month = (date.getMonth() + 1) <= 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
             let day = date.getDay() <= 9 ? '0' + date.getDay() : date.getDay();
             return date.getFullYear() + '-' + month + '-' + day;
         }
-
+        /*removes plug for the database and removes it as an option for the client as a future plug */
         function DeleteDevice() {
             denyPlug(myPlug.mac, function () {
-                myPlug.remove();//delete device from user.plugs
-                parent.openPage("PlugMainViewer");//go to PlugMainViewer page after deleting
+                myPlug.remove();                    //delete device from user.plugs
+                parent.openPage("PlugMainViewer");  //go to PlugMainViewer page after deleting
             })
 
            
         }
+        /*this function deals with changing the cuurent properties of the plug to the ones the client chooses */
         function ChangeSettings() {           
 
             let priorityString = $("input[name='prio']:checked").val();
@@ -98,13 +96,14 @@
             if (priorityString === "Essential") priorityToSend = Priorities.Essential;
             else priorityToSend = Priorities.Nonessential;
 
+            /*defining the new properties for the plug */
             let plugProperties = {
                 "mac": myPlug.mac,
                 "nickname": $("#Nickname").val(),
                 "priority": priorityToSend
             };
 
-
+            /*updating the plug's properties in the database and displaying them for the client */
             updatePlug(plugProperties, function () {
                 myPlug.nickname = $("#Nickname").val();
                 $("#Nickname").attr("placeholder", $("#Nickname").val())

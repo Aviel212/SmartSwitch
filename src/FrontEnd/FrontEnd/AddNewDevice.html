@@ -43,43 +43,44 @@
         </div>
     </div>
     <script>
-        let myPlugs;
-        let $myPopUp;
-        let $main;
-        let $notifier;
-        let $rowToDelete;
-        let locationHref = $('#reloader').attr("href");
+        let myPlugs;                                    //variable for linking the client's array of plugs
+        let $myPopUp;                                   //variable easy use of the popUp
+        let $main;                                      //variable easy use of the main div
+        let $notifier;                                  //variable for linking the client's choice of approved plug
+        let $rowToDelete;                               //variable for linking the client's choice of row containing said plug
+        let locationHref = $('#reloader').attr("href"); //variable for removing and placing the refresh button functionallity
 
         $(document).ready(function () {
             
       
-            let username = sessionStorage.currentSmartSwitchUser; //"avi";
+            let username = sessionStorage.currentSmartSwitchUser;
+            /*creating and appending a waiting gif */
             let $loadingGif = $("<img>").prop({
                 'src': 'images/loadingGif.gif',
                 'width': parseInt($("#main-div").css("width")) / 25
             });
             $("#main-div").append($loadingGif);
             getUserPlugs(username, function (plugs) {
-                $loadingGif.remove();
+                $loadingGif.remove();                         //removing waiting gif
                 myPlugs = plugs;
                 $main = $("#main-div");
                 $main.css("position", "relative");
                 $myPopUp = $("#myPopUp-div");
 
-                $myPopUp.css("z-index", "2000");
+                $myPopUp.css("z-index", "2000");              //defining the popUp properties
                 $myPopUp.css('border', '3px solid black');
                 $myPopUp.css("background-color", "yellow");
                 $myPopUp.css({ top: 40, left: 50, position: 'absolute' });
                 $myPopUp.hide();
 
-                //getting all available mac addresses and appending them to main div
+                /*getting all available mac addresses and appending them to main div*/
                 drawMacAddress();
 
             })
            
             
         });
-
+        /*getting the array of available plugs for the client ,that are yet to be approved */
         function drawMacAddress() {
             for (let i = 0; i < myPlugs.length; i++) {
                 if (myPlugs[i].approved == false) {
@@ -91,6 +92,7 @@
 
 
         }
+        /*displaying each unapproved plug to the client*/
         function insertnotApproved(currentPlug) {
             let $currentTR = $("<tr>");
             let $dateTD = $("<td>");
@@ -115,13 +117,13 @@
             $reject.addClass('w3-red');
             $reject.addClass('w3-round');
 
-            $accept.on('click', function (e) {//my pop up shows up to let user enter nickname and priority
-                $myPopUp.css({ top: 40, left: 50, position: 'absolute' });//top and left will need to be discussed
+            $accept.on('click', function (e) {                                 //my popUp shows up to let client enter nickname and priority
+                $myPopUp.css({ top: 40, left: 50, position: 'absolute' });     //temporary coordinates
           
-                $("input[type='button']").prop("disabled", true); //disable all buttons
+                $("input[type='button']").prop("disabled", true);              //disable all buttons
                 $("#myPopUp-div input[type='button']").prop("disabled", false);//leave the buttons in the hidden div working
-                $notifier = currentPlug//copying the current chosen mac address
-                $rowToDelete = $currentTR;
+                $notifier = currentPlug                                        //copying the current chosen mac address
+                $rowToDelete = $currentTR;                                     //linking the row in case of removing it by client choice to approve said plug
                 
                 $("#reloader").removeAttr('href');
 
@@ -139,7 +141,7 @@
 
             });
 
-            let $buttonTable = $("<table>");//creating a place for the buttons
+            let $buttonTable = $("<table>");                             //creating a place for the buttons
             let $buttonTR = $("<tr>");
             let $Atd = $("<td>");
             let $Btd = $("<td>");
@@ -157,6 +159,7 @@
 
 
         }
+        /*function returns a date-time string*/
         function formatDateTime(date) {
             let month = (date.getMonth() + 1) <= 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
             let day = date.getDay() <= 9 ? '0' + date.getDay() : date.getDay();
@@ -166,7 +169,7 @@
         }
 
 
-        //removing PopUp if the client regrets opening it
+        /*removing PopUp if the client regrets opening it*/
         function cancelPopUp() {
             $myPopUp.hide();
             $("input[type='button']").prop("disabled", false);
@@ -175,14 +178,15 @@
 
 
         }
+        /*this function updates the client side and server side by adding the plug to the approved list of plugs and giving it its properties */
         function approveContent() {
-            $myPopUp.hide();
-            $("input[type='button']").prop("disabled", false);
-            $rowToDelete.remove();
+            $myPopUp.hide();                                  //removing the popUp
+            $("input[type='button']").prop("disabled", false);//returning functionality to all buttons
+            $rowToDelete.remove();                            //removing said plug from the displayed unapproved plugs
 
-            $("#reloader").attr("href", locationHref);
+            $("#reloader").attr("href", locationHref);        //returning functionality to refresh button
 
-
+            /*accessing the database and updating said plug approval property*/
             approvePlug($notifier.mac, function () {
                 $notifier.Approved = true;
             });
@@ -192,25 +196,21 @@
             if (priorityString === "Essential") priorityToSend = Priorities.Essential;
             else priorityToSend = Priorities.Nonessential;
 
+             /*defining the new properties for the plug */
             let plugProperties = {
                 "mac": $notifier.mac,
                 "nickname": $("#Nickname").val(),
                 "priority": priorityToSend
             };
 
-
+             /*updating the plug's properties in the database  */
             updatePlug(plugProperties, function () {
                 $notifier.nickname = $("#Nickname").val();
                 $notifier.priority = $("input[name='prio']:checked").val();
             })
-                       
            
         }
-
-
-
-
-
+        
     </script>
 </body>
 </html>
