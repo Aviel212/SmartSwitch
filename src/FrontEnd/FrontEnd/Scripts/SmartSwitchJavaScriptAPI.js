@@ -410,6 +410,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
  *     operation: Operations.TurnOn,
  *     deviceMac: "BC:DD:C2:23:D6:69",
  *     taskType: TaskTypes.Repeated,
+ *     description: "Turn on every day",
  *     repeatEvery: 60 * 24,
  *     startDate: new Date()
  * }
@@ -420,6 +421,7 @@ function getPlugTasks(mac, successFunction, errorFunction, completeFunction) {
  * let newTask = {
  *     operation: Operations.TurnOff,
  *     deviceMac: "BC:DD:C2:28:D6:60",
+ *     description: "Turn off in 5 minutes",
  *     taskType: TaskTypes.OneTime,
  *     startDate: d
  * }
