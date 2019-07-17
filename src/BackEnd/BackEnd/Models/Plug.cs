@@ -26,6 +26,7 @@ namespace BackEnd.Models
         public Priorities Priority { get; set; }
         public DateTime AddedAt { get; set; }
         public string IconUrl { get; set; }
+        public bool IsDeleted { get; set; }
         public virtual List<Task> Tasks { get; set; }
         public virtual List<PowerUsageSample> Samples { get; set; }
 
@@ -40,6 +41,7 @@ namespace BackEnd.Models
             Mac = mac;
             IsOn = false;
             Approved = false;
+            IsDeleted = false;
             Priority = Priorities.Irrelevant;
             AddedAt = DateTime.Now;
             Tasks = new List<Task>();

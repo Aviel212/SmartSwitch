@@ -61,7 +61,7 @@ namespace BackEnd.Controllers
 
             if (UserOwnershipValidator.IsNotValidated(_currentUsername, user)) return Unauthorized(Error.UnauthorizedOwner);
 
-            return Ok(_mapper.Map<List<PlugDto>>(user.Plugs));
+            return Ok(_mapper.Map<List<PlugDto>>(user.Plugs.Where(p => p.IsDeleted == false)));
         }
 
         // PUT: api/Plugs
@@ -107,7 +107,11 @@ namespace BackEnd.Controllers
 
             if (UserOwnershipValidator.IsNotValidated(_currentUsername, plug, _context)) return Unauthorized(Error.UnauthorizedOwner);
 
-            if (approved != null) plug.Approved = (bool)approved;
+            if (approved != null)
+            {
+                plug.Approved = (bool)approved;
+                if (!plug.Approved) plug.IsDeleted = true;
+            }
 
             await _context.SaveChangesAsync();
 
@@ -124,28 +128,6 @@ namespace BackEnd.Controllers
             }
             
             return NoContent();
-        }
-
-        // TODO - add IsDeleted?
-        // DELETE: api/Plugs/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlug([FromRoute] string id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var plug = await _context.Plugs.FindAsync(id);
-            if (plug == null)
-            {
-                return NotFound();
-            }
-
-            _context.Plugs.Remove(plug);
-            await _context.SaveChangesAsync();
-
-            return Ok(plug);
         }
 
         private bool PlugExists(string id)
