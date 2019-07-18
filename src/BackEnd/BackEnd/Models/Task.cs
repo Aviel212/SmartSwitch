@@ -22,6 +22,7 @@ namespace BackEnd.Models
         public TaskTypes TaskType { get; set; }
         public int RepeatEvery { get; set; }
         public DateTime StartDate { get; set; }
+        public string JobId { get; set; }
 
         public Task() { }
 
@@ -57,18 +58,25 @@ namespace BackEnd.Models
             switch (TaskType)
             {
                 case TaskTypes.OneTime:
-                    BackgroundJob.Schedule(() => Execute(Operation, DeviceMac), StartDate - DateTime.Now);
+                    JobId = BackgroundJob.Schedule(() => Execute(Operation, DeviceMac), StartDate - DateTime.Now);
                     break;
                 case TaskTypes.Repeated:
-                    BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(Operation, DeviceMac, RepeatEvery), StartDate - DateTime.Now);
+                    JobId = BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(Operation, DeviceMac, RepeatEvery, TaskId), StartDate - DateTime.Now);
                     break;
             }
         }
 
-        public static void ExecuteAndScheduleNextExecution(Operations operation, string mac, int repeatEvery)
+        public void Delete() => BackgroundJob.Delete(JobId);
+
+        public static void ExecuteAndScheduleNextExecution(Operations operation, string mac, int repeatEvery, int taskId)
         {
             Execute(operation, mac);
-            BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(operation, mac, repeatEvery), TimeSpan.FromMinutes(repeatEvery));
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            {
+                SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                context.Tasks.Find(taskId).JobId = BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(operation, mac, repeatEvery, taskId), TimeSpan.FromMinutes(repeatEvery));
+                context.SaveChangesAsync();
+            }
         }
     }
 }

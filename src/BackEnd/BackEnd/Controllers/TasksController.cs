@@ -87,6 +87,7 @@ namespace BackEnd.Controllers
             if (UserOwnershipValidator.IsNotValidated(_currentUsername, task, _context)) return Unauthorized(Error.UnauthorizedOwner);
 
             _context.Tasks.Remove(task);
+            task.Delete(); // cancel actual Hangfire job
             await _context.SaveChangesAsync();
 
             return Ok(task);
