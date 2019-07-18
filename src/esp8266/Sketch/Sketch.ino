@@ -2,7 +2,6 @@
 
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
-#include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
 #include <WebSocketClient.h> // from https://github.com/morrissinger/ESP8266-Websocket
 #include <FS.h>   // Include the SPIFFS library
@@ -22,11 +21,15 @@ const int muxControl = D0; // multiplexer control line
 const int voltageFromMux = LOW;
 const int currentFromMux = HIGH;
 
-char serverIP[] = "192.168.43.247";
+char serverIP[] = "192.168.1.20";
 const int webSocketsPort = 8181;
 WebSocketClient webSocketClient;
 WiFiClient client; // Use WiFiClient class to create TCP connections
 bool readyToConnectToWebsocketsServer = false;
+
+unsigned long handshakeSuccessAt = 0;
+bool duringConnectionTrial = false;
+const int waitBeforeTryingAgain = 15000;
 
 bool readyToSendSamples = false;
 long lastSample = 0;
@@ -128,9 +131,7 @@ void loop() {
     if (!shouldBlink) digitalWrite(statusLed, LOW);
   }
 
-  /*Serial.println("sample " + String(getVoltage(), 2) + " " + String(getCurrent(), 3));
-    delay(800);
-    digitalWrite(load, !digitalRead(load));*/
+  if (duringConnectionTrial && (millis() - handshakeSuccessAt) >= waitBeforeTryingAgain) connectToWebSocketsServer();
 }
 
 void turnLoad(String state) {
@@ -152,7 +153,7 @@ double getCurrent() {
 
 void startAP() {
   WiFi.softAP("SmartSwitch " + WiFi.macAddress());
-  WiFi.mode(WIFI_AP);
+  WiFi.mode(WIFI_AP_STA);
   shouldBlink = true;
 }
 
@@ -176,6 +177,8 @@ bool connectToWebSocketsServer() {
   webSocketClient.host = serverIP;
   if (webSocketClient.handshake(client)) {
     Serial.println("Handshake successful (websockets)");
+    handshakeSuccessAt = millis();
+    duringConnectionTrial = true;
   } else {
     Serial.println("Handshake failed. (websockets)");
     return false;
@@ -186,6 +189,7 @@ bool connectToWebSocketsServer() {
 
 bool handleWebSocketsLoop() {
   if (client.connected()) {
+    duringConnectionTrial = false;
     String data;
     webSocketClient.getData(data);
     
