@@ -32,7 +32,7 @@
 <body>
     <div id="main-div"> 
         <h4><u>Timing Settings of device:</u></h4>
-        <input type="button" value="Add New Time Setting" class="w3-button w3-blue w3-round" onclick="showPopUp()" />
+        <input type="button" value="Add New Time Setting" class="w3-button w3-blue w3-round" onclick="showPopUp()" disabled id="timeSettingBtn" />
         <table id="main-table">
             <tr id="properties"class="unshow">
                 <th><p>Description   </p></th>
@@ -114,6 +114,7 @@
             getPlugTasks($myPlugMac, function (tasks) {
                 $("th").css("width", "10%");                //setting width of tasks chart for client
                 $("#properties").removeClass("unshow");     //making first row visible for client
+                $("#timeSettingBtn").prop("disabled", false);//allowing client to add a new task with new time setting button
                 $loadingGif.remove();
                 /*loop for adding all valid tasks to client side*/
                 for (let i = 0; i < tasks.length; i++) {
