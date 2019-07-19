@@ -5,13 +5,10 @@
     <title></title>
     <link href="./styles/w3css.css" rel="stylesheet" />
     <script src="Scripts/jquery.js"></script>
-    <!--<script src="./Scripts/SmartSwitchServerInterface.js"></script>-->
     <script src="scripts/SmartSwitchJavaScriptAPI.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Bree+Serif&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="./styles/popup.css">
-    <link rel="stylesheet" type="text/css" href="./styles/fontawesome.min.css">
-
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         img {
             width: 50px;
@@ -39,7 +36,7 @@
 
         body {
             font-family: 'Bree Serif', serif;
-            margin-top: 50px;
+            margin-top:50px;
         }
 
         #plugsTableContainer {
@@ -57,7 +54,6 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
         #plugs_tbl {
             table-layout: fixed;
         }
@@ -69,8 +65,9 @@
             background-color: slategray;
             opacity: .7;
             z-index: 2;
-            pointer-events: none;
+            pointer-events:none;
         }
+
     </style>
 
 </head>
@@ -97,7 +94,10 @@
     </div>
 
     <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:80%">
-        <button onclick="readData()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:10%"><i style="font-size:24px" class="fa">&#xf021;</i></button>
+        <button onclick="readData()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:10%">
+            <i class="fa fa-refresh"></i>
+
+        </button>
         <!--<button onclick="forTesting()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">For Testing</button>-->
     </div>
 
