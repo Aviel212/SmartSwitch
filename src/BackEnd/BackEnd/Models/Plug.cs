@@ -51,20 +51,16 @@ namespace BackEnd.Models
         // turn the device on
         public void TurnOn()
         {
-            try
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
             {
-                using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+                if (scope.Resolve<IWebsocketsServer>().TurnOn(Mac))
                 {
-                    if (scope.Resolve<IWebsocketsServer>().TurnOn(Mac))
-                    {
-                        IsOn = true;
-                        SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
-                        context.Entry(this).State = EntityState.Modified;
-                        context.SaveChangesAsync();
-                    }
+                    IsOn = true;
+                    SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                    context.Entry(this).State = EntityState.Modified;
+                    context.SaveChangesAsync();
                 }
             }
-            catch (PlugNotConnectedException e) { throw e; }
         }
 
         // turn the device off
@@ -72,17 +68,41 @@ namespace BackEnd.Models
         {
             using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
             {
-                try
+                if (scope.Resolve<IWebsocketsServer>().TurnOff(Mac))
                 {
-                    if (scope.Resolve<IWebsocketsServer>().TurnOff(Mac))
-                    {
-                        IsOn = false;
-                        SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
-                        context.Entry(this).State = EntityState.Modified;
-                        context.SaveChangesAsync();
-                    }
+                    IsOn = false;
+                    SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                    context.Entry(this).State = EntityState.Modified;
+                    context.SaveChangesAsync();
                 }
-                catch (PlugNotConnectedException e) { throw e; }
+            }
+        }
+
+        // turn the device on
+        public void TurnOn(SmartSwitchDbContext context)
+        {
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            {
+                if (scope.Resolve<IWebsocketsServer>().TurnOn(Mac))
+                {
+                    IsOn = true;
+                    context.Entry(this).State = EntityState.Modified;
+                    context.SaveChangesAsync();
+                }
+            }
+        }
+
+        // turn the device off
+        public void TurnOff(SmartSwitchDbContext context)
+        {
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            {
+                if (scope.Resolve<IWebsocketsServer>().TurnOff(Mac))
+                {
+                    IsOn = false;
+                    context.Entry(this).State = EntityState.Modified;
+                    context.SaveChangesAsync();
+                }
             }
         }
 

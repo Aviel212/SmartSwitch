@@ -53,6 +53,19 @@ namespace BackEnd.Models
             }
         }
 
+        public static void Execute(Operations op, Plug device, SmartSwitchDbContext context)
+        {
+            switch (op)
+            {
+                case Operations.TurnOn:
+                    device.TurnOn(context);
+                    break;
+                case Operations.TurnOff:
+                    device.TurnOff(context);
+                    break;
+            }
+        }
+
         public void Schedule()
         {
             switch (TaskType)
