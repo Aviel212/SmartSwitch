@@ -9,6 +9,9 @@
     <script src="scripts/SmartSwitchJavaScriptAPI.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Bree+Serif&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="./styles/popup.css">
+    <link rel="stylesheet" type="text/css" href="./styles/fontawesome.min.css">
+
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
     <style>
         img {
             width: 50px;
@@ -36,7 +39,7 @@
 
         body {
             font-family: 'Bree Serif', serif;
-            margin-top:50px;
+            margin-top: 50px;
         }
 
         #plugsTableContainer {
@@ -54,19 +57,26 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         #plugs_tbl {
             table-layout: fixed;
+        }
+
+        .myOverlay {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-color: slategray;
+            opacity: .7;
+            z-index: 2;
+            pointer-events: none;
         }
     </style>
 
 </head>
 <body>
-    <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:100px">
-        <button onclick="refresh()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:20%">Refresh</button>
-        <!--<button onclick="modifyMode()" class="w3-bar-item w3-button w3-teal w3-ripple" style="width:20%">Edit Device</button>-->
-        <!--<button onclick="forTesting()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">For Testing</button>-->
-        <!--<button onclick="saveChanges()" class="w3-bar-item w3-button w3-gray w3-ripple" style="width:20%">Save</button>-->
-    </div>
+
+
 
     <br />
 
@@ -86,21 +96,27 @@
         </table>
     </div>
 
-
+    <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:80%">
+        <button onclick="readData()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:10%"><i style="font-size:24px" class="fa">&#xf021;</i></button>
+        <!--<button onclick="forTesting()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">For Testing</button>-->
+    </div>
 
 
     <div id="test"></div>
     <script>
+
+
         // refresh() => readData()
         // readData() function: "avi" => sessionstorage.userName
         // loadPlugsIntoTable(), icon init need to fix to url
         // after updating plug state on/off do we need to wait until db is updated before we make reload table?
-        // keep working on popup modal
 
         function forTesting() {
         }
 
-        $(document).ready(readData());
+        $(document).ready(function () {
+            readData();
+        });
 
         //#region Read Data Into Table
         function readData() {
@@ -108,6 +124,7 @@
         }
 
         function loadPlugsIntoTable(data) {
+            loadingBackground(true);
             // init table
             $tableBody = $("#plugs_tbl tbody");
             $tableBody.empty();
@@ -136,8 +153,21 @@
                 $tableBody.append($tr);
             }
             addTableFeatures()
+            loadingBackground(false);
         }
 
+        function loadingBackground(state) {
+            if (state === true) {
+                let $loadingGif = $("<div>").css({ position: "absolute", top: "15%", left: "45%", "z-index": "3", display: "none" }).prependTo("body");
+                $loadingGif.append($("<img>", { src: "./images/loadingGif2.gif", width: "200px", height: "auto" }))
+                $("body").addClass("myOverlay");
+                $loadingGif.show();
+            }
+            else if (state === false) {
+                $("body").removeClass("myOverlay");
+                $("body").find("div").eq(0).remove();
+            }
+        }
         //#endregion
 
         //#region Table Data Initializations
@@ -170,60 +200,25 @@
             return $("<div>").attr({ class: "circle w3-circle w3-" + color });
         }
 
-        //<button onclick="document.getElementById('id01').style.display='block'" >Fade In Modal</button>
-
-        //    <div id="id01" class="w3-modal w3-animate-opacity">
-        //        <div class="w3-modal-content w3-card-4">
-        //            <header class="w3-container w3-teal">
-
-        //                <span onclick="document.getElementById('id01').style.display='none'"
-        //                    class="w3-button w3-large w3-display-topright">&times;</span>
-        //            </header>
-
-        //            <div class="w3-container">
-        //                <p>Some text..</p>
-        //                <p>Some text..</p>
-        //            </div>
-        //        </div>
-        //    </div>
-
-        //var pages_url = ["device_Timing_Summary", "showPowerConsumption", "device_settings"];
-        //var moreOptionsBtnNames = ["Timing Settings", "Power Usage", "Settings"];
-        //function moreOptionsColumn(plug) {
-        //    let $pop1 = $("<div>", { class: "w3-modal w3-animate-opacity" });
-        //    let $pop2 = $("<div>", { class: "w3-modal-content w3-card-4" }).appendTo($pop1);
-        //    let $pop3 = $("<header>", { class: "w3-container w3-teal" }).appendTo($pop2);
-        //    let $pop4 = $("<span>", {
-        //        class: "w3-button w3-large w3-display-topright", text: "&times;"
-        //    }).click(function () { $pop1.css("display", "none"); }).appendTo($pop3);
-        //    let $pop5 = $("<div>", { class: "w3-container" }).appendTo($pop2);
-
-        //    var $div = $("<div>", { text: "..." }).addClass("popup").on("click", function () {
-        //        $pop1.css("display", "block");
-        //    }).append($pop1);
-        //    for (let i = 0; i < 3; i++) {
-        //        $("<input>", {
-        //            type: "button", class: "w3-button w3-teal w3-ripple", value: moreOptionsBtnNames[i]
-        //        }).appendTo($pop5).on("click", function () {
-        //            if (plug.mac) {
-        //                sessionStorage.setItem("currentMac", plug.mac);
-        //                parent.openPage(pages_url[i]);
-        //            }
-        //        });
-        //    }
-        //    return $div;
-        //}
-         //global data definition
+        //global data definition
         var pages_url = ["device_Timing_Summary", "showPowerConsumption", "device_settings"];
         var moreOptionsBtnNames = ["Timing Settings", "Power Usage", "Settings"];
         function moreOptionsColumn(plug) {
             let $span = $("<span>", { class: "popuptext" });
-            var $div = $("<div>", { text: "..." }).addClass("popup").on("click", function () {
-                $span.toggleClass("show");
+            var $div = $("<div>", { text: "..." }).addClass("popup").on("click", function (e) {
+                $(".show").removeClass("show");
+                e.stopPropagation();        // avoid closing the popup when clicking inside the popup
+                $span.addClass("show");     // show popup
+                setTimeout(function () {    // add click event to body to close the popup after clicking in somwhere else
+                    $("html").click(function (event) {
+                        $span.removeClass("show");
+                        $(this).off(event);
+                    });
+                }, 1)
             }).append($span);
             for (let i = 0; i < 3; i++) {
                 $("<input>", {
-                    type: "button", class: "w3-button w3-teal w3-ripple", value: moreOptionsBtnNames[i], style: "display:inline-block;margin:3px;"
+                    type: "button", class: "w3-button w3-khaki w3-ripple", value: moreOptionsBtnNames[i], style: "display:block;margin:1px auto;"
                 }).appendTo($span).on("click", function () {
                     if (plug.mac) {
                         sessionStorage.setItem("currentMac", plug.mac);
@@ -301,8 +296,10 @@
             element.click(function () {
                 let dataValue = $(this).html();
                 $(this).empty();
-                $("<input>", { type: 'text', value: dataValue }).appendTo($(this)).focus();
-                $(this).off("click");
+                $("<input>", { type: 'text', value: dataValue }).click(function (e) {
+                    e.stopPropagation();
+                }).appendTo($(this)).focus();
+                //$(this).off("click");
             })
             element.focusout(function () {
                 let valueToUpdate = $(this).find('input').val();
@@ -313,19 +310,20 @@
                 updatePlug(plugToUpdate, readData);
                 $(this).empty();
                 $(this).text(valueToUpdate);
-                $(this).off("focusout");
-                addEditTextFeature($(this),plug)
+                //$(this).off("focusout");
+                //addEditTextFeature($(this),plug)
             })
         }
 
         var priority = ["ESSENTIAL", "NONESSENTIAL", "IRRELEVANT"];
         function addChangePriorityFeature(element, plug) {
             element.click(function () {
-                $(this).off("click");
+                //$(this).off("click");
                 let dataValue = $(this).html();
                 $(this).empty();
                 let i = priority.indexOf(dataValue);
-                $("<input>", { type: 'button', value: priority[i] }).click(function () {
+                $("<input>", { type: 'button', value: priority[i] }).click(function (e) {
+                    e.stopPropagation();
                     i = (i + 1) % priority.length;
                     $(this).val(priority[i]);
                 }).appendTo($(this)).focus();
@@ -338,24 +336,24 @@
                     mac: plug.mac,
                     priority: valueToUpdate
                 }
-                $(this).off("focusout");
-                addChangePriorityFeature($(this), plug);
+                updatePlug(plugToUpdate, readData);
+                //$(this).off("focusout");
+                //addChangePriorityFeature($(this), plug);
             })
         }
 
         function addChangeStateFeature(element, plug) {
-            element.click(function () {
-                let $btn = $(this).find('div');
-                //if ($btn.hasClass('w3-red')) {    // plug state button set to off
-                $btn.toggleClass('w3-red', 'w3-green')
-                if ($btn.hasClass('w3-red'))
+            element.find('div').click(function () {
+                $(this).toggleClass('w3-red').toggleClass('w3-green');
+                if ($(this).hasClass('w3-red'))
                     turnPlug(plug.mac, Operations.TurnOff, readData);
-                else if ($btn.hasClass('w3-green'))
+                else if ($(this).hasClass('w3-green'))
                     turnPlug(plug.mac, Operations.TurnOn, readData);
             })
         }
-        //#endregion
+            //#endregion
 
+        //#region OLD CODE
         //var manipulatedPlugs = [];
         //var plugs;
         //var row;
@@ -523,35 +521,18 @@
         //    manipulatedPlugs.add(plug[id - 1]);
         //}
 
-        function priorityToNumber(priority) {
-            priority = priority.toUpperCase();
-            switch (priority) {
-                case "ESSENTIAL":
-                    return 0;
-                case "NONESSENTIAL":
-                    return 1;
-                case "IRRELEVANT":
-                    return 2;
-            }
-        }
-
-        //function approvedText(approved) {
-        //    let $input = $("<input>");
-        //    $input.addClass("w3-check").attr({ type: "checkbox" }).attr("disabled", "");
-        //    if (approved === true)
-        //        $input.attr("checked", "checked");
-        //    else
-        //        $input.attr("checked", false);
-        //    return $input;
+        //function priorityToNumber(priority) {
+        //    priority = priority.toUpperCase();
+        //    switch (priority) {
+        //        case "ESSENTIAL":
+        //            return 0;
+        //        case "NONESSENTIAL":
+        //            return 1;
+        //        case "IRRELEVANT":
+        //            return 2;
+        //    }
         //}
-
-
-
-
-
-
-
-
+        //#endregion
     </script>
 </body>
 </html>
