@@ -85,7 +85,7 @@
                     <th>Icon</th>
                     <th>Name</th>
                     <th>Priority</th>
-                    <th>IsOn</th>
+                    <th>State</th>
                     <th>Options</th>
                 </tr>
             </thead>
@@ -93,7 +93,7 @@
         </table>
     </div>
 
-    <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:80%">
+    <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:150px">
         <button onclick="readData()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:10%">
             <i class="fa fa-refresh"></i>
 
@@ -116,15 +116,16 @@
 
         $(document).ready(function () {
             readData();
+            sortByTable();
         });
 
         //#region Read Data Into Table
         function readData() {
+            loadingBackground(true);
             plugs = getUserPlugs("avi", loadPlugsIntoTable);
         }
 
         function loadPlugsIntoTable(data) {
-            loadingBackground(true);
             // init table
             $tableBody = $("#plugs_tbl tbody");
             $tableBody.empty();
@@ -235,7 +236,6 @@
         //######################################################################################
         function addTableFeatures() {
             fadeRows();
-            sortByTable();
         }
 
         // style function fading rows on hover
@@ -245,9 +245,12 @@
                 $(this).css("cursor", "pointer");
                 $rows.addClass('blur');
                 $(this).removeClass('blur');
+                if($(this).is('img'))
+                    $(this).parent().parent().removeClass('blur');
             },
                 function (e) {
-                    $rows.removeClass('blur');
+                    if (!$(this).is('img'))
+                        $rows.removeClass('blur');
                 });
         }
 
@@ -303,10 +306,12 @@
             })
             element.focusout(function () {
                 let valueToUpdate = $(this).find('input').val();
-                let plugToUpdate = {
-                    mac: plug.mac,
-                    nickname: valueToUpdate
-                }
+                let plugToUpdate = plug;
+                plugToUpdate.nickname = valueToUpdate;
+                //let plugToUpdate = {
+                //    mac: plug.mac,
+                //    nickname: valueToUpdate
+                //}
                 updatePlug(plugToUpdate, readData);
                 $(this).empty();
                 $(this).text(valueToUpdate);
@@ -332,10 +337,12 @@
                 let valueToUpdate = $(this).find('input').val();
                 $(this).empty();
                 $(this).text(valueToUpdate);
-                let plugToUpdate = {
-                    mac: plug.mac,
-                    priority: valueToUpdate
-                }
+                let plugToUpdate = plug;
+                plugToUpdate.priority = valueToUpdate;
+                //let plugToUpdate = {
+                //    mac: plug.mac,
+                //    priority: valueToUpdate
+                //}
                 updatePlug(plugToUpdate, readData);
                 //$(this).off("focusout");
                 //addChangePriorityFeature($(this), plug);
