@@ -31,8 +31,8 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/PowerUsageSamples/plug/DC:DD:C2:23:D6:60
-        [HttpGet("plug/{mac}")]
-        public async Task<ActionResult<IEnumerable<PowerUsageSampleDto>>> GetPowerUsageSamples(string mac, [FromBody] DateRangeDto dateRange)
+        [HttpGet("plug")]
+        public async Task<ActionResult<IEnumerable<PowerUsageSampleDto>>> GetPowerUsageSamples([FromQuery] string mac, [FromBody] DateRangeDto dateRange)
         {
             if (!ModelState.IsValid)
             {

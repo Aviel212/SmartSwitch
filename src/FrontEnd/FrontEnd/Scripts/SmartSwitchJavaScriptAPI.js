@@ -347,7 +347,7 @@ function getPlugSamples(mac, beginDate, endDate, successFunction, errorFunction,
     if (mac === undefined || beginDate === undefined || endDate === undefined || successFunction === undefined || endDate < beginDate) return;
 
     let request = {
-        url: samplesApi + "/plug/" + mac,
+        url: samplesApi + "/plug?mac=" + mac,
         method: "GET",
         headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         success: function (data, textStatus, jqXHR) {
