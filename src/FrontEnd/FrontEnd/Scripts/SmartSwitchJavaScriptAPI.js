@@ -348,7 +348,7 @@ function getPlugSamples(mac, beginDate, endDate, successFunction, errorFunction,
 
     let request = {
         url: samplesApi + "/plug",
-        method: "GET",
+        method: "POST",
         headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         success: function (data, textStatus, jqXHR) {
             for (let i in data) {
