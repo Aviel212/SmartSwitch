@@ -8,7 +8,7 @@ namespace BackEnd.Models.Dto
     public class DateRangeDto
     {
         public string Mac { get; set; }
-        public DateTime EarlierDate;
-        public DateTime LaterDate;
+        public DateTime EarlierDate { get; set; }
+        public DateTime LaterDate { get; set; }
     }
 }
