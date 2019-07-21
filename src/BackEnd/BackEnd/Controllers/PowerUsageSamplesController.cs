@@ -30,14 +30,16 @@ namespace BackEnd.Controllers
             _currentUsername = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        // GET: api/PowerUsageSamples/plug/DC:DD:C2:23:D6:60
-        [HttpGet("plug/{mac}")]
-        public async Task<ActionResult<IEnumerable<PowerUsageSampleDto>>> GetPowerUsageSamples(string mac, [FromBody] DateRangeDto dateRange)
+        // POST: api/PowerUsageSamples/plug
+        [HttpPost("plug")]
+        public async Task<ActionResult<IEnumerable<PowerUsageSampleDto>>> GetPowerUsageSamples([FromBody] DateRangeDto dateRange)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            string mac = dateRange.Mac;
 
             Plug plug = await _context.Plugs.Include(p => p.Samples).SingleOrDefaultAsync(p => p.Mac == mac);
             if (plug == null) return NotFound(Error.PlugDoesNotExist);

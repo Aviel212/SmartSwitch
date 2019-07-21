@@ -119,7 +119,7 @@ namespace BackEnd.Controllers
             {
                 try
                 {
-                    Models.Task.Execute((Models.Task.Operations)op, plug);
+                    Models.Task.Execute((Models.Task.Operations)op, plug, _context);
                 }
                 catch (PlugNotConnectedException)
                 {

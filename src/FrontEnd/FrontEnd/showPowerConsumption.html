@@ -1,4 +1,4 @@
-<title>Smart Switch - Power Consumption Page</title>
+﻿<title>Smart Switch - Power Consumption Page</title>
 <meta charset="utf-8" />
 <script src="scripts/jquery.js"></script>
 <link href="styles/w3css.css" rel="stylesheet" />
@@ -6,121 +6,125 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="scripts/SmartSwitchJavaScriptAPI.js"></script>
 <script>
-    var val;
-    var val1;
-    var x = 'Min';
-    var y = 'shekel';
-    var data;
-    Date.parse
-    function show() {
-        getPlugSamples(sessionStorage.getItem("currentMac"), Date.parse($("#start").val()), Date.parse($("#end").val()), function (data) {
-            sessionStorage.setItem("data", data);
-        })
-        var Min = {
-            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
-            y: data,
-            type: 'scatter',
-        };
-        var data1 = [Min];
-        var layout = {
-            xaxis: {
-                title: 'Min'
-            },
-            yaxis: {
-                title: 'shekel'
-            }
-        };
 
-        Plotly.newPlot('myDiv', data1, layout, { showSendToCloud: true });
+    $(document).ready(function () {
+        $("#devicespn").html(sessionStorage.getItem("plugNickName"));
+        document.getElementById("select").onchange = function () {
+            buildGraph();
+        }
+    });
+    var samplesX = [];
+    var samplesY = [];
+    var dataInNIS = [];
+
+    function show() {     
+        getPlugSamples(sessionStorage.getItem("currentMac"), new Date($("#start").val()), new Date($("#end").val()), function (data) {
+            for (let j = 0; j < data.length; j++) {
+                samplesX[j] = data[j].sampleDate;
+                samplesY[j] = (data[j].voltage * data[j].current) * 0.001;
+                dataInNIS[j] = 0;
+            }
+            dataInNIS[0] = samplesY[0] * (0.53 / 60);
+            for (let k = 1; k < data.length; k++) {
+                dataInNIS[k] = dataInNIS[k - 1] + samplesY[k] * (0.53 / 60);
+            }
+            buildGraph();
+        });
+    }
+         
+    function buildGraph() {
+        var s = document.getElementById("select").value;
+        if (s == 2) {
+   
+            var arr = {
+                x: samplesX,
+                y: dataInNIS,
+                type: 'scatter',
+            };
+            var data1 = [arr];
+            var layout = {
+                xaxis: {
+                    title: 'Samples'
+                },
+                yaxis: {
+                    title: 'NIS'
+                }
+            };
+
+            Plotly.newPlot('myDiv', data1, layout, { showSendToCloud: true });
+
+        }
+        if (s == 1) {
+
+            var arr = {
+                x: samplesX,
+                y: samplesY,
+                mode: 'markers',
+                type: 'scatter',
+            };
+            var data1 = [arr];
+            var layout = {
+                xaxis: {
+                    title: 'Samples'
+                },
+                yaxis: {
+                    title: 'KW'
+                }
+            };
+
+            Plotly.newPlot('myDiv', data1, layout, { showSendToCloud: true });
+         
+
+        }
     }
 
+    
 
-    //window.onload = function () {
-    //    var data = sessionStorage.getItem("data");
-    //    var Min = {
-    //        x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
-    //        y: data,
-    //        type: 'scatter',
-    //    };
-    //    data = [Min];
-    //    var Hour = {
-    //        x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    //        y: data,
-    //        type: 'scatter',
-    //    };
-    //    var Day = {
-    //        x: [1, 2, 3, 4, 5, 6, 7],
-    //        y: data,
-    //        type: 'scatter',
-    //    };
-    //    document.getElementById("select1").onchange = function () {
-    //        val = this.value;
-    //        if (val == 1) { data = [Min]; x = "Min" }
-    //        if (val == 2) { data = [Hour]; x = "Hour" }
-    //        if (val == 3) { data = [Day]; x = "Day" }
-    //        var layout = {
-    //            xaxis: {
-    //                title: x
-    //            },
-    //            yaxis: {
-    //                title: y
-    //            }
-
-    //        }
-    //        Plotly.newPlot('myDiv', data, layout, { showSendToCloud: true });
-    //    };
-    //        document.getElementById("select2").onchange = function () {
-    //           val1 = this.value;
-    //            if (val1 == 1) { y = "shekel" }
-    //            if (val1 == 2) { y = "KW" }
-    //            var layout = {
-    //                xaxis: {
-    //                    title: x
-    //                },
-    //                yaxis: {
-    //                    title: y
-    //                }
-    //            }
-    //            Plotly.newPlot('myDiv', data, layout, { showSendToCloud: true });
-    //        };
-    //    }
 </script>
 
 
 <div id="mainDiv">
     <br />
-    <span>power consumption of</span><span id="devicespn"></span><span>:</span>
-    <br /><br />
+    <b> <span>Power Consumption Of:</span><span id="devicespn"></span> </b>
+ 
     <div>
-        <div style="width:60%;float:left" id="myDiv">
+        <div style="width:70%;float:left" id="myDiv">
         </div>
-        <div style="width:40%;float:right">
-            <span> time-axes:</span>
-            <select id="select1">
-                <option value="1">Minute</option>
-                <option value="2">Hour</option>
-                <option value="3">Day</option>
-            </select>
-            <br /><br />
-            <span> shekel/kw:</span>
-            <select id="select2">
-                <option value="1">shekel</option>
-                <option value="2">KW</option>
-            </select>
+        <div style="width:27%;float:right;padding-left:5px">        
+                  <b><span> NIS/KW:</span></b>
+            <select id="select">
+             <option value="1">  KW </option>
+             <option value="2">  NIS </option>
+             </select>
+            <br /> <br />  <br />
+                           <table>
+                               <tr>
+                                   <td>
+                                       <b> <span> Start Date</span> </b>
+                                   </td>
+                                   <td>
+                                       <input type="datetime-local" id="start" />
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td>
+                                       <b> <span> End Date</span> </b>
+                                   </td>
+                                   <td>
+                                       <input type="datetime-local" id="end" />
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td>
+                                       <input type="button" value="show" onclick="show()" class="w3-button w3-border" />
+                                   </td>                    
+                               </tr>
+                           </table>
             <br />
-            <br />
-            <span> start date</span>
-            <input type="text" id="start" placeholder="yyyy/mm/dd" />
-            <span> end date</span>
-            <input type="text" id="end" placeholder="yyyy/mm/dd" />
-            <input type="button" value="show" onclick="show()" class="w3-button" />
         </div>
     </div>
 </div>
 
-<script>
-
-</script>
 
 
 

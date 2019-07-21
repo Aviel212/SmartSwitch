@@ -82,8 +82,8 @@
         /*removes plug for the database and removes it as an option for the client as a future plug */
         function DeleteDevice() {
             denyPlug(myPlug.mac, function () {
-                myPlug.remove();                    //delete device from user.plugs
-                parent.openPage("PlugMainViewer");  //go to PlugMainViewer page after deleting
+                
+                parent.openPage("plugsMainViewer");  //go to PlugMainViewer page after deleting
             })
 
            

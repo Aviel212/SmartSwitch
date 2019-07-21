@@ -219,6 +219,7 @@
                     type: "button", class: "w3-button w3-khaki w3-ripple", value: moreOptionsBtnNames[i], style: "display:block;margin:1px auto;"
                 }).appendTo($span).on("click", function () {
                     if (plug.mac) {
+                        sessionStorage.setItem("plugNickName", plug.nickname);
                         sessionStorage.setItem("currentMac", plug.mac);
                         parent.openPage(pages_url[i]);
                     }
