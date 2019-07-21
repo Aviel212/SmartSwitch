@@ -87,18 +87,19 @@ namespace BackEnd.Controllers
                 return BadRequest(ModelState);
             }
 
+            // need to check if user exists
             var userCheck = await _userManager.FindByNameAsync(model.Username);
             if (userCheck != null)
                 return BadRequest(Error.UserAlreadyExists);
 
-            // need to chek if user exists
             ApplicationUser user = new ApplicationUser()
             {
                 //Email = "aa@b.com",
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };
-            IdentityResult createResult = await _userManager.CreateAsync(user, model.Password);       //password requird P @ 1????
+
+            IdentityResult createResult = await _userManager.CreateAsync(user, model.Password);  //password requird P @ 1????
             if (createResult.Succeeded)
             {
                 User newUser = new Models.User(model.Username, model.Password);
@@ -109,9 +110,6 @@ namespace BackEnd.Controllers
             }
             else
                 return NotFound(createResult.Errors.ToString());
-            
         }
-
-
     }
 }
