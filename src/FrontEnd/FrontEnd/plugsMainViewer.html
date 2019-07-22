@@ -15,6 +15,11 @@
             height: 50px;
         }
 
+        .popupImg img {
+            width: 300px;
+            height: auto;
+        }
+
         .circle {
             width: 20px;
             height: 20px;
@@ -68,12 +73,16 @@
             z-index: 2;
             pointer-events: none;
         }
+
+        .imgColumn {       /* image select popup column */
+            float: left;
+            width: 33.33%;
+            padding: 5px;
+        }
     </style>
 
 </head>
 <body>
-
-
 
     <br />
 
@@ -98,17 +107,10 @@
             <i class="fa fa-refresh"></i>
 
         </button>
-        <!--<button onclick="forTesting()" class="w3-bar-item w3-button w3-red w3-ripple" style="width:20%">For Testing</button>-->
+        
     </div>
 
-
-    <div id="test"></div>
     <script>
-        // readData() function: "avi" => sessionstorage.userName
-        // loadPlugsIntoTable(), icon init need to fix to url
-
-        function forTesting() {
-        }
 
         $(document).ready(function () {
             loadingBackground(true);
@@ -126,7 +128,7 @@
             $tableBody = $("#plugs_tbl tbody");
             $tableBody.empty();
             plugs = data;
-            console.log(plugs);     // debug use
+            //console.log(plugs);     // debug use
             for (i in plugs) {
                 let plug = plugs[i];
                 if (!plug.approved)     // if plug[i] is not approved then skip
@@ -134,8 +136,8 @@
                 let $tr = $("<tr>");
 
                 // create data elements
-                let $td0 = $("<td>").html(i++);                           // N# plug
-                let $td1 = $("<td>").html(loadIcon(plug.nickname));        // Icon
+                let $td0 = $("<td>").html(++i);                           // N# plug
+                let $td1 = $("<td>").css('overflow', 'visible').html(imgSelectorColumn(plug));        // Icon
                 let $td2 = $("<td>").html(plug.nickname);                 // plug nickname
                 let $td3 = $("<td>").html(priorityToText(plug.priority)); // priority
                 let $td4 = $("<td>").html(plugState(plug.isOn));          // plug state
@@ -170,16 +172,6 @@
 
         //#region Table Data Initializations
         // ############################### table data ############################################
-        function loadIcon(name) {
-            let $img = $("<img>").attr("src", "./resources/" + name + ".png");
-
-            $img.on("error", function () {
-                $(this).attr("src", "./resources/plug.png");
-            });
-
-            return $img;
-        }
-
         function priorityToText(priority) {
             switch (priority) {
                 case 0:
@@ -227,6 +219,43 @@
             }
             return $div;
         }
+
+
+        //var pages_url = ["device_Timing_Summary", "showPowerConsumption", "device_settings"];
+        var imgNames = ["default", "TV", "fridge", "toaster", 'fan','oven','blueLED','greenLED','redLED'];
+        function imgSelectorColumn(plug) {
+            let icon = '0';
+            let $span = $("<span>", { class: "popuptext popupImg", style:"width: 200px;" });
+            if (plug.iconNumber !== undefined)
+                icon = plug.iconNumber;
+            let $currentImg = $("<img>", { src: "./icons/" + imgNames[icon] + ".png" });
+            var $div = $("<div>").append($currentImg).addClass("popup").on("click", function (e) {
+                $(".show").removeClass("show");
+                e.stopPropagation();        // avoid closing the popup when clicking inside the popup
+                $span.addClass("show");     // show popup
+                setTimeout(function () {    // add click event to body to close the popup after clicking in somwhere else
+                    $("html").click(function (event) {
+                        $span.removeClass("show");
+                        $(this).off(event);
+                    });
+                }, 1)
+            }).append($span);
+            for (let i = 0; i < imgNames.length; i++) {
+                let $imgI = $("<img>", {
+                    src: "./icons/" + imgNames[i] + ".png",id:"img" + i, style: "width:100%"
+                }).on("click", function (e) {
+                    e.stopPropagation();
+                    $span.removeClass("show");
+                    let selectedImgId = $(this).attr('id').substr(3, 1);
+                    $currentImg.attr("src", "./icons/" + imgNames[selectedImgId] + ".png");
+                    plug.iconNumber = selectedImgId;
+                    plugToUpdate = plug;
+                    updatePlug(plugToUpdate, readData, readData);
+                    });
+                $("<div>", {class: "imgColumn",style:"width:80px;height:auto;"}).append($imgI).appendTo($span);
+            }
+            return $div;
+        }
         // #########################################################################################
         //#endregion
 
@@ -238,16 +267,16 @@
 
         // style function fading rows on hover
         function fadeRows() {
-            let $rows = $("tbody").find("tr, img")    // collect tbody rows
+            let $rows = $("tbody").find("tr")    // collect tbody rows
             $rows.hover(function (e) {
                 $(this).css("cursor", "pointer");
                 $rows.addClass('blur');
                 $(this).removeClass('blur');
-                if ($(this).is('img'))
+                //if ($(this).is('img'))
                     $(this).parent().parent().removeClass('blur');
             },
                 function (e) {
-                    if (!$(this).is('img'))
+                    //if (!$(this).is('img'))
                         $rows.removeClass('blur');
                 });
         }
@@ -308,7 +337,7 @@
                 updatePlug(plugToUpdate, readData, readData);
                 $(this).empty();
                 $(this).text(valueToUpdate);
-                loadingBackground(true);
+                //loadingBackground(true);
             })
         }
 
@@ -331,7 +360,7 @@
                 let plugToUpdate = plug;
                 plugToUpdate.priority = valueToUpdate;
                 updatePlug(plugToUpdate, readData, readData);
-                loadingBackground(true);
+                //loadingBackground(true);
             })
         }
 
@@ -342,7 +371,7 @@
                     turnPlug(plug.mac, Operations.TurnOff, readData, readData);
                 else if ($(this).hasClass('w3-green'))
                     turnPlug(plug.mac, Operations.TurnOn, readData, readData);
-                loadingBackground(true);
+                //loadingBackground(true);
             })
         }
                     //#endregion
