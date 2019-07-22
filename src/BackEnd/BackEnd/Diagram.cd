@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BackEnd.Models.ApplicationUser">
+    <Position X="5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Auth\ApplicationUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.LoginModel">
+    <Position X="8.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Auth\LoginModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Plug">
+    <Position X="4.5" Y="10.5" Width="3" />
+    <NestedTypes>
+      <Enum Name="BackEnd.Models.Plug.Priorities" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Models\Plug.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABABACACBBAAAAAEACAAAAAAAQAAAAAgQAAIAQAAAAA=</HashCode>
+      <FileName>Models\Plug.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.PlugNotConnectedException">
+    <Position X="12" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\PlugNotConnectedException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.PowerUsageSample">
+    <Position X="1.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EQAAAAAAAAAAAAgAgACAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Models\PowerUsageSample.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.SmartSwitchDbContext">
+    <Position X="10.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAEAAAAAAAAAAAAAAgAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Models\SmartSwitchDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Task">
+    <Position X="12.25" Y="3.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="BackEnd.Models.Task.Operations" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Models\Task.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="BackEnd.Models.Task.TaskTypes" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Models\Task.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAIAAgAAQAAAAAAAAAAEkAAAAAAIEAAEACCAA=</HashCode>
+      <FileName>Models\Task.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.User">
+    <Position X="6.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAkAAAAQAAAAAAAAAAABACAAAAAAAAAAA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.UsernameAlreadyInUseException">
+    <Position X="10.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\UsernameAlreadyInUseException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Auth.RegisterModel">
+    <Position X="8.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Auth\RegisterModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Auth.UserOwnershipValidator">
+    <Position X="12.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Auth\UserOwnershipValidator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Dto.DateRangeDto">
+    <Position X="4.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABQAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Models\Dto\DateRangeDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Dto.MappingProfile">
+    <Position X="12" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Dto\MappingProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Dto.PasswordChangeRequestDto">
+    <Position X="5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Dto\PasswordChangeRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Dto.PlugDto">
+    <Position X="8.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAACBBAAAAAEACAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Dto\PlugDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Dto.PlugDtoIn">
+    <Position X="10.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAABAAAAAEACAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Dto\PlugDtoIn.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Dto.PowerUsageSampleDto">
+    <Position X="3.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgACAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Models\Dto\PowerUsageSampleDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Dto.TaskDto">
+    <Position X="3" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAgAAAAAAAAAAAAAAgAAAAAAIEAAEAACAA=</HashCode>
+      <FileName>Models\Dto\TaskDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Dto.UserDto">
+    <Position X="8.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Dto\UserDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Websockets.MacConnectionPair">
+    <Position X="10.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Websockets\MacConnectionPair.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackEnd.Models.Websockets.WebsocketsServer" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAEAAAACAAEEAAQIACAAABABAAIIAAQAAAAAAAAAA=</HashCode>
+      <FileName>Models\Websockets\WebsocketsServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="BackEnd.Models.Websockets.IWebsocketsServer">
+    <Position X="6.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAACAAAAAAAAAAAAABAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Models\Websockets\IWebsocketsServer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="BackEnd.Models.Error">
+    <Position X="3.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAEAAAAEAAAAAAAAAAAAIABAAIAAAgCAAAAA=</HashCode>
+      <FileName>Models\Error.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
