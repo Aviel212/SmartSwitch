@@ -37,6 +37,14 @@
             border-color: #555 transparent transparent transparent;
         }
 
+.popupImg {
+    background-color: #555;
+    overflow-y: scroll;
+    height: 100px;
+    width: 400px;
+}
+
+
     /* Toggle this class - hide and show the popup */
     .popup .show {
         visibility: visible;

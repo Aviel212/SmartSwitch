@@ -160,7 +160,7 @@ function changePassword(username, oldPassword, newPassword, successFunction, err
 }
 
 /**
- * Gets a plug JSON containing its mac, nickname, isOn, approved, priority, addedAt and iconUrl properties.
+ * Gets a plug JSON containing its mac, nickname, isOn, approved, priority, addedAt and iconNumber properties.
  * @param {string}      mac                 The plug's mac address.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
@@ -186,7 +186,7 @@ function getPlug(mac, successFunction, errorFunction, completeFunction) {
 }
 
 /**
- * Gets an array plug JSONs owned by a given user containing their mac, nickname, isOn, approved, priority, addedAt and iconUrl properties.
+ * Gets an array plug JSONs owned by a given user containing their mac, nickname, isOn, approved, priority, addedAt and iconNumber properties.
  * @param {string}      username            The username of the owner of the plugs.
  * @param {function}    successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
