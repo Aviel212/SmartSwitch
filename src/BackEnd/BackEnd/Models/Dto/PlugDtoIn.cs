@@ -11,6 +11,6 @@ namespace BackEnd.Models.Dto
         public string Mac { get; set; }
         public string Nickname { get; set; }
         public Priorities Priority { get; set; }
-        public string IconUrl { get; set; }
+        public int IconNumber { get; set; }
     }
 }

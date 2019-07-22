@@ -25,7 +25,7 @@ namespace BackEnd.Models
         public bool Approved { get; set; }
         public Priorities Priority { get; set; }
         public DateTime AddedAt { get; set; }
-        public string IconUrl { get; set; }
+        public int IconNumber { get; set; }
         public bool IsDeleted { get; set; }
         public virtual List<Task> Tasks { get; set; }
         public virtual List<PowerUsageSample> Samples { get; set; }
@@ -46,6 +46,7 @@ namespace BackEnd.Models
             AddedAt = DateTime.Now;
             Tasks = new List<Task>();
             Samples = new List<PowerUsageSample>();
+            IconNumber = 0;
         }
 
         // turn the device on
