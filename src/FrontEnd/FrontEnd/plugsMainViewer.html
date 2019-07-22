@@ -36,7 +36,7 @@
 
         body {
             font-family: 'Bree Serif', serif;
-            margin-top:50px;
+            margin-top: 50px;
         }
 
         #plugsTableContainer {
@@ -54,6 +54,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         #plugs_tbl {
             table-layout: fixed;
         }
@@ -65,9 +66,8 @@
             background-color: slategray;
             opacity: .7;
             z-index: 2;
-            pointer-events:none;
+            pointer-events: none;
         }
-
     </style>
 
 </head>
@@ -104,24 +104,20 @@
 
     <div id="test"></div>
     <script>
-
-
-        // refresh() => readData()
         // readData() function: "avi" => sessionstorage.userName
         // loadPlugsIntoTable(), icon init need to fix to url
-        // after updating plug state on/off do we need to wait until db is updated before we make reload table?
 
         function forTesting() {
         }
 
         $(document).ready(function () {
+            loadingBackground(true);
             readData();
             sortByTable();
         });
 
         //#region Read Data Into Table
         function readData() {
-            loadingBackground(true);
             plugs = getUserPlugs("avi", loadPlugsIntoTable);
         }
 
@@ -157,16 +153,17 @@
             loadingBackground(false);
         }
 
+        var $loadingGif;
         function loadingBackground(state) {
             if (state === true) {
-                let $loadingGif = $("<div>").css({ position: "absolute", top: "15%", left: "45%", "z-index": "3", display: "none" }).prependTo("body");
+                $loadingGif = $("<div>").css({ position: "absolute", top: "15%", left: "45%", "z-index": "3", display: "none" }).prependTo("body");
                 $loadingGif.append($("<img>", { src: "./images/loadingGif2.gif", width: "200px", height: "auto" }))
                 $("body").addClass("myOverlay");
                 $loadingGif.show();
             }
             else if (state === false) {
                 $("body").removeClass("myOverlay");
-                $("body").find("div").eq(0).remove();
+                $loadingGif.remove();
             }
         }
         //#endregion
@@ -246,7 +243,7 @@
                 $(this).css("cursor", "pointer");
                 $rows.addClass('blur');
                 $(this).removeClass('blur');
-                if($(this).is('img'))
+                if ($(this).is('img'))
                     $(this).parent().parent().removeClass('blur');
             },
                 function (e) {
@@ -303,28 +300,21 @@
                 $("<input>", { type: 'text', value: dataValue }).click(function (e) {
                     e.stopPropagation();
                 }).appendTo($(this)).focus();
-                //$(this).off("click");
             })
             element.focusout(function () {
                 let valueToUpdate = $(this).find('input').val();
                 let plugToUpdate = plug;
                 plugToUpdate.nickname = valueToUpdate;
-                //let plugToUpdate = {
-                //    mac: plug.mac,
-                //    nickname: valueToUpdate
-                //}
-                updatePlug(plugToUpdate, readData);
+                updatePlug(plugToUpdate, readData, readData);
                 $(this).empty();
                 $(this).text(valueToUpdate);
-                //$(this).off("focusout");
-                //addEditTextFeature($(this),plug)
+                loadingBackground(true);
             })
         }
 
         var priority = ["ESSENTIAL", "NONESSENTIAL", "IRRELEVANT"];
         function addChangePriorityFeature(element, plug) {
             element.click(function () {
-                //$(this).off("click");
                 let dataValue = $(this).html();
                 $(this).empty();
                 let i = priority.indexOf(dataValue);
@@ -340,13 +330,8 @@
                 $(this).text(valueToUpdate);
                 let plugToUpdate = plug;
                 plugToUpdate.priority = valueToUpdate;
-                //let plugToUpdate = {
-                //    mac: plug.mac,
-                //    priority: valueToUpdate
-                //}
-                updatePlug(plugToUpdate, readData);
-                //$(this).off("focusout");
-                //addChangePriorityFeature($(this), plug);
+                updatePlug(plugToUpdate, readData, readData);
+                loadingBackground(true);
             })
         }
 
@@ -354,193 +339,194 @@
             element.find('div').click(function () {
                 $(this).toggleClass('w3-red').toggleClass('w3-green');
                 if ($(this).hasClass('w3-red'))
-                    turnPlug(plug.mac, Operations.TurnOff, readData);
+                    turnPlug(plug.mac, Operations.TurnOff, readData, readData);
                 else if ($(this).hasClass('w3-green'))
-                    turnPlug(plug.mac, Operations.TurnOn, readData);
+                    turnPlug(plug.mac, Operations.TurnOn, readData, readData);
+                loadingBackground(true);
             })
         }
-            //#endregion
+                    //#endregion
 
         //#region OLD CODE
-        //var manipulatedPlugs = [];
-        //var plugs;
-        //var row;
-        //var $maniRow;
-        //var rowInChange = -1;
-        //var inChanging = false;
-        //var modify_enabled = false;
+                //var manipulatedPlugs = [];
+                //var plugs;
+                //var row;
+                //var $maniRow;
+                //var rowInChange = -1;
+                //var inChanging = false;
+                //var modify_enabled = false;
 
-        //var priority = [
-        //    { val: 0, text: "ESSENTIAL" },
-        //    { val: 1, text: "NONESSENTIAL" },
-        //    { val: 2, text: "IRRELEVANT" }
-        //];
+                //var priority = [
+                //    { val: 0, text: "ESSENTIAL" },
+                //    { val: 1, text: "NONESSENTIAL" },
+                //    { val: 2, text: "IRRELEVANT" }
+                //];
 
-        //function init() {       //??
-        //    rowInChange = -1;
-        //    inChanging = false;
-        //    modify_enabled = true;
-        //}
-
-
-        //function modifyMode() {
-        //    modify_enabled = true;
-        //    $("tr").css("border", "2px solid #ff9980");
-        //}
-
-        //function updateP(newName, newPriority, newIsOn) {
-        //    let mac = plugs[rowInChange - 1].mac;
-        //    //let plug = plugs[rowInChange - 1];
-
-        //    let plug = {
-        //        "mac": mac,
-        //        "nickname": newName,
-        //        "priority": newPriority
-        //    };
-
-        //    // if (!(newName === plug.nickname))
-        //    updatePlug(plug, refresh);
-        //    // if (!(newPriority.toLowerCase() === priorityText(plug.Priority).toLowerCase()))
-        //    //      setPlugPriority(mac, newPriority);
-        //    //  if (!(plug.Approved === newApproved))
-        //    //      approvePlug(mac);
-        //    if (!(newIsOn === plug.isOn)) {
-        //        if (newIsOn)
-        //            turnPlug(mac, Operations.TurnOn, refresh)
-        //        else
-        //            turnPlug(mac, Operations.TurnOff, refresh)
-        //    }
-        //}
-
-        //function saveChanges() {
-        //    if (inChanging) {
-        //        let $tdName = $maniRow.children("td").eq(2);
-        //        let $tdPriority = $maniRow.children("td").eq(3);
-        //        //let $tdApproved = $maniRow.children("td").eq(4);
-        //        let $tdIsOn = $maniRow.children("td").eq(4);
-
-        //        let newName = $tdName.children("input").eq(0).val();
-        //        let newPriority = $tdPriority.children("select").children("option:selected").text();
-        //        //let newApproved = $tdApproved.children("input").eq(0).is(":checked") ? true : false;
-        //        //let newApproved = $tdApproved.children("input").eq(0).attr("checked") === "checked" ? true : false;
-        //        let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
-        //        //alert(newApproved);
-        //        updateP(newName, newPriority, /*newApproved,*/ newIsOn);
-
-        //        //refresh();
-        //        $maniRow.css("backgroundColor", "");
-
-        //    }
-        //    rowInChange = -1;
-        //    inChanging = false;
-        //    $("tr").css("border", "");
-        //    modify_enabled = false;
-        //    $("tr:has(td)").on("mouseenter mouseleave");
-        //    fadeRows();
-        //}
-
-        //function editFeature() {
-        //    $("tbody").find("tr").find("td").not(":last").not(":first")
-        //}
+                //function init() {       //??
+                //    rowInChange = -1;
+                //    inChanging = false;
+                //    modify_enabled = true;
+                //}
 
 
-        //function trClicked() {
-        //    if (inChanging || !modify_enabled)
-        //        return;
-        //    $maniRow = $(this);
-        //    let id = $(this).children("td").eq(0).html();
-        //    //if (id == rowInChange)
-        //    //    return;
-        //    inChanging = true;
-        //    $maniRow.css("backgroundColor", "#ff9980");
-        //    rowInChange = id;
-        //    editMode();
-        //    $("tr:has(td)").off("mouseenter mouseleave");
-        //}
+                //function modifyMode() {
+                //    modify_enabled = true;
+                //    $("tr").css("border", "2px solid #ff9980");
+                //}
 
-        //function editMode() {
-        //    let $tdName = $maniRow.children("td").eq(2);
-        //    let old_name = $tdName.html();
-        //    $tdName.empty();
-        //    let $text = $("<input>").attr({ "type": "text", "name": "name", "value": old_name, "size": "10", "margin": "0px" });
-        //    $tdName.append($text);
+                //function updateP(newName, newPriority, newIsOn) {
+                //    let mac = plugs[rowInChange - 1].mac;
+                //    //let plug = plugs[rowInChange - 1];
 
-        //    let $tdPriority = $maniRow.children("td").eq(3);
-        //    let old_prio = $tdPriority.html();
-        //    $tdPriority.empty();
-        //    let $select = $("<select>").attr({ "type": "text", "name": "name", "value": old_name });
-        //    $tdPriority.append($select);
-        //    $(selectArr).each(function () {
-        //        $op = $("<option>").attr("value", this.val).text(this.text);
-        //        if (this.text.toLowerCase() === old_prio.toLowerCase()) $op.attr("selected", "selected");
-        //        $select.append($op);
-        //    });
+                //    let plug = {
+                //        "mac": mac,
+                //        "nickname": newName,
+                //        "priority": newPriority
+                //    };
 
-        //    //let $tdApproved = $maniRow.children("td").eq(4);
-        //    //$tdApproved.children("input").eq(0).relmoveAttr("disabled");
+                //    // if (!(newName === plug.nickname))
+                //    updatePlug(plug, refresh);
+                //    // if (!(newPriority.toLowerCase() === priorityText(plug.Priority).toLowerCase()))
+                //    //      setPlugPriority(mac, newPriority);
+                //    //  if (!(plug.Approved === newApproved))
+                //    //      approvePlug(mac);
+                //    if (!(newIsOn === plug.isOn)) {
+                //        if (newIsOn)
+                //            turnPlug(mac, Operations.TurnOn, refresh)
+                //        else
+                //            turnPlug(mac, Operations.TurnOff, refresh)
+                //    }
+                //}
 
-        //    for (let i = 0; i < plugs.length; i++) {
+                //function saveChanges() {
+                //    if (inChanging) {
+                //        let $tdName = $maniRow.children("td").eq(2);
+                //        let $tdPriority = $maniRow.children("td").eq(3);
+                //        //let $tdApproved = $maniRow.children("td").eq(4);
+                //        let $tdIsOn = $maniRow.children("td").eq(4);
+
+                //        let newName = $tdName.children("input").eq(0).val();
+                //        let newPriority = $tdPriority.children("select").children("option:selected").text();
+                //        //let newApproved = $tdApproved.children("input").eq(0).is(":checked") ? true : false;
+                //        //let newApproved = $tdApproved.children("input").eq(0).attr("checked") === "checked" ? true : false;
+                //        let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
+                //        //alert(newApproved);
+                //        updateP(newName, newPriority, /*newApproved,*/ newIsOn);
+
+                //        //refresh();
+                //        $maniRow.css("backgroundColor", "");
+
+                //    }
+                //    rowInChange = -1;
+                //    inChanging = false;
+                //    $("tr").css("border", "");
+                //    modify_enabled = false;
+                //    $("tr:has(td)").on("mouseenter mouseleave");
+                //    fadeRows();
+                //}
+
+                //function editFeature() {
+                //    $("tbody").find("tr").find("td").not(":last").not(":first")
+                //}
 
 
-        //        let $tdIsOn = $("#plugs_tbl").children("tbody").children("tr").eq(i).children("td").eq(4)
+                //function trClicked() {
+                //    if (inChanging || !modify_enabled)
+                //        return;
+                //    $maniRow = $(this);
+                //    let id = $(this).children("td").eq(0).html();
+                //    //if (id == rowInChange)
+                //    //    return;
+                //    inChanging = true;
+                //    $maniRow.css("backgroundColor", "#ff9980");
+                //    rowInChange = id;
+                //    editMode();
+                //    $("tr:has(td)").off("mouseenter mouseleave");
+                //}
 
-        //        //let $tdIsOn = $maniRow.children("td").eq(4);
-        //        $tdIsOn.children("div").eq(0).click(function () {
-        //            if ($(this).hasClass("w3-green"))
-        //                $(this).removeClass("w3-green").addClass("w3-red");
-        //            else if ($(this).hasClass("w3-red"))
-        //                $(this).removeClass("w3-red").addClass("w3-green");
-        //            let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
-        //            if (!(newIsOn === plug.isOn)) {
-        //                if (newIsOn)
-        //                    turnPlug(mac, Operations.TurnOn, refresh)
-        //                else
-        //                    turnPlug(mac, Operations.TurnOff, refresh)
-        //            }
-        //        })
-        //    }
-        //}
+                //function editMode() {
+                //    let $tdName = $maniRow.children("td").eq(2);
+                //    let old_name = $tdName.html();
+                //    $tdName.empty();
+                //    let $text = $("<input>").attr({ "type": "text", "name": "name", "value": old_name, "size": "10", "margin": "0px" });
+                //    $tdName.append($text);
 
-        //function switcha() {
-        //    for (let i = 0; i < plugs.length; i++) {
+                //    let $tdPriority = $maniRow.children("td").eq(3);
+                //    let old_prio = $tdPriority.html();
+                //    $tdPriority.empty();
+                //    let $select = $("<select>").attr({ "type": "text", "name": "name", "value": old_name });
+                //    $tdPriority.append($select);
+                //    $(selectArr).each(function () {
+                //        $op = $("<option>").attr("value", this.val).text(this.text);
+                //        if (this.text.toLowerCase() === old_prio.toLowerCase()) $op.attr("selected", "selected");
+                //        $select.append($op);
+                //    });
+
+                //    //let $tdApproved = $maniRow.children("td").eq(4);
+                //    //$tdApproved.children("input").eq(0).relmoveAttr("disabled");
+
+                //    for (let i = 0; i < plugs.length; i++) {
 
 
-        //        let $tdIsOn = $("#plugs_tbl").children("tbody").children("tr").eq(i).children("td").eq(4)
+                //        let $tdIsOn = $("#plugs_tbl").children("tbody").children("tr").eq(i).children("td").eq(4)
 
-        //        //let $tdIsOn = $maniRow.children("td").eq(4);
-        //        $tdIsOn.children("div").eq(0).click(function () {
-        //            if ($(this).hasClass("w3-green"))
-        //                $(this).removeClass("w3-green").addClass("w3-red");
-        //            else if ($(this).hasClass("w3-red"))
-        //                $(this).removeClass("w3-red").addClass("w3-green");
-        //            let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
-        //            if (!(newIsOn === plug.isOn)) {
-        //                if (newIsOn)
-        //                    turnPlug(mac, Operations.TurnOn, refresh)
-        //                else
-        //                    turnPlug(mac, Operations.TurnOff, refresh)
-        //            }
-        //        })
-        //    }
-        //}
+                //        //let $tdIsOn = $maniRow.children("td").eq(4);
+                //        $tdIsOn.children("div").eq(0).click(function () {
+                //            if ($(this).hasClass("w3-green"))
+                //                $(this).removeClass("w3-green").addClass("w3-red");
+                //            else if ($(this).hasClass("w3-red"))
+                //                $(this).removeClass("w3-red").addClass("w3-green");
+                //            let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
+                //            if (!(newIsOn === plug.isOn)) {
+                //                if (newIsOn)
+                //                    turnPlug(mac, Operations.TurnOn, refresh)
+                //                else
+                //                    turnPlug(mac, Operations.TurnOff, refresh)
+                //            }
+                //        })
+                //    }
+                //}
 
-        //function plugHasChanged() {
-        //    $tbody.children("tr").css("backgroundColor", "red");
-        //    manipulatedPlugs.add(plug[id - 1]);
-        //}
+                //function switcha() {
+                //    for (let i = 0; i < plugs.length; i++) {
 
-        //function priorityToNumber(priority) {
-        //    priority = priority.toUpperCase();
-        //    switch (priority) {
-        //        case "ESSENTIAL":
-        //            return 0;
-        //        case "NONESSENTIAL":
-        //            return 1;
-        //        case "IRRELEVANT":
-        //            return 2;
-        //    }
-        //}
-        //#endregion
+
+                //        let $tdIsOn = $("#plugs_tbl").children("tbody").children("tr").eq(i).children("td").eq(4)
+
+                //        //let $tdIsOn = $maniRow.children("td").eq(4);
+                //        $tdIsOn.children("div").eq(0).click(function () {
+                //            if ($(this).hasClass("w3-green"))
+                //                $(this).removeClass("w3-green").addClass("w3-red");
+                //            else if ($(this).hasClass("w3-red"))
+                //                $(this).removeClass("w3-red").addClass("w3-green");
+                //            let newIsOn = $tdIsOn.children("div").hasClass("w3-green") ? true : false;
+                //            if (!(newIsOn === plug.isOn)) {
+                //                if (newIsOn)
+                //                    turnPlug(mac, Operations.TurnOn, refresh)
+                //                else
+                //                    turnPlug(mac, Operations.TurnOff, refresh)
+                //            }
+                //        })
+                //    }
+                //}
+
+                //function plugHasChanged() {
+                //    $tbody.children("tr").css("backgroundColor", "red");
+                //    manipulatedPlugs.add(plug[id - 1]);
+                //}
+
+                //function priorityToNumber(priority) {
+                //    priority = priority.toUpperCase();
+                //    switch (priority) {
+                //        case "ESSENTIAL":
+                //            return 0;
+                //        case "NONESSENTIAL":
+                //            return 1;
+                //        case "IRRELEVANT":
+                //            return 2;
+                //    }
+                //}
+                //#endregion
     </script>
 </body>
 </html>
