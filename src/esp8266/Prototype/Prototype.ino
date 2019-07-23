@@ -31,7 +31,7 @@ const int waitBeforeTryingAgain = 15000;
 
 bool readyToSendSamples = false;
 long lastSample = 0;
-const int sampleEvery = 10000; // ms
+const int sampleEvery = 60000; // ms
 
 const int load = D2; // the electrical device switch
 
