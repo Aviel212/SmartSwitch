@@ -71,6 +71,7 @@ $.ajaxSetup({
             if (jqXHR.responseText !== "5") {
                 alert("Your session has expired, please login again.");
                 parent.logout();
+            }
         }
     }
 });
