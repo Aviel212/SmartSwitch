@@ -182,13 +182,15 @@
         function approveContent() {
             $myPopUp.hide();                                  //removing the popUp
             $("input[type='button']").prop("disabled", false);//returning functionality to all buttons
-            $rowToDelete.remove();                            //removing said plug from the displayed unapproved plugs
+            $rowToDelete.hide();                              //hiding said plug from the displayed unapproved plugs
 
             $("#reloader").attr("href", locationHref);        //returning functionality to refresh button
 
             /*accessing the database and updating said plug approval property*/
             approvePlug($notifier.mac, function () {
-                $notifier.Approved = true;
+                $rowToDelete.remove();                        //removing said plug from the displayed unapproved plugs
+            }, function () {
+                $rowToDelete.show();                          //bringing back said row in case the server couldnt change said plug approval
             });
 
             let priorityString = $("input[name='prio']:checked").val();
