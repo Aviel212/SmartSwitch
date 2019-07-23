@@ -17,9 +17,7 @@ bool touched = false; // for loop logic
 unsigned long touchedAt; // the time (from the moment the program started running) the sensor was touched [ms]
 const int pressDuration = 5000; // time from the moment a user touches the touch sensor until its action is activated [ms]
 
-const int muxControl = D0; // multiplexer control line
-const int voltageFromMux = LOW;
-const int currentFromMux = HIGH;
+const int mvPerAmp = 66;
 
 char serverIP[] = "192.168.1.20";
 const int webSocketsPort = 8181;
@@ -33,7 +31,7 @@ const int waitBeforeTryingAgain = 15000;
 
 bool readyToSendSamples = false;
 long lastSample = 0;
-const int sampleEvery = 60000; // ms
+const int sampleEvery = 10000; // ms
 
 const int load = D2; // the electrical device switch
 
@@ -48,8 +46,6 @@ void setup() {
 
   pinMode(D5, OUTPUT); // VCC for the touch sensor
   pinMode(touchSensor, INPUT);
-
-  pinMode(muxControl, OUTPUT);
 
   pinMode(load, OUTPUT);
 
@@ -102,8 +98,8 @@ void setup() {
 }
 
 void loop() {
-  server.handleClient();
-  handleWebSocketsLoop();
+  server.handleClient(); //Serial.println("L101");
+  handleWebSocketsLoop(); //Serial.println("L102");
   if (shouldBlink && (millis() - blinked) >= 1000) {
     blinked = millis();
     digitalWrite(statusLed, !digitalRead(statusLed));
@@ -124,8 +120,11 @@ void loop() {
     touched = false;
     if (!shouldBlink) digitalWrite(statusLed, LOW);
   }
-
+  //Serial.println("L123");
   if (duringConnectionTrial && (millis() - handshakeSuccessAt) >= waitBeforeTryingAgain) connectToWebSocketsServer();
+
+  delay(0);
+  //Serial.println(String(getCurrent(), 3) + " [A]");
 }
 
 void turnLoad(String state) {
@@ -134,16 +133,47 @@ void turnLoad(String state) {
 }
 
 double getVoltage() {
-  digitalWrite(muxControl, voltageFromMux);
-  delay(10);
-  return 3.3 * (analogRead(A0) / 1024.0) * 5.0; // [V]
+  return 220; // [V]
 }
 
 double getCurrent() {
   if (!digitalRead(load)) return 0;
-  digitalWrite(muxControl, currentFromMux);
-  delay(10);
-  return 3.3 * (analogRead(A0) / 1024.0) / 16.0 /*Ohm*/; // [A]
+  
+  double Voltage = 0;
+  double VRMS = 0;
+  double AmpsRMS = 0;
+
+  int readValue;             //value read from the sensor
+  int maxValue = 0;          // store max value here
+  int minValue = 1024;          // store min value here
+
+  uint32_t start_time = millis();
+  while ((millis() - start_time) < 1000) //sample for 1 Sec
+  {
+    readValue = analogRead(A0);
+
+    // see if you have a new maxValue
+    if (readValue > maxValue)
+    {
+      /*record the maximum sensor value*/
+      maxValue = readValue;
+    }
+    if (readValue < minValue)
+    {
+      /*record the minimum sensor value*/
+      minValue = readValue;
+    }
+  }
+  
+
+  // Subtract min from max
+  Voltage = ((maxValue - minValue - 5.6) * 3.3) / 1024.0; // adjusting value because of wrong measurments
+
+  VRMS = (Voltage / 2.0) * 0.707;
+  AmpsRMS = (VRMS * 1000) / mvPerAmp;
+
+  Serial.println("sent " + String(AmpsRMS < 0 ? 0 : AmpsRMS));
+  return AmpsRMS < 0 ? 0 : AmpsRMS;
 }
 
 void startAP() {
@@ -184,9 +214,9 @@ bool handleWebSocketsLoop() {
   if (client.connected()) {
     String data;
     webSocketClient.getData(data);
-    
+
     if (data.length() > 0) {
-    duringConnectionTrial = false;
+      duringConnectionTrial = false;
       Serial.print("Received data: ");
       Serial.println(data);
       if (data == "turn-load-on") turnLoad("on");
