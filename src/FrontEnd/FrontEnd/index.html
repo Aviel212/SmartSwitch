@@ -142,6 +142,11 @@
             openPage("loginForm");
         }
 
+        function homeClicked() {
+            if (sessionStorage.getItem("currentSmartSwitchUser") != null) parent.openPage("plugsMainViewer");
+            else openPage('loginForm');
+        }
+        
     </script>
 </head>
 <body>
@@ -154,7 +159,7 @@
         <div id="menuPanel" class="w3-bar w3-gray">
             <div id="Account" class="w3-bar-item" onclick="w3_openSidebar()"><i class="fas fa-user"></i></div>
             <!--if logged in Home will go to plugs page, if not it will go to login page-->
-            <a href="#" id="Home" class="w3-bar-item" onclick="openPage('loginForm')">Home</a> 
+            <a href="#" id="Home" class="w3-bar-item" onclick="homeClicked()">Home</a> 
             <a href="#" id="Plugs" class="w3-bar-item" onclick="openPage('manual')">Manual</a>
             <a href="#" id="About" class="w3-bar-item" onclick="openPage('about')">About</a>
         </div>
