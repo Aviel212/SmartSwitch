@@ -76,7 +76,7 @@
         /*function returns a date string*/
         function formatDate(date) {
             let month = (date.getMonth() + 1) <= 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
-            let day = date.getDay() <= 9 ? '0' + date.getDay() : date.getDay();
+            let day = date.getDate() <= 9 ? '0' + date.getDate() : date.getDate();
             return date.getFullYear() + '-' + month + '-' + day;
         }
         /*removes plug for the database and removes it as an option for the client as a future plug */

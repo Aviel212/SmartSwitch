@@ -323,7 +323,7 @@
         /*function returns a date-time string*/ 
         function formatDateTime(date) {
             let month = (date.getMonth() + 1) <= 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
-            let day = date.getDay() <= 9 ? '0' + date.getDay() : date.getDay();
+            let day = date.getDate() <= 9 ? '0' + date.getDate() : date.getDate();
             let hour = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours();
             let minute = date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes();
             return day + '/' + month + '/' + date.getFullYear() + ' ' + hour + ':' + minute;
