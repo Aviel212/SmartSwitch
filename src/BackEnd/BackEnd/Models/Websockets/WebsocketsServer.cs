@@ -122,6 +122,7 @@ namespace BackEnd.Models.Websockets
                     if (currentPlugEntry.CurrentValues["Username"].ToString() != ownerUsername)
                     {
                         currentPlugEntry.CurrentValues["Username"] = ownerUsername;
+                        currentPlug.IsDeleted = false;
                         await context.SaveChangesAsync();
                     }
                 }
