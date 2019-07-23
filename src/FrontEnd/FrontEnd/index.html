@@ -46,49 +46,16 @@
             z-index:-1;
         }
     </style>
-</head>
-<body>
-    <!--the topDiv contains the header and the menuPanel-->
-    <div id="topDiv">
-        <div id="headerDiv" class="w3-container w3-red w3-blue-gray w3-padding" >
-            <h1>Welcome to SmartSwitch</h1>
-            <h3 id ="loginReminder" class="w3-medium">Login to your account to modify your plugs</h3>
-        </div>
-        <div id="menuPanel" class="w3-bar w3-gray">
-            <div id="Account" class="w3-bar-item" onclick="w3_openSidebar()"><i class="fas fa-user"></i></div>
-            <!--if logged in Home will go to plugs page, if not it will go to login page-->
-            <a href="#" id="Home" class="w3-bar-item" onclick="openPage('loginForm')">Home</a> 
-            <a href="#" id="Plugs" class="w3-bar-item" onclick="openPage('manual')">Manual</a>
-            <a href="#" id="About" class="w3-bar-item" onclick="openPage('about')">About</a>
-        </div>
-    </div>
-
-    <!--if not logged in the sidebar needs to show only Login-->
-    <div id="mySidebar" class="sidebar w3-bar-block w3-card">
-        
-    </div>
-
-    <!--the main Div conctent is what changing with every page loading-->
-    <div id="mainDiv">
-
-        <iframe id="mainFrame">
-
-        </iframe>
-    </div>
-    
-    <!--the footerDiv contains our names and ruppin's-->
-    <div id="footerDiv" class="w3-gray">
-        <p><i class="fa fa-copyright"></i> Ruppin Academic Center Mini Project -  
-            Aviel Vaknin, Yarden Shoham, Ron Katz, Avi Mishayev, Alaa Ganema</p>
-    </div>
-
     <script>
-        let headerDiv, menuDiv, footerDiv;
-        $headerDiv = $("#headerDiv");
-        $footerDiv = $("#footerDiv");
-        $menuDiv = $("#menuPanel");
-        $sidebarDiv = $("#mySidebar");
+        let $headerDiv, $menuDiv, $footerDiv, $sidebarDiv;
+        $(document).ready(init);
 
+        function init() {
+            $headerDiv = $("#headerDiv");
+            $footerDiv = $("#footerDiv");
+            $menuDiv = $("#menuPanel");
+            $sidebarDiv = $("#mySidebar");
+        }
         //if its the first time opening the website we will save the pages name as 'index'
         if (sessionStorage.getItem("currentSmartSwitchPage") === null) {
             sessionStorage.setItem("currentSmartSwitchPage", "index");
@@ -115,9 +82,9 @@
                 setSideBar(true); //true means logged in
             } else { //else show the login form
                 openPage("loginForm");
-                setSideBar(false); 
+                setSideBar(false);
             }
-            
+
         });
 
         function setSideBar(loggedIn) {
@@ -159,12 +126,12 @@
         function getMainFrameHeight() {
             return window.innerHeight - parseInt($headerDiv.css("height")) - parseInt($menuDiv.css("height")) - parseInt($footerDiv.css("height"));
         }
-        
+
         function openPage(nameofpage) {
             //change the page
             $("#mainFrame").attr("src", nameofpage + ".html");
             //saving the new page's name when opened
-            sessionStorage.setItem("currentSmartSwitchPage", nameofpage); 
+            sessionStorage.setItem("currentSmartSwitchPage", nameofpage);
         }
 
         function logout() {
@@ -176,6 +143,43 @@
         }
 
     </script>
+</head>
+<body>
+    <!--the topDiv contains the header and the menuPanel-->
+    <div id="topDiv">
+        <div id="headerDiv" class="w3-container w3-red w3-blue-gray w3-padding" >
+            <h1>Welcome to SmartSwitch</h1>
+            <h3 id ="loginReminder" class="w3-medium">Login to your account to modify your plugs</h3>
+        </div>
+        <div id="menuPanel" class="w3-bar w3-gray">
+            <div id="Account" class="w3-bar-item" onclick="w3_openSidebar()"><i class="fas fa-user"></i></div>
+            <!--if logged in Home will go to plugs page, if not it will go to login page-->
+            <a href="#" id="Home" class="w3-bar-item" onclick="openPage('loginForm')">Home</a> 
+            <a href="#" id="Plugs" class="w3-bar-item" onclick="openPage('manual')">Manual</a>
+            <a href="#" id="About" class="w3-bar-item" onclick="openPage('about')">About</a>
+        </div>
+    </div>
+
+    <!--if not logged in the sidebar needs to show only Login-->
+    <div id="mySidebar" class="sidebar w3-bar-block w3-card">
+        
+    </div>
+
+    <!--the main Div conctent is what changing with every page loading-->
+    <div id="mainDiv">
+
+        <iframe id="mainFrame">
+
+        </iframe>
+    </div>
+    
+    <!--the footerDiv contains our names and ruppin's-->
+    <div id="footerDiv" class="w3-gray">
+        <p><i class="fa fa-copyright"></i> Ruppin Academic Center Mini Project -  
+            Aviel Vaknin, Yarden Shoham, Ron Katz, Avi Mishayev, Alaa Ganema</p>
+    </div>
+
+    
     
 </body>
 </html>

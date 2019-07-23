@@ -25,10 +25,17 @@
     }
 </style>
 <script>
-    let userName, pass, paraForErrors;
+    let $userName, $pass, $paraForErrors;
 
     $(document).ready(function () {
-        paraForErrors = $("#paraForErrors");
+        $paraForErrors = $("#paraForErrors");
+
+        // use enter to submit form
+        $("#loginForm").keyup(function (event) {
+            if (event.keyCode === 13) {
+                signIn();
+            }
+        });
 
         if (sessionStorage.getItem("currentSmartSwitchUser") != null) {
             parent.openPage("plugsMainViewer");
@@ -37,28 +44,32 @@
     });
 
     function signIn() {
+        // disable the login button
+        $("#signInBtn").attr("disabled", true);
 
+
+        // create and add animation to screen
         let $loadingGif = $("<img>").attr({
             'src': 'images/loadingGif.gif',
             'width': parseInt($("#loginForm").css("width")) / 25
         });
         $("#loginForm").append($loadingGif);
 
-        userName = $("#UsernameInpt").val();
-        pass = $("#passwordInpt").val();
+        $userName = $("#UsernameInpt").val();
+        $pass = $("#passwordInpt").val();
         //check if inputs are empty 
-        if (userName === "" || pass === "") {
-            alert("Please Enter Username and Password");
+        if ($userName === "" || $pass === "") {
+            $paraForErrors.html("Please Enter Username and Password");
             return;
         }
         
-        let tokenFromServer = parent.loginUser(userName, pass, function (data) {
+        let tokenFromServer = parent.loginUser($userName, $pass, function (data) {
             //success function
             $loadingGif.remove();
 
             parent.$("#loginReminder").hide();
             parent.updateFrameTopHeight();
-            sessionStorage.setItem("currentSmartSwitchUser", userName); //set Global User currently logged in
+            sessionStorage.setItem("currentSmartSwitchUser", $userName); //set Global User currently logged in
             parent.openPage("plugsMainViewer");
             parent.setSideBar(true);
 
@@ -66,7 +77,7 @@
             //error function
             let errMsg = "Error - " + err.responseText;
             $("#paraForErrors").html(errMsg).css("visibility", "visible");
-            //***************need to add error message for each error number******************
+            $("#signInBtn").attr("disabled", false);
         });
     }
 
