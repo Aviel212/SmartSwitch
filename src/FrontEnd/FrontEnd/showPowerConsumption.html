@@ -7,6 +7,10 @@
 <script src="scripts/SmartSwitchJavaScriptAPI.js"></script>
 <script>
 
+    function hideLoadingGif() {
+        $("#loading-gif").hide();
+    }
+
     $(document).ready(function () {
         $("#devicespn").html(sessionStorage.getItem("plugNickName"));
         document.getElementById("select").onchange = function () {
@@ -18,6 +22,7 @@
     var dataInNIS = [];
 
     function show() {     
+        $("#loading-gif").show();
         getPlugSamples(sessionStorage.getItem("currentMac"), new Date($("#start").val()), new Date($("#end").val()), function (data) {
             for (let j = 0; j < data.length; j++) {
                 samplesX[j] = data[j].sampleDate;
@@ -28,8 +33,9 @@
             for (let k = 1; k < data.length; k++) {
                 dataInNIS[k] = dataInNIS[k - 1] + samplesY[k] * (0.53 / 60);
             }
+            hideLoadingGif();
             buildGraph();
-        });
+        }, hideLoadingGif);
     }
          
     function buildGraph() {
@@ -85,41 +91,40 @@
 
 <div id="mainDiv">
     <br />
-    <b> <span>Power Consumption Of:</span><span id="devicespn"></span> </b>
- 
+    <b> <span>Power Consumption Of:</span><span id="devicespn"></span> </b> <span>          </span> <img id="loading-gif" src="images/loadingGif.gif" style="display:none; width: 1.6%" />
     <div>
         <div style="width:70%;float:left" id="myDiv">
         </div>
-        <div style="width:27%;float:right;padding-left:5px">        
-                  <b><span> NIS/KW:</span></b>
+        <div style="width:27%;float:right;padding-left:5px">
+            <b><span> NIS/KW:</span></b>
             <select id="select">
-             <option value="1">  KW </option>
-             <option value="2">  NIS </option>
-             </select>
+                <option value="1">  KW </option>
+                <option value="2">  NIS </option>
+            </select>
             <br /> <br />  <br />
-                           <table>
-                               <tr>
-                                   <td>
-                                       <b> <span> Start Date</span> </b>
-                                   </td>
-                                   <td>
-                                       <input type="datetime-local" id="start" />
-                                   </td>
-                               </tr>
-                               <tr>
-                                   <td>
-                                       <b> <span> End Date</span> </b>
-                                   </td>
-                                   <td>
-                                       <input type="datetime-local" id="end" />
-                                   </td>
-                               </tr>
-                               <tr>
-                                   <td>
-                                       <input type="button" value="show" onclick="show()" class="w3-button w3-border" />
-                                   </td>                    
-                               </tr>
-                           </table>
+            <table>
+                <tr>
+                    <td>
+                        <b> <span> Start Date</span> </b>
+                    </td>
+                    <td>
+                        <input type="datetime-local" id="start" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b> <span> End Date</span> </b>
+                    </td>
+                    <td>
+                        <input type="datetime-local" id="end" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" value="show" onclick="show()" class="w3-button w3-border" />
+                    </td>
+                </tr>
+            </table>
             <br />
         </div>
     </div>
