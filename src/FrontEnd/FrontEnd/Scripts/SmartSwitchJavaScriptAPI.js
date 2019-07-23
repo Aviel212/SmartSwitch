@@ -68,7 +68,9 @@ const Priorities = {
 $.ajaxSetup({
     statusCode: {
         401: function (jqXHR, textStatus, errorThrown) {
-            parent.logout();
+            if (jqXHR.responseText !== "5") {
+                alert("Your session has expired, please login again.");
+                parent.logout();
         }
     }
 });
