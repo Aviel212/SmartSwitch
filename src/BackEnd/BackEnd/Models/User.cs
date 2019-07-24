@@ -30,9 +30,5 @@ namespace BackEnd.Models
             Plugs = new List<Plug>();
         }
 
-        public List<Plug> GetUnapprovedPlugs() => Plugs.Where(p => p.Approved == false).ToList();
-
-        // return a certain plug
-        public Plug GetPlug(string mac) => Plugs.FirstOrDefault(p => p.Mac == mac);
     }
 }
