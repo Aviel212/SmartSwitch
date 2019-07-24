@@ -98,8 +98,8 @@ void setup() {
 }
 
 void loop() {
-  server.handleClient(); //Serial.println("L101");
-  handleWebSocketsLoop(); //Serial.println("L102");
+  server.handleClient();
+  handleWebSocketsLoop();
   if (shouldBlink && (millis() - blinked) >= 1000) {
     blinked = millis();
     digitalWrite(statusLed, !digitalRead(statusLed));
