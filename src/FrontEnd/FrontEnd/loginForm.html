@@ -54,8 +54,14 @@
         $userName = $("#UsernameInpt").val();
         $pass = $("#passwordInpt").val();
         //check if inputs are empty 
-        if ($userName === "" || $pass === "") {
+        if ($userName === "" && $pass === "") {
             $paraForErrors.html("Please Enter Username and Password");
+            return;
+        } else if ($userName === "" && $pass != "") {
+            $paraForErrors.html("Please Enter Username");
+            return;
+        } else if ($userName != "" && $pass === "") {
+            $paraForErrors.html("Please Enter Password");
             return;
         }
         
