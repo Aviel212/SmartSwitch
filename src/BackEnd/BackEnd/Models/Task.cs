@@ -35,9 +35,12 @@ namespace BackEnd.Models
         {
             // when entering this function we need to execute the task
             Plug device;
-            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope()) device = scope.Resolve<SmartSwitchDbContext>().Plugs.Find(mac);
-
-            Execute(op, device);
+            using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
+            {
+                SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
+                device = context.Plugs.Find(mac);
+                Execute(op, device, context);
+            }
         }
 
         public static void Execute(Operations op, Plug device)
@@ -83,12 +86,15 @@ namespace BackEnd.Models
 
         public static void ExecuteAndScheduleNextExecution(Operations operation, string mac, int repeatEvery, int taskId)
         {
-            Execute(operation, mac);
             using (ILifetimeScope scope = Program.Container.BeginLifetimeScope())
             {
                 SmartSwitchDbContext context = scope.Resolve<SmartSwitchDbContext>();
-                context.Tasks.Find(taskId).JobId = BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(operation, mac, repeatEvery, taskId), TimeSpan.FromMinutes(repeatEvery));
-                context.SaveChangesAsync();
+                var tasks = context.Tasks;
+                var task = tasks.Find(taskId);
+                if (task == null) throw new Exception("task is null");
+                task.JobId = BackgroundJob.Schedule(() => ExecuteAndScheduleNextExecution(operation, mac, repeatEvery, taskId), TimeSpan.FromMinutes(repeatEvery));
+                context.SaveChanges();
+                Execute(operation, context.Plugs.Find(mac), context);
             }
         }
     }
