@@ -12,7 +12,11 @@
     }
 
     $(document).ready(function () {
-        $("#devicespn").html(sessionStorage.getItem("plugNickName"));
+        $("#devicespn").html(" " + sessionStorage.getItem("plugNickName"));
+
+        $("#loading-gif").show();
+        getPlugSamples(sessionStorage.getItem("currentMac"), new Date(2000, 1), new Date(4000, 1), parseGraphData, hideLoadingGif);
+
         document.getElementById("select").onchange = function () {
             buildGraph();
         }
@@ -23,8 +27,11 @@
 
     function show() {     
         $("#loading-gif").show();
-        getPlugSamples(sessionStorage.getItem("currentMac"), new Date($("#start").val()), new Date($("#end").val()), function (data) {
-            for (let j = 0; j < data.length; j++) {
+        getPlugSamples(sessionStorage.getItem("currentMac"), new Date($("#start").val()), new Date($("#end").val()), parseGraphData, hideLoadingGif);
+    }
+
+    function parseGraphData(data) {
+        for (let j = 0; j < data.length; j++) {
                 samplesX[j] = data[j].sampleDate;
                 samplesY[j] = (data[j].voltage * data[j].current) * 0.001;
                 dataInNIS[j] = 0;
@@ -35,7 +42,6 @@
             }
             hideLoadingGif();
             buildGraph();
-        }, hideLoadingGif);
     }
          
     function buildGraph() {
