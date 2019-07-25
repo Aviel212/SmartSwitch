@@ -88,7 +88,7 @@ namespace BackEnd.Models
                 {
                     IsOn = true;
                     context.Entry(this).State = EntityState.Modified;
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
         }
@@ -102,14 +102,15 @@ namespace BackEnd.Models
                 {
                     IsOn = false;
                     context.Entry(this).State = EntityState.Modified;
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
         }
 
-        public void AddTask(Task task)
+        public void AddTask(Task task, SmartSwitchDbContext context)
         {
             Tasks.Add(task);
+            context.SaveChanges();
             task.Schedule();
         }
     }
