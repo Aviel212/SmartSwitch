@@ -72,7 +72,7 @@
                 <tr id="timeTr" style="display:none">
                     <td><p>repeat time:</p></td>
                     <td>
-                        <input type="number" name="time-added" disabled id="timeCycle" />
+                        <input type="number" name="time-added" disabled id="timeCycle" />minutes  <br>
                     </td>
                     <td>
                         <input type="checkbox" name="minuteChoiceA" id="daychoice" value="day" onclick="decideMinuteA()">day<br>
@@ -302,7 +302,7 @@
         /*this function checks if option 'hour' was checked legally */
         function decideMinuteB() {
             if ($('#daychoice').is(':checked') && $('#hourchoice').is(':checked'))
-                $('#daychoice').prop('checked', false);
+                $('#hourchoice').prop('checked', false);
             else
                 if ($('#hourchoice').is(':checked')) {
                     $("#timeCycle").prop('disabled', true);
