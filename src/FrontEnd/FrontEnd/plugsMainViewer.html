@@ -133,7 +133,7 @@
         function readData() {
             $('.fa-pulse').remove();
             $("#buttonsContainer").find('button').addClass('w3-gray').find('i').addClass('fa-spin');
-            plugs = getUserPlugs("avi", loadPlugsIntoTable);
+            plugs = getUserPlugs(sessionStorage.getItem("currentSmartSwitchUser"), loadPlugsIntoTable);
         }
 
         function loadPlugsIntoTable(data) {
