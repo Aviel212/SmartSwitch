@@ -13,6 +13,7 @@
         img {
             width: 50px;
             height: 50px;
+            /*border:1px solid black;*/
         }
 
         .popupImg img {
@@ -45,8 +46,9 @@
         }
 
         #plugsTableContainer {
-            margin-left: 100px;
-            margin-right: 100px;
+            /*margin-left: 200px;
+            margin-right: 200px;*/
+            margin:auto;
         }
 
         #plugs_tbl td, #plugs_tbl th {
@@ -62,6 +64,12 @@
 
         #plugs_tbl {
             table-layout: fixed;
+            width: 700px;
+            margin: auto;
+        }
+        #plugs_tbl tbody tr {
+            border-bottom:1px solid black;
+            width:100px;
         }
 
         .myOverlay {
@@ -79,6 +87,11 @@
             width: 33.33%;
             padding: 5px;
         }
+        #buttonsContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 
 </head>
@@ -90,9 +103,9 @@
         <table id="plugs_tbl" class="w3-table-all w3-hoverable">
             <thead>
                 <tr class="w3-gray">
-                    <th>N#</th>
-                    <th>Icon</th>
-                    <th>Name</th>
+                    <th colspan="2">Plug</th>
+                    <!--<th>Icon</th>-->
+                    <!--<th>Name</th>-->
                     <th>Priority</th>
                     <th>State</th>
                     <th>Options</th>
@@ -102,12 +115,10 @@
         </table>
     </div>
 
-    <div id="buttonsContainer" class="w3-bar" style="width:60%;margin-left:150px">
-        <button onclick="readData()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:10%">
-            <i class="fa fa-refresh"></i>
-
+    <div id="buttonsContainer" class="w3-bar">
+        <button onclick="readData()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:80px;height:50px;margin-left:-500px;">
+            <i class="fa fa-refresh fa-2x" data-fa-transform="rotate-90"></i>
         </button>
-        
     </div>
 
     <script>
@@ -120,6 +131,7 @@
 
         //#region Read Data Into Table
         function readData() {
+            $("#buttonsContainer").find('button').addClass('w3-gray').find('i').addClass('fa-spin');
             plugs = getUserPlugs("avi", loadPlugsIntoTable);
         }
 
@@ -136,8 +148,8 @@
                 let $tr = $("<tr>");
 
                 // create data elements
-                let $td0 = $("<td>").html(++i);                           // N# plug
-                let $td1 = $("<td>").css('overflow', 'visible').html(imgSelectorColumn(plug));        // Icon
+                //let $td0 = $("<td>").html(++i);                           // N# plug
+                let $td1 = $("<td>").css({ 'overflow': 'visible', 'border-right':'0px'}).html(imgSelectorColumn(plug));        // Icon
                 let $td2 = $("<td>").html(plug.nickname);                 // plug nickname
                 let $td3 = $("<td>").html(priorityToText(plug.priority)); // priority
                 let $td4 = $("<td>").html(plugState(plug.isOn));          // plug state
@@ -148,18 +160,19 @@
                 addChangePriorityFeature($td3, plug);
                 addChangeStateFeature($td4, plug);
 
-                $tr.append($td0, $td1, $td2, $td3, $td4, $td5);
+                $tr.append(/*$td0,*/ $td1, $td2, $td3, $td4, $td5);
                 $tableBody.append($tr);
             }
             addTableFeatures()
             loadingBackground(false);
+            $("#buttonsContainer").find('button').removeClass('w3-gray').find('i').removeClass('fa-spin');
         }
 
         var $loadingGif;
         function loadingBackground(state) {
             if (state === true) {
                 $loadingGif = $("<div>").css({ position: "absolute", top: "15%", left: "45%", "z-index": "3", display: "none" }).prependTo("body");
-                $loadingGif.append($("<img>", { src: "./images/loadingGif2.gif", width: "200px", height: "auto" }))
+                $loadingGif.append($("<img>", { src: "./images/loadingGif.gif", width: "200px", height: "auto" }))
                 $("body").addClass("myOverlay");
                 $loadingGif.show();
             }
@@ -225,7 +238,7 @@
         var imgNames = ["default", "TV", "fridge", "toaster", 'fan','oven','blueLED','greenLED','redLED'];
         function imgSelectorColumn(plug) {
             let icon = '0';
-            let $span = $("<span>", { class: "popuptext popupImg", style:"width: 200px;" });
+            let $span = $("<span>", { class: "popupImg", style:"width: 200px;" });
             if (plug.iconNumber !== undefined)
                 icon = plug.iconNumber;
             let $currentImg = $("<img>", { src: "./icons/" + imgNames[icon] + ".png" });
@@ -242,7 +255,7 @@
             }).append($span);
             for (let i = 0; i < imgNames.length; i++) {
                 let $imgI = $("<img>", {
-                    src: "./icons/" + imgNames[i] + ".png",id:"img" + i, style: "width:100%"
+                    src: "./icons/" + imgNames[i] + ".png",id:"img" + i, style: "width:50px;height:50px;"
                 }).on("click", function (e) {
                     e.stopPropagation();
                     $span.removeClass("show");
@@ -326,7 +339,7 @@
             element.click(function () {
                 let dataValue = $(this).html();
                 $(this).empty();
-                $("<input>", { type: 'text', value: dataValue }).click(function (e) {
+                $("<input>", { type: 'text', value: dataValue, size:'10' }).click(function (e) {
                     e.stopPropagation();
                 }).appendTo($(this)).focus();
             })
