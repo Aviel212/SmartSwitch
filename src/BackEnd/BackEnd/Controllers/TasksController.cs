@@ -62,7 +62,7 @@ namespace BackEnd.Controllers
             if (UserOwnershipValidator.IsNotValidated(_currentUsername, plug, _context)) return Unauthorized(Error.UnauthorizedOwner);
 
             Models.Task task = _mapper.Map<Models.Task>(taskDto);
-            plug.AddTask(task);
+            plug.AddTask(task, _context);
 
             await _context.SaveChangesAsync();
 
