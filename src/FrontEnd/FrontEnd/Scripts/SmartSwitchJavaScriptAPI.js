@@ -456,7 +456,7 @@ function addTask(task, successFunction, errorFunction, completeFunction) {
 
 /**
  * Deletes a task.
- * @param {object}      task                The task object to delete.
+ * @param {object}      task                The task object to delete. The task object must contain the task id received by the server.
  * @param {function=}   successFunction     Function to execute upon success.
  * @param {function=}   errorFunction       Function to execute upon failure.
  * @param {function=}   completeFunction    Function to execute upon completion.
