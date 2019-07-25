@@ -444,10 +444,13 @@ function addTask(task, successFunction, errorFunction, completeFunction) {
         method: "POST",
         headers: { "Authorization": "bearer " + sessionStorage.getItem(tokenStorageKeyString) },
         contentType: "application/json",
-        data: JSON.stringify(taskToSend)
+        data: JSON.stringify(taskToSend),
+        success: function (data, textStatus, jqXHR) {
+            task.taskId = data.taskId;
+            if (successFunction !== undefined) successFunction(data, textStatus, jqXHR);
+        }
     };
 
-    if (successFunction !== undefined) request.success = successFunction;
     if (errorFunction !== undefined) request.error = errorFunction;
     if (completeFunction !== undefined) request.complete = completeFunction;
 
