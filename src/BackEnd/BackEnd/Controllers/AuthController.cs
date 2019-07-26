@@ -69,7 +69,7 @@ namespace BackEnd.Controllers
             var token = new JwtSecurityToken(
                 issuer: null, // "http://oec.com", - Not required as no third-party is involved
                 audience: null, //"http://oec.com", - Not required as no third-party is involved
-                expires: DateTime.UtcNow.AddMinutes(30),
+                expires: DateTime.UtcNow.AddHours(8),
                 claims: claims,
                 signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
                 );
