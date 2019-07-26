@@ -86,7 +86,7 @@ namespace BackEnd.Models.Websockets
         private async void HandleIAmMessage(IWebSocketConnection socket, string[] messageWords)
         {
             string currentMac = messageWords[1];
-            string ownerUsername = messageWords[2];
+            string ownerUsername = messageWords[2].ToLower();
 
             _macConnectionPairs.Add(new MacConnectionPair()
             {
