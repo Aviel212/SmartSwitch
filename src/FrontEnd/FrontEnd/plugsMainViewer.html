@@ -97,7 +97,14 @@
 <body>
 
     <br />
-
+    <div id="buttonsContainer" class="w3-bar">
+        <button onclick="readData()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:80px;height:50px;">
+            <i class="fa fa-refresh fa-2x" data-fa-transform="rotate-90"></i>
+        </button>
+        <button id="nonessentialButton" onclick="turnoffNonessential()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:80px;height:50px;">
+            <i class="fa fa-toggle-on fa-2x"></i>
+        </button>
+    </div>
     <div id="plugsTableContainer" class="w3-container">
         <table id="plugs_tbl" class="w3-table-all w3-hoverable">
             <thead>
@@ -114,13 +121,10 @@
         </table>
     </div>
 
-    <div id="buttonsContainer" class="w3-bar">
-        <button onclick="readData()" class="w3-bar-item w3-button w3-green w3-ripple" style="width:80px;height:50px;margin-left:-500px;">
-            <i class="fa fa-refresh fa-2x" data-fa-transform="rotate-90"></i>
-        </button>
-    </div>
+    
 
     <script>
+        let nonessentialPlugs;
 
         $(document).ready(function () {
             loadingBackground(true);
@@ -128,14 +132,30 @@
             sortByTable();
         });
 
+        function turnoffNonessential() {
+            //turn off all nonessential 
+            for (i = 0; i < nonessentialPlugs.length; i++) {
+                turnPlug(nonessentialPlugs[i], Operations.TurnOff, undefined, undefined, readData);
+            }
+            
+            //change the icon for 1 sec to red
+            $("#nonessentialButton").removeClass("fa fa-toggle-on fa-2x").addClass("fa fa-toggle-off fa-2x");
+            setTimeout(function () {
+                $("#nonessentialButton").removeClass("fa fa-toggle-off fa-2x").addClass("fa fa-toggle-on fa-2x");
+            }, 1000);
+        }
+
         //#region Read Data Into Table
         function readData() {
             $('.fa-pulse').remove();
-            $("#buttonsContainer").find('button').addClass('w3-gray').find('i').addClass('fa-spin');
+            $("#nonessentialButton").addClass('w3-gray');
+            $("#buttonsContainer").find('button:not(#nonessentialButton)').addClass('w3-gray').find('i').addClass('fa-spin');
             plugs = getUserPlugs(sessionStorage.getItem("currentSmartSwitchUser"), loadPlugsIntoTable);
         }
 
         function loadPlugsIntoTable(data) {
+            nonessentialPlugs = [];
+
             // init table
             $tableBody = $("#plugs_tbl tbody");
             $tableBody.empty();
@@ -143,6 +163,9 @@
             //console.log(plugs);     // debug use
             for (i in plugs) {
                 let plug = plugs[i];
+                if (plug.priority === Priorities.Nonessential) {
+                    nonessentialPlugs.push(plug.mac);
+                }
                 if (!plug.approved)     // if plug[i] is not approved then skip
                     continue;
                 let $tr = $("<tr>");
