@@ -141,13 +141,9 @@
                     turnPlug(plug.mac, Operations.TurnOff, readData, readData);
                 }
             }
-            //for (i = 0; i < nonessentialPlugs.length; i++) {
-            //    turnPlug(nonessentialPlugs[i], Operations.TurnOff, undefined, undefined, readData);
-            //}
             
             //change the icon for 1 sec to red
             $("#nonessentialButton").find('i').toggleClass("fa fa-toggle-on fa-2x").toggleClass("fa fa-toggle-off fa-2x");
-            //$("#nonessentialButton").removeClass("fa fa-toggle-on fa-2x").addClass("fa fa-toggle-off fa-2x");
             setTimeout(function () {
                 $("#nonessentialButton").find('i').toggleClass("fa fa-toggle-off fa-2x").toggleClass("fa fa-toggle-on fa-2x");
             }, 1000);
