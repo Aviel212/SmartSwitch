@@ -24,6 +24,7 @@
     var samplesY = [];
     var dataInNIS = [];
 
+    //function that load all the data of the power consumption
     function show() {     
         $("#loading-gif").show();
         getPlugSamples(sessionStorage.getItem("currentMac"), new Date($("#start").val()), new Date($("#end").val()), parseGraphData, hideLoadingGif);
@@ -42,7 +43,8 @@
             hideLoadingGif();
             buildGraph();
     }
-         
+
+  
     function buildGraph() {
         var s = document.getElementById("select").value;
         if (s == 2) {
