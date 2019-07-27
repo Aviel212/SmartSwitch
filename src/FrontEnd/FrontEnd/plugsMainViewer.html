@@ -133,28 +133,37 @@
         });
 
         function turnoffNonessential() {
-            //turn off all nonessential 
-            for (i = 0; i < nonessentialPlugs.length; i++) {
-                turnPlug(nonessentialPlugs[i], Operations.TurnOff, undefined, undefined, readData);
+
+            for (i in plugs) {
+                //turn off all nonessential 
+                let plug = plugs[i];
+                if (plug.priority === Priorities.Nonessential && plug.approved) {
+                    turnPlug(plug.mac, Operations.TurnOff, readData, readData);
+                }
             }
+            //for (i = 0; i < nonessentialPlugs.length; i++) {
+            //    turnPlug(nonessentialPlugs[i], Operations.TurnOff, undefined, undefined, readData);
+            //}
             
             //change the icon for 1 sec to red
-            $("#nonessentialButton").removeClass("fa fa-toggle-on fa-2x").addClass("fa fa-toggle-off fa-2x");
+            $("#nonessentialButton").find('i').toggleClass("fa fa-toggle-on fa-2x").toggleClass("fa fa-toggle-off fa-2x");
+            //$("#nonessentialButton").removeClass("fa fa-toggle-on fa-2x").addClass("fa fa-toggle-off fa-2x");
             setTimeout(function () {
-                $("#nonessentialButton").removeClass("fa fa-toggle-off fa-2x").addClass("fa fa-toggle-on fa-2x");
+                $("#nonessentialButton").find('i').toggleClass("fa fa-toggle-off fa-2x").toggleClass("fa fa-toggle-on fa-2x");
             }, 1000);
         }
 
         //#region Read Data Into Table
         function readData() {
-            $('.fa-pulse').remove();
-            $("#nonessentialButton").addClass('w3-gray');
-            $("#buttonsContainer").find('button:not(#nonessentialButton)').addClass('w3-gray').find('i').addClass('fa-spin');
+            $('.fa-pulse').remove();        // updating icon remove
+            //$("#nonessentialButton").addClass('w3-gray');
+            $("#buttonsContainer").find('button').addClass('w3-gray');
+            $("#buttonsContainer").find('.fa-refresh').addClass('fa-spin');
             plugs = getUserPlugs(sessionStorage.getItem("currentSmartSwitchUser"), loadPlugsIntoTable);
         }
 
         function loadPlugsIntoTable(data) {
-            nonessentialPlugs = [];
+            //nonessentialPlugs = [];
 
             // init table
             $tableBody = $("#plugs_tbl tbody");
@@ -163,9 +172,10 @@
             //console.log(plugs);     // debug use
             for (i in plugs) {
                 let plug = plugs[i];
-                if (plug.priority === Priorities.Nonessential) {
-                    nonessentialPlugs.push(plug.mac);
-                }
+
+                //if (plug.priority === Priorities.Nonessential) {
+                //    nonessentialPlugs.push(plug.mac);
+                //}
                 if (!plug.approved)     // if plug[i] is not approved then skip
                     continue;
                 let $tr = $("<tr>");
@@ -188,7 +198,7 @@
             }
             addTableFeatures()
             loadingBackground(false);
-            $("#buttonsContainer").find('button').removeClass('w3-gray').find('i').removeClass('fa-spin');
+            $("#buttonsContainer").find('button').removeClass('w3-gray').find('.fa-refresh').removeClass('fa-spin');
         }
 
         var $loadingGif;
@@ -281,7 +291,7 @@
                 }).on("click", function (e) {
                     e.stopPropagation();
                     $span.removeClass("show");
-                    let selectedImgId = parseInt($(this).attr('id').substr(3, 1));
+                    let selectedImgId = parseInt($(this).attr('id').replace('img', '0'));
                     $currentImg.attr("src", "./icons/" + imgNames[selectedImgId] + ".png");
                     plug.iconNumber = selectedImgId;
                     plugToUpdate = plug;
