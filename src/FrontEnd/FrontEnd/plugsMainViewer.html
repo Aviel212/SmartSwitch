@@ -259,7 +259,7 @@
 
         var imgNames = ["default", "TV", "fridge", "toaster", 'fan', 'oven', 'blueLED', 'greenLED', 'redLED', 'coffe', 'air-conditioner', 'computer', 'desk-light', 'phone-charger', 'printer'];
         function imgSelectorColumn(plug) {
-            let icon = '0';
+            let icon = 0;
             let $span = $("<span>", { class: "popupImg", style:"width: 200px;" });
             if (plug.iconNumber !== undefined)
                 icon = plug.iconNumber;
@@ -281,7 +281,7 @@
                 }).on("click", function (e) {
                     e.stopPropagation();
                     $span.removeClass("show");
-                    let selectedImgId = $(this).attr('id').substr(3, 1);
+                    let selectedImgId = parseInt($(this).attr('id').substr(3, 1));
                     $currentImg.attr("src", "./icons/" + imgNames[selectedImgId] + ".png");
                     plug.iconNumber = selectedImgId;
                     plugToUpdate = plug;
