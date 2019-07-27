@@ -35,7 +35,7 @@
     //and then its build the graph
     function parseGraphData(data) {
         for (let j = 0; j < data.length; j++) {
-                samplesX[j] = data[j].sampleDate;
+                samplesX[j] = data[j].sampleDate; //get the date from the data
                 samplesY[j] = (data[j].voltage * data[j].current) * 0.001;
                 dataInNIS[j] = 0;
             }
