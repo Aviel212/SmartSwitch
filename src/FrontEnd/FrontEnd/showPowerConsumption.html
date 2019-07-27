@@ -48,8 +48,7 @@
     function buildGraph() {
         var s = document.getElementById("select").value;
         //check what is the value selected in the select if 2 then its in NIS
-        if (s == 2) {
-   
+        if (s == 2) {  
             var arr = {
                 x: samplesX,
                 y: dataInNIS,
@@ -64,13 +63,10 @@
                     title: 'NIS'
                 }
             };
-
             Plotly.newPlot('myDiv', data1, layout, { showSendToCloud: true });
-
         }
        //check what is the value selected in the select if 1 then its in KW
         if (s == 1) {
-
             var arr = {
                 x: samplesX,
                 y: samplesY,
@@ -86,13 +82,9 @@
                     title: 'KW'
                 }
             };
-
             Plotly.newPlot('myDiv', data1, layout, { showSendToCloud: true });
         }
-    }
-
-    
-
+    }   
 </script>
 
 
