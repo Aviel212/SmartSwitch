@@ -12,17 +12,9 @@
 
     <style>
         td {
-           
-          
-           
+           text-align:center;
         }
-        th {
-           
-          
-           
-           
-        }
-        
+
         .unshow{
             display:none;
         }
@@ -30,7 +22,7 @@
 
 </head>
 <body>
-    <div id="main-div"> 
+    <div id="main-div" style="padding:5px"> 
         <h4><u>Timing Settings of device:</u></h4>
         <input type="button" value="Add New Time Setting" class="w3-button w3-blue w3-round" onclick="showPopUp()" disabled id="timeSettingBtn" />
         <table id="main-table">
@@ -46,7 +38,6 @@
 
         <div id="myPopUp-div" style="display:none">
             <table>
-
                 <tr>
                     <td><p>description:</p></td>
                     <td><input type="text" id="description" maxlength="15"></td>
