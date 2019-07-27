@@ -31,7 +31,8 @@
         //the function in the SmartSwitchJavaScriptAPI
         getPlugSamples(sessionStorage.getItem("currentMac"), new Date($("#start").val()), new Date($("#end").val()), parseGraphData, hideLoadingGif);
     }
-    //function that enter the data into the global arrays to use them in displaying the graph
+    //function that enter the data into the global arrays to use them in displaying the graph and then its hide the loading picture 
+    //and then its build the graph
     function parseGraphData(data) {
         for (let j = 0; j < data.length; j++) {
                 samplesX[j] = data[j].sampleDate;
