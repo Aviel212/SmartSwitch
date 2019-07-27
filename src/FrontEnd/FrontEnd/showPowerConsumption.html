@@ -39,7 +39,7 @@
             }
             dataInNIS[0] = samplesY[0] * (0.00883333);
             for (let k = 1; k < data.length; k++) {
-                dataInNIS[k] = dataInNIS[k - 1] + samplesY[k] * (0.00883333);
+                dataInNIS[k] = dataInNIS[k - 1] + samplesY[k] * (0.53/60);
             }
             hideLoadingGif();
             buildGraph();
