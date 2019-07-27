@@ -16,7 +16,7 @@
 
         $("#loading-gif").show();
         getPlugSamples(sessionStorage.getItem("currentMac"), new Date(2000, 1), new Date(4000, 1), parseGraphData, hideLoadingGif);
-
+        //when there is a change in the select then rebuild the graph according to what the user selected
         document.getElementById("select").onchange = function () {
             buildGraph();
         }
@@ -39,9 +39,9 @@
                 samplesY[j] = (data[j].voltage * data[j].current) * 0.001; //insert the KW in the array by this equation
                 dataInNIS[j] = 0; //clean the array from the old data by putting 0 
             }
-            dataInNIS[0] = samplesY[0] * (0.00883333);
+            dataInNIS[0] = samplesY[0] * (0.00883333); //the first data in NIS
             for (let k = 1; k < data.length; k++) {
-                dataInNIS[k] = dataInNIS[k - 1] + samplesY[k] * (0.00883333);
+                dataInNIS[k] = dataInNIS[k - 1] + samplesY[k] * (0.00883333); //every data is that sum of the current data and the previous data
             }
             hideLoadingGif();
             buildGraph();
@@ -49,7 +49,7 @@
 
   //function that build the graph
     function buildGraph() {
-        var s = document.getElementById("select").value;
+        var s = document.getElementById("select").value; //get the current value of the select 
         //check what is the value selected in the select if 2 then its in NIS
         if (s == 2) {  
             var arr = {
