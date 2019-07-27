@@ -28,6 +28,7 @@
     //function that load all the data of the power consumption
     function show() {     
         $("#loading-gif").show();
+        //the function in the SmartSwitchJavaScriptAPI
         getPlugSamples(sessionStorage.getItem("currentMac"), new Date($("#start").val()), new Date($("#end").val()), parseGraphData, hideLoadingGif);
     }
 
