@@ -12,7 +12,7 @@
     }
     //when the page is ready then its show the power consumption in KW from the date its has been connected until now
     $(document).ready(function () {
-        $("#devicespn").html(" " + sessionStorage.getItem("plugNickName"));
+        $("#devicespn").html(" " + sessionStorage.getItem("NickName"));
 
         $("#loading-gif").show();
         getPlugSamples(sessionStorage.getItem("currentMac"), new Date(2000, 1), new Date(4000, 1), parseGraphData, hideLoadingGif);
