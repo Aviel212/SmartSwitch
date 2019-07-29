@@ -21,7 +21,7 @@ const int muxControl = D0; // multiplexer control line
 const int voltageFromMux = LOW;
 const int currentFromMux = HIGH;
 
-char serverIP[] = "192.168.1.16";
+char serverIP[] = "192.168.43.247";
 const int webSocketsPort = 8181;
 WebSocketClient webSocketClient;
 WiFiClient client; // Use WiFiClient class to create TCP connections
