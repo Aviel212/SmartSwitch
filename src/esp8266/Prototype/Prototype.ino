@@ -19,7 +19,7 @@ const int pressDuration = 5000; // time from the moment a user touches the touch
 
 const int mvPerAmp = 66;
 
-char serverIP[] = "192.168.43.247";
+char serverIP[] = "192.168.1.17";
 const int webSocketsPort = 8181;
 WebSocketClient webSocketClient;
 WiFiClient client; // Use WiFiClient class to create TCP connections
